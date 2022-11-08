@@ -1,0 +1,6 @@
+Package: PA_FEMS
+Type: Package
+Title: Provides a light version of the FEMS package
+Version: 0.0.1.0
+Author: Vigan Hamzai
+Maintainer: Vigan Hamzai <hamzavig@students.zhaw.ch>

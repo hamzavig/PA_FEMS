@@ -1,4 +1,4 @@
-Package: PA_FEMS
+Package: PAFEMS
 Type: Package
 License: TBD
 Title: Provides a light version of the FEMS package

@@ -1,0 +1,11 @@
+ContractType,ContractID,Currency,amount,repetition,startDate,frequency,times,description
+Investment,AFA0001,CHF,8500000,,01.01.22,1 years,51,Fixed Asset: Real Estate 1 with linear deprecation over 50 years
+Investment,AFA0002,CHF,3500000,,01.01.22,1 years,51,Fixed Asset: Real Estate 2 with linear deprecation over 50 years
+Investment,AFA0003,CHF,6000000,,01.01.22,1 years,51,Fixed Asset: Real Estate 3 with linear deprecation over 50 years
+Investment,AFA0004,CHF,2000000,,01.01.22,1 years,11,Fixed Asset: Movables with linear deprecation over 10 years
+OperationalCF,ORC0001,CHF,1000000,10,01.01.22,1 years,11,Commissions earned by bank with account management
+OperationalCF,ORR0001,CHF,425000,50,01.01.22,1 years,51,Rent for Real Estate 1 for annualized 5% their current value
+OperationalCF,ORR0002,CHF,175000,50,01.01.22,1 years,51,Rent for Real Estate 2 for annualized 5% their current value
+OperationalCF,ORR0003,CHF,300000,50,01.01.22,1 years,51,Rent for Real Estate 3 for annualized 5% their current value
+OperationalCF,OES0001,CHF,2000000,10,01.01.22,1 years,11,Yearly personnel expenses
+OperationalCF,OER0001,CHF,1200000,10,01.01.22,1 years,11,Yearly rent expenses

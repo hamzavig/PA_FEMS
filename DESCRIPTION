@@ -4,3 +4,19 @@ Title: Provides a light version of the FEMS package
 Version: 0.0.1.0
 Author: Vigan Hamzai
 Maintainer: Vigan Hamzai <hamzavig@students.zhaw.ch>
+Depends:
+    timeSeries (>= 3012.99),
+    zoo (>= 1.8-0),
+    httr,
+    lubridate,
+    fmdates,
+    jsonlite,
+    readxl,
+    data.tree,
+    R6,
+    R (>= 2.10)
+Imports:
+    timeSeries (>= 3012.99),
+SystemRequirements: R (>= 3.5.0) 
+Encoding: UTF-8
+RoxygenNote: 7.1.2

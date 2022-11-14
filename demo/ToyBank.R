@@ -5,3 +5,7 @@ library(FEMSdevPkg)
 
 bank <- createInstitution("Bank")
 bank
+
+library(utils)
+ann_ptf <- "src/data/bankA/ann_ptf.csv"
+ptf <- samplePortfolio(ann_ptf)

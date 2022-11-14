@@ -31,3 +31,5 @@ Collate:
     'utils.R'
     'Portfolio.R'
     'PrincipalAtMaturity.R'
+    'RiskFactor.R'
+    'ReferenceIndex.R'

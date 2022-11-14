@@ -63,7 +63,7 @@ setMethod(f = "Portfolio", signature = "ContractType",
 # ************************************************************
 #' samplePortFolio
 #'
-#' samplePortfolio (cdfn) takes as input a contracts-data-filepath 
+#' samplePortfolio(cdfn) takes as input a contracts-data-filepath 
 #'   reads this data and returns an initialized
 #'   Portfolio object with contracts and from this csv file.
 #' @param cdfn      character string -  a contract-data-filepath
@@ -76,11 +76,11 @@ setMethod(f = "Portfolio", signature = "ContractType",
 #'    mydatadir <- "~/mydata"
 #'    installSampleData(mydatadir)
 #'    cdfn  <- "~/mydata/BondPortfolio.csv"
-#'    ptf <- samplePortfolio(cdfn,rfdfn)
+#'    ptf <- samplePortfolio(cdfn)
 #'    }
 #'
-samplePortfolio <- function(cdfn, rfdfn) {
-  ptf <- Portfolio()            # create portfolio object no attributes set
-  ptf$contracts <-   contracts_df2list(contractFile2dataframe(cdfn))
+samplePortfolio <- function(cdfn) {
+  ptf <- Portfolio()  # create portfolio object no attributes set
+  ptf$contracts <- contracts_df2list(contractFile2dataframe(cdfn))
   return(ptf)
 }

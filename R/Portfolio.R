@@ -7,6 +7,7 @@
 #' class Portfolio
 #'
 #' A Portfolio consists of a list of contracts such as
+#' @include ContractType.R
 #' @import methods
 #' @importFrom methods new
 #' @export Portfolio

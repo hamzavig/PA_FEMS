@@ -6,3 +6,8 @@ library(FEMSdevPkg)
 bank <- createInstitution("Bank")
 bank
 
+PAFEMS::samplePortfolio()
+samplePortfolio()
+
+library(roxygen2); # Read in the roxygen2 R package
+roxygenise()

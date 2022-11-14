@@ -17,7 +17,7 @@
 #'        possibly better to change to riskFactorIndexList 
 setRefClass("Portfolio",
             fields = list(
-              contracts = "list",   # contracts are instances of ContractType
+              contracts = "list"   # contracts are instances of ContractType
             ))
 
 # **************************************

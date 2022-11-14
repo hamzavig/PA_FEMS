@@ -26,6 +26,8 @@ Collate:
     'ContractABC.R'
     'ContractModel.R'
     'ContractType.R'
+    'Annuity.R'
     'Institution.R'
     'utils.R'
     'Portfolio.R'
+    'PrincipalAtMaturity.R'

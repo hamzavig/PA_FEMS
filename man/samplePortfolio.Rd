@@ -4,7 +4,7 @@
 \alias{samplePortfolio}
 \title{samplePortFolio}
 \usage{
-samplePortfolio(cdfn, rfdfn)
+samplePortfolio(cdfn)
 }
 \arguments{
 \item{cdfn}{character string -  a contract-data-filepath}
@@ -13,7 +13,7 @@ samplePortfolio(cdfn, rfdfn)
 Portfolio s4 object initialized with the data from the input files
 }
 \description{
-samplePortfolio (cdfn) takes as input a contracts-data-filepath 
+samplePortfolio(cdfn) takes as input a contracts-data-filepath 
   reads this data and returns an initialized
   Portfolio object with contracts and from this csv file.
 }
@@ -22,7 +22,7 @@ samplePortfolio (cdfn) takes as input a contracts-data-filepath
    mydatadir <- "~/mydata"
    installSampleData(mydatadir)
    cdfn  <- "~/mydata/BondPortfolio.csv"
-   ptf <- samplePortfolio(cdfn,rfdfn)
+   ptf <- samplePortfolio(cdfn)
    }
 
 }

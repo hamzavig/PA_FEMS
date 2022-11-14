@@ -6,8 +6,7 @@
 # *************************************
 #' class Portfolio
 #'
-#' A Portfolio consists of a list of contracts such as 
-#' @include ContractType.R
+#' A Portfolio consists of a list of contracts such as
 #' @import methods
 #' @importFrom methods new
 #' @export Portfolio
@@ -63,21 +62,19 @@ setMethod(f = "Portfolio", signature = "ContractType",
 # ************************************************************
 #' samplePortFolio
 #'
-#' samplePortfolio ( cdfn, rdfn ) takes as input a contracts-data-filepath and
-#'     riskfactor- data-filepath, reads this data and returns an initialized
-#'     Portfolio object with contracts and risk factors from these csv files.
+#' samplePortfolio ( cdfn) takes as input a contracts-data-filepath 
+#'   reads this data and returns an initialized
+#'   Portfolio object with contracts and from this csv file.
 #' @param cdfn      character string -  a contract-data-filepath
-#' @param rfdfn     character string -  a riskfactor-data-filepath
 #'
 #' @return   Portfolio s4 object initialized with the data from the input files
 #' @export
-#' @include import.R
+#' @include utils.R
 #' @importFrom utils read.csv
 #' @examples {
 #'    mydatadir <- "~/mydata"
 #'    installSampleData(mydatadir)
 #'    cdfn  <- "~/mydata/BondPortfolio.csv"
-#'    rfdfn <- "~/mydata/RiskFactors.csv"
 #'    ptf <- samplePortfolio(cdfn,rfdfn)
 #'    }
 #'

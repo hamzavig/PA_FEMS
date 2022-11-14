@@ -27,5 +27,4 @@ Collate:
     'ContractType.R'
     'Institution.R'
     'Portfolio.R'
-    'util.R'
 RoxygenNote: 7.1.2

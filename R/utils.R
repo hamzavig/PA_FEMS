@@ -1,6 +1,3 @@
-# import.R 
-# import.R - working development version of import.R
-# fnp Feb 2022
 library(utils)
 library(timeSeries)
 
@@ -19,14 +16,6 @@ contractFile2dataframe <- function(cdfn, sep = ",") {
   # which gets read as numeric = Inf.
   # we assume all contract csv files will have a dayCountConvention column
   df <- utils::read.csv(cdfn, colClasses = c(dayCountConvention = "character"))
-  # convert all missing data into text null
-  df[is.na(df)] <- "NULL"
-  return(df)
-}
-
-riskFile2dataframe <- function(fname, sep = ","){
-  # this read.csv works for csv with no dayCountConvention column. Warning
-  df = utils::read.csv(fname)
   # convert all missing data into text null
   df[is.na(df)] <- "NULL"
   return(df)
@@ -58,30 +47,6 @@ contracts_df2list<- function(contracts_df){
   return (outlist)
 }
 
-# ************************************
-# riskFactors_df2list(riskFactors_df)
-#   input: dataframe riskFactor data,
-#   returns list of riskFactor objects
-#   convert date, value pairs in risk Factor row
-#   all riskFactors are referenceIndex for now
-# ************************************************
-riskFactors_df2list <- function(riskFactors_df){
-  rfxlist <- list()
-  nhdrs <- 4        # rfType, moc, base, dataPairCount are " row headers"
-  for ( irow in 1:nrow(riskFactors_df)){
-    rfRow <- riskFactors_df[irow,]
-    tset <- as.character(rfRow[nhdrs-1+(1:rfRow$dataPairCount)*2])
-    # vector of dates
-    vset <- as.numeric(rfRow[nhdrs+(1:rfRow$dataPairCount)*2])
-    # vector of numeric values
-    rfID <- paste0("sample$",rfRow$marketObjectCode)
-    rfxlist <-append(rfxlist,
-                     Index(rfID,rfRow$marketObjectCode,rfRow$base,,
-                           tset,vset))
-  }
-  return(rfxlist)
-}
-
 # ***********************************************
 # datarow2Contract ( ) -  create contract object
 #    inputs:  terms_df, legs_df, descr, irow :
@@ -111,81 +76,4 @@ datarow2Contract<- function(terms_df, legs_df,irow){
   
   set(object = contract, what = contractTerms)
   return(contract)
-}
-
-# *********************************************************
-# installSampleData(<directory-file-path>) 
-# ****************
-
-# ***********************************************
-#' installSampleData 
-#' 
-#'  This function copies asample csv data files into a user selected directory 
-#'  where they can be easily inspected or modified. This demonstrates the 
-#'  required format for additional contract and riskFactor data files to be 
-#'  used in FEMSdev Pkg requests 
-#'  .  
-#'  Sample file BondPortfolio.csv specifies ACTUS contract terms for  a 
-#'  portfolio of PrincipalAtMaturity ( bullet ) bonds. Sample file 
-#'  RiskFactors.csv specifies projected # future values for a collection of
-#'  marketObjectCodes designated by contracts as their baseline for resetting 
-#'  rates or, in the case of (european) stock options, market value of the 
-#'  underlying 
-#'  
-#'  The input parameter <directory-file-path> locates a directory where the 
-#'  sample data files should be copied to. ( FEMSdevPkg contains a compressed 
-#'  form of these sample csv files not conveniently visible or accessible to the
-#'   FEMSdevPkg package user.
-#'
-#' @param mydatadir  character - full path name of directory to write sample csvs
-#'
-#' @return NULL
-#' @export
-#'
-#' @examples  {              # directory ~/mydata must exist and be writable 
-#'   datadir <- "~/mydata"
-#'   installSampleData(datadir)
-#'   }
-#'   
-installSampleData <- function (mydatadir){
-  for (fn in  c("BondPortfolio.csv","AnnuityPortfolio.csv",
-                "OptionsPortfolio.csv", "RiskFactors.csv",
-                "UST5Y_fallingRates.csv", "UST5Y_recoveringRates.csv",
-                "UST5Y_risingRates.csv", "UST5Y_steadyRates.csv")) {
-    pn <- paste0(mydatadir,"/",fn)
-    file.copy(from = system.file("extdata",fn, package = "FEMSdevPkg"),
-              to = pn, overwrite = TRUE, copy.mode = TRUE, copy.date = TRUE)
-  }
-}
-
-# ***********************************************
-#'  installSampleCode 
-#' 
-#'  This function copies the code of a sample R application importing and using 
-#'  the FEMSdevPkg package in a user specified directory. The copied code
-#'  introductoryDemo.R provides a simple guide and introduction to using the 
-#'  package. This code is documented with comments  introductoryDemo.R is copied.
-#'  
-#'  The input parameter <directory-file-path> of installSampleCode locates a 
-#'  directory where the sample data files should be copied to. 
-#'
-#' @param demodir  character - full path name of folder to write demo R code 
-#'
-#' @return NULL
-#' @export
-#'
-#' @examples {
-#'   demodir <- "~/mycode"
-#'   installSampleCode(demodir)
-#'   }
-#'   
-installSampleCode <- function (demodir){
-  pn <- paste0(demodir,"/","introductoryDemo.R")
-  file.copy(from = system.file("code-examples","introductoryDemo.R", 
-                               package = "FEMSdevPkg"),
-            to = pn, overwrite = TRUE, copy.mode = TRUE, copy.date = TRUE)
-  pn <- paste0(demodir,"/","workshopDemo.R")
-  file.copy(from = system.file("code-examples","workshopDemo.R", 
-                               package = "FEMSdevPkg"),
-            to = pn, overwrite = TRUE, copy.mode = TRUE, copy.date = TRUE)
 }

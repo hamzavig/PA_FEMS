@@ -20,4 +20,12 @@ Imports:
     timeSeries (>= 3012.99),
 SystemRequirements: R (>= 3.5.0) 
 Encoding: UTF-8
+LazyData: true
+Collate: 
+    'ContractModel.R'
+    'ContractABC.R'
+    'ContractType.R'
+    'Institution.R'
+    'Portfolio.R'
+    'util.R'
 RoxygenNote: 7.1.2

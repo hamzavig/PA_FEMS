@@ -59,11 +59,11 @@ setMethod(f = "Portfolio", signature = "ContractType",
 
 
 # ************************************************************
-# samplePortfolio(contractDataFileName)  cdfn  FNP 13 April 2022
+# samplePortfolio(contractDataFileName)
 # ************************************************************
 #' samplePortFolio
 #'
-#' samplePortfolio ( cdfn) takes as input a contracts-data-filepath 
+#' samplePortfolio (cdfn) takes as input a contracts-data-filepath 
 #'   reads this data and returns an initialized
 #'   Portfolio object with contracts and from this csv file.
 #' @param cdfn      character string -  a contract-data-filepath

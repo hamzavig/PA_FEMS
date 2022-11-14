@@ -19,22 +19,6 @@ setRefClass("Annuity",
             contains = "ContractType")
 
 
-# mark for deletion Ann()   Annuity() does everythig
-
-# setGeneric(name = "Ann",
-#           def = function(...){
-#             standardGeneric("Ann")
-#           })
-
-# setMethod(f = "Ann", signature = c(),
-#          definition = function (...) {
-#            object <- new("Annuity")
-#            object$contractTerms<- list()
-#            object$isCompound <- FALSE
-#            object$contractStructure <- list()
-#            return(object)
-#          })
-
 setGeneric(name = "Annuity",
            def = function(...){
              standardGeneric("Annuity")

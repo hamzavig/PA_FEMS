@@ -21,21 +21,9 @@ setRefClass("ContractModel",
               contractTerms = "list",
               required = "list",
               allowed = "list"
-            )
-)
+            ))
 
 setGeneric(name = "set", useAsDefault = TRUE,
            def = function(object, what, ...){
              standardGeneric("set")
            })
-
-# FNP - no real need for a generic get()
-# think the intent is to pass in  lists of attribute names
-# but getting back vectors of results is very messy
-# comment out and postpone
-
-# setGeneric(name = "get", useAsDefault = TRUE,
-#           def = function(object, what, ...){
-#             standardGeneric("get")
-#           })
-

@@ -14,4 +14,14 @@ pam_ptf <- samplePortfolio(pamPortfolio)
 pam_ptf$contracts
 
 serverURL <- "https://demo.actusfrf.org:8080/"
-rfx <- sampleReferenceIndex_YC_EA_AAA()
+
+getCIDfromContract <- function(object) {
+  return ( object$contractTerms$contractID)
+}
+
+pam_ptf$contracts[
+  sapply(pam_ptf$contracts, function(cntr){
+    getCIDfromContract(cntr) == "LSD0002"
+  }) ]
+
+do.call(c, list(pam_ptf, ann_ptf))

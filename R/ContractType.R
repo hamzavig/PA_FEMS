@@ -1,4 +1,3 @@
-
 #*************************************************************
 # Copyright (c) 2015 by ZHAW.
 # Please see accompanying distribution file for license.
@@ -21,11 +20,6 @@
 #  CT() generic constructor
 #  set(contract_obj, list)  for copying in terms  but comment consistency check
 
-# FNP why does a contract need a risk factor connector - portfolio ?
-# in fact it should not - even suspicious that portfolio has a risk factor
-# because may be used with multiple scenarios - BUT with old form of
-# ACTUS cashflow api - portfolio and simulation run are confused
-
 setRefClass("ContractType",
             contains = "ContractABC",
             fields = list(
@@ -41,11 +35,6 @@ setGeneric(name = "CT",
 
 setMethod(f = "CT", signature = c("character"),
           definition = function(contract_name) {
-            # FNP cannot find actusDictionary so comment out test
-            # if (!contract_name %in% names(actusDictionary$rflActus_attributes)) {
-            #   stop(paste("ErrorIn::ContractType:: Type of Contract ",
-            #              contract_name, " does not exist !!!"))
-            # }
             return( new (contract_name))
           })
 
@@ -56,9 +45,6 @@ setMethod(f = "set", signature = c("ContractType", "list"),
             for (i in 1:length(what)) {
               object$contractTerms[names(what[i])] <- what[[i]]
             }
-            #  FNP comment out consistency check()
-            #   details <- getContractModel(object)
-            #   checkArguments(details, what)
           })
 
 #getCIDfromContract(object)  expects object to be a ContractType instance

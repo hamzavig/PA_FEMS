@@ -62,3 +62,16 @@ createInstitution <- function(name, ...) {
   return(institution)
 }
 
+
+#' @include utils.R
+#' @export
+#' @rdname assignContracts2Tree
+assignContracts2Tree <- function(institution, ptf, ...) {
+  
+  
+  return(institution)
+}
+
+
+
+

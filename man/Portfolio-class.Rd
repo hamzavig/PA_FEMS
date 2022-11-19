@@ -11,9 +11,6 @@ A Portfolio consists of a list of contracts such as
 
 \describe{
 \item{\code{contracts}}{List of contracts, class=ContractType, in the portfolio.}
-
-\item{\code{riskFactors}}{List of class=ReferenceIndex's defining a risk Scenario.
-possibly better to change to riskFactorIndexList}
 }}
 
 

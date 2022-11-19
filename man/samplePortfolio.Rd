@@ -17,12 +17,3 @@ samplePortfolio(cdfn) takes as input a contracts-data-filepath
   reads this data and returns an initialized
   Portfolio object with contracts and from this csv file.
 }
-\examples{
-{
-   mydatadir <- "~/mydata"
-   installSampleData(mydatadir)
-   cdfn  <- "~/mydata/BondPortfolio.csv"
-   ptf <- samplePortfolio(cdfn)
-   }
-
-}

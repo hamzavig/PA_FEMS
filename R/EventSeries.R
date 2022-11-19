@@ -43,8 +43,9 @@ setMethod(f = "EventSeries", signature = c("list", "list", "character"),
           definition = function(contract, riskFactors, serverURL){
 
             contractDefs <- lapply(contract,preJcontract)
-            #riskFactors <-  preJSONrfxs(riskFactors)
-            fin_list <- list(contracts = contractDefs)
+            riskFactors <-  preJSONrfxs(riskFactors)
+            fin_list <- list(contracts = contractDefs,
+                             riskFactors = riskFactors)
             
             # create final request body in json format
             request_body <- toJSON(fin_list, pretty = TRUE, auto_unbox = FALSE)

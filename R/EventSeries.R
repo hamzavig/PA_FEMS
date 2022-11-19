@@ -71,6 +71,12 @@ setMethod(f = "EventSeries", signature = c("list", "list", "character"),
             
             # Run the cashflow generation on this portfolio
             cshfl_rslt1 <- response_content[[1]]
+            
+            print(request_body)
+            print(response_events)
+            print(response_content)
+            print(cshfl_rslt1)
+            
             #first cashflow from single contract ptf
             stopifnot (cshfl_rslt1$status == "Success") # possible better info
             evs_list <- cshfl_rslt1$events

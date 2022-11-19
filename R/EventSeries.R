@@ -58,10 +58,11 @@ setMethod(f = "EventSeries", signature = c("ContractType", "list", "character"),
             response_events <- POST(paste0(serverURL, "eventsBatch"),
                                     body = request_body,
                                     content_type_json())
-            print(response_events)
-            print(response_events$status_code)
+
             response_content <- content(response_events)
             if (response_events$status_code != 200) {
+              print(respone_events)
+              print(response_events$status_code)
               print(response_content$error)
               stop("ErrorIn::ContractType::API response error; Check if all necessary contractTerms were set correctly!!!")
             }

@@ -82,7 +82,7 @@ setMethod(f = "EventSeries", signature = c("list", "list", "character"),
             evs_list <- cshfl_rslt1$events
             # build the output EventSeries object
             evs <- EventSeries()
-            evs$contractID <- contract$contractTerms$contractID
+            evs$contractID <- "contract$contractTerms$contractID"
             evs$contractType <- contract$contractTerms$contractType
             evs$statusDate <-  contract$contractTerms$statusDate
             evs$riskFactors <- riskFactors

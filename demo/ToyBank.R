@@ -56,4 +56,4 @@ c1 <- pam_ptf$contracts[
 
 c1
 
-generateEventSeries(c1,list(),serverURL)
+generateEventSeries(c1,riskFactors,serverURL)

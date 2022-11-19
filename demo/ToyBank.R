@@ -11,7 +11,7 @@ ann_ptf <- samplePortfolio(annPortfolio)
 ann_ptf$contracts
 
 pam_ptf <- samplePortfolio(pamPortfolio)
-pam_ptf$contracts
+ptfc <- pam_ptf$contracts
 
 serverURL <- "https://demo.actusfrf.org:8080/"
 
@@ -24,6 +24,6 @@ c1 <- pam_ptf$contracts[
     getCIDfromContract(cntr) == "LSD0002"
   }) ]
 
-c1[[1]]
+c1
 
-generateEventSeries(c1[[1]],list(),serverURL)
+generateEventSeries(c1,list(),serverURL)

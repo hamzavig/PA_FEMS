@@ -39,10 +39,10 @@ setMethod(f = "EventSeries", signature = c(),
             return(new("EventSeries"))
           })
 
-setMethod(f = "EventSeries", signature = c("ContractType", "list", "character"),
+setMethod(f = "EventSeries", signature = c("list", "list", "character"),
           definition = function(contract, riskFactors, serverURL){
 
-            contractDefs <- preJcontract(contract)
+            contractDefs <- lapply(contract,preJcontract)
             #riskFactors <-  preJSONrfxs(riskFactors)
             fin_list <- list(contracts = contractDefs)
             
@@ -135,7 +135,7 @@ setGeneric(name = "generateEventSeries",
 #' @return              S4 ref     class=EventSeries
 #' @export
 #'
-setMethod(f = "generateEventSeries", signature = c("ContractType", "list", "character"),
+setMethod(f = "generateEventSeries", signature = c("list", "list", "character"),
           definition = function(contract, riskFactors, serverURL){
               evs <- EventSeries(contract,riskFactors,serverURL)
               return(evs)

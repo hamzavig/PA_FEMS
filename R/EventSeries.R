@@ -63,6 +63,7 @@ setMethod(f = "EventSeries", signature = c("ContractType", "list", "character"),
             if (response_events$status_code != 200) {
               print(response_events)
               print(response_events$status_code)
+              print(response_content)
               print(response_content$error)
               stop("ErrorIn::ContractType::API response error; Check if all necessary contractTerms were set correctly!!!")
             }

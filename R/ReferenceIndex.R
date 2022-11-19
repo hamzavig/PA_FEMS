@@ -37,6 +37,7 @@
 #' @import methods
 #' @importFrom methods new
 #' @importFrom timeSeries timeSeries
+#' @export
 #'
 setRefClass("ReferenceIndex", contains = "RiskFactor",
             fields = list( # riskFactorID =  "character"  In RiskFactor parent
@@ -49,6 +50,8 @@ setGeneric(name = "Index",
            def = function(rfID, moc, base, timeSeries,
                           dates, values, fname, ...) standardGeneric("Index") )
 
+#' @export
+#'
 # constructor with rfID label, base and timeSeries data
 setMethod(f = "Index", signature = c("character", "character","numeric",
                                      "timeSeries"),
@@ -60,8 +63,11 @@ setMethod(f = "Index", signature = c("character", "character","numeric",
             rfx$data  <- timeSeries
             return(rfx)
           })
+
 # constructor with label, base, vector of dates, vector of values
 # builds the data TimeSeries from date qnd value columns
+#' @export
+#'
 setMethod(f = "Index", signature =
                  c("character", "character", "numeric", "missing",
                    "character","numeric") ,

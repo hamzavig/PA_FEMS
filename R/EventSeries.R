@@ -42,7 +42,7 @@ setMethod(f = "EventSeries", signature = c(),
 setMethod(f = "EventSeries", signature = c("list", "list", "character"),
           definition = function(contract, riskFactors, serverURL){
 
-            contractDefs <- preJcontract(contracts)
+            contractDefs <- preJcontract(contract)
             riskFactors <-  preJSONrfxs(riskFactors)
             fin_list <- list(contracts = contractDefs,
                              riskFactors = riskFactors)

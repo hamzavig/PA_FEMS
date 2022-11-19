@@ -24,6 +24,6 @@ c1 <- pam_ptf$contracts[
     getCIDfromContract(cntr) == "LSD0002"
   }) ]
 
-c1
+c1[[1]]
 
-generateEventSeries(c1,list(),serverURL)
+generateEventSeries(c1[[1]],list(),serverURL)

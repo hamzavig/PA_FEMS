@@ -28,7 +28,7 @@ setRefClass("EventSeries",
             )
 )
 # *********************
-#  constructors:  EventSeries() : (), (<contractType>, <rf_list>, <serverURL> )
+#  constructors:  EventSeries() : (), (<contract_list>, <rf_list>, <serverURL> )
 setGeneric(name = "EventSeries",
            def = function(contract, riskFactors, serverURL){
              standardGeneric("EventSeries")
@@ -39,10 +39,10 @@ setMethod(f = "EventSeries", signature = c(),
             return(new("EventSeries"))
           })
 
-setMethod(f = "EventSeries", signature = c("ContractType","list", "character"),
+setMethod(f = "EventSeries", signature = c("list", "list", "character"),
           definition = function(contract, riskFactors, serverURL){
 
-            contractDefs <- preJcontract(cnotract)
+            contractDefs <- preJcontract(contracts)
             riskFactors <-  preJSONrfxs(riskFactors)
             fin_list <- list(contracts = contractDefs,
                              riskFactors = riskFactors)
@@ -131,7 +131,7 @@ setGeneric(name = "generateEventSeries",
 #' @return              S4 ref     class=EventSeries
 #' @export
 #'
-setMethod(f = "generateEventSeries", signature = c("ContractType","list", "character"),
+setMethod(f = "generateEventSeries", signature = c("list", "list", "character"),
           definition = function(contract, riskFactors, serverURL){
               evs <- EventSeries(contract,riskFactors,serverURL)
               return(evs)

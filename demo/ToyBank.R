@@ -19,9 +19,11 @@ getCIDfromContract <- function(object) {
   return ( object$contractTerms$contractID)
 }
 
-pam_ptf$contracts[
+c1 <- pam_ptf$contracts[
   sapply(pam_ptf$contracts, function(cntr){
     getCIDfromContract(cntr) == "LSD0002"
   }) ]
 
-do.call(c, list(pam_ptf, ann_ptf))
+c1
+
+generateEventSeries(c1,list(),serverURL)

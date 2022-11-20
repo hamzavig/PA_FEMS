@@ -12,6 +12,7 @@
 #'  contract to be plotted
 #'   
 #' @param evs    S4 reference to \code{\link{EventSeries}} object
+#' 
 setGeneric(name = "cashflowPlot",
            def = function(evs) {
              standardGeneric("cashflowPlot")
@@ -33,20 +34,14 @@ setGeneric(name = "cashflowPlot",
 #'   the displayed legend of the plot. 
 #'
 #' @include  EventSeries.R
-#' @include  bond.R
+#' 
 #' @param evs  a \code{\link{EventSeries}} object with contract events to be 
 #'             plotted
 #' @return   creates  returns a graphical canvas (plot) displayed as plot
-#' @examples {
-#'   pam1      <- bond("2013-12-31", maturity = "5 years", nominal = 50000,
-#'                      coupon = 0.02, couponFreq = "1 years", role = "long")
-#'   serverURL <- "https://demo.actusfrf.org:8080/" 
-#'   evs1      <- generateEventSeries(pam1, list(), serverURL)
-#'   cashflowPlot(evs1)     
-#' }
 #' @export
 #' @importFrom timeDate as.timeDate
 #' @importFrom graphics abline arrows axis legend mtext par text title
+#' 
 setMethod("cashflowPlot", signature("EventSeries"),
           definition = function(evs){
             # get data.frame of cash flow events from EventSeries

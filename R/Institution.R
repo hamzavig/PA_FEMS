@@ -5,7 +5,7 @@
 # Autor: Vigan Hamzai (hamzavig@students.zhaw.ch)
 #*******************************************************************************
 
-##############################################################
+################################################################################
 #' 
 #' Class that contains the whole model of an enterprise or institution.
 #' 
@@ -18,8 +18,13 @@
 Institution <- R6Class("Institution",
                        inherit = Node)
 
+#################################################################################
+#' 
+#' Function of class Institution to create the whole hierarchy of the institution.
+#' 
 #' @export
 #' @rdname createInstitution
+#' 
 createInstitution <- function(name, ...) {
   
   institution <- Node$new(name)
@@ -62,7 +67,11 @@ createInstitution <- function(name, ...) {
   return(institution)
 }
 
-
+#################################################################################
+#' 
+#' Function of assign a given portfolio (from class Portfolio) to the respective
+#' leaf of the institution tree.
+#' 
 #' @include utils.R
 #' @export
 #' @rdname assignContracts2Tree

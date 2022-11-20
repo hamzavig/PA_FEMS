@@ -110,8 +110,8 @@ assignContracts2Tree <- function(institution, ptf, ...) {
     ct_leaf_key <- substr(contracts_df[i,"contractID"],1,3)
     leaf <- tree_dict[ct_leaf_key]
     
-    stopifnot(leaf$isLeaf)
-    leaf$contracts <- c(leaf$contracts, contracts_df[i,])
+    stopifnot(leaf[[ct_leaf_key]]$isLeaf)
+    leaf[[ct_leaf_key]]$contracts <- c(leaf[[ct_leaf_key]]$contracts, contracts_df[i,])
   }
 
   return(institution)

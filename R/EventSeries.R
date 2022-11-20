@@ -63,28 +63,21 @@ setMethod(f = "EventSeries", signature = c("list", "list", "character"),
             if (response_events$status_code != 200) {
               print(request_body)
               print(response_events)
-              print(response_events$status_code)
               print(response_content)
-              print(response_content$error)
               stop("ErrorIn::ContractType::API response error; Check if all necessary contractTerms were set correctly!!!")
             }
             
             # Run the cashflow generation on this portfolio
             cshfl_rslt1 <- response_content[[1]]
             
-            print(request_body)
-            print(response_events)
-            print(response_content)
-            print(cshfl_rslt1)
-            
             #first cashflow from single contract ptf
             stopifnot (cshfl_rslt1$status == "Success") # possible better info
             evs_list <- cshfl_rslt1$events
             # build the output EventSeries object
             evs <- EventSeries()
-            evs$contractID <- "contract$contractTerms$contractID"
-            evs$contractType <- contract$contractTerms$contractType
-            evs$statusDate <-  contract$contractTerms$statusDate
+            evs$contractID <- contract[[1]]$contractTerms$contractID
+            evs$contractType <- contract[[1]]$contractTerms$contractType
+            evs$statusDate <-  contract[[1]]$contractTerms$statusDate
             evs$riskFactors <- riskFactors
 
             # construct the 7 columns with event list data (no long loops please)

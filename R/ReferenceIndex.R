@@ -1,4 +1,4 @@
-# MarketIndex.R  FEMSdev version edited francis Parr March 2022
+# MarketIndex.R  PAFEMS version edited Vigan Hamzai Nov 2022
 #*************************************************************
 # Copyright (c) 2020 by ZHAW.
 # Please see accompanying distribution file for license.
@@ -9,8 +9,8 @@
 #
 #  Reference indices define a class of market risk factors
 #  that in the ACTUS model may directly affect future cash
-# flows arising from a (variable Rte ) financial instrument, e.g. Inflation-
-# linked bonds, or are used for valuation of instruments,
+# flows arising from a (variable Rte ) financial instrument, 
+# e.g. Inflation-linked bonds, or are used for valuation of instruments,
 # e.g. a Stock market index when using CAPM.
 
 #  create an ReferenceIndex object
@@ -34,14 +34,14 @@
 # valueAt(ind, c("2016-01-01", "2018-07-01", "2018-07-01"))
 
 #' @include RiskFactor.R
+#' @include utils.R
 #' @import methods
 #' @importFrom methods new
 #' @importFrom timeSeries timeSeries
 #' @export
 #'
 setRefClass("ReferenceIndex", contains = "RiskFactor",
-            fields = list( # riskFactorID =  "character"  In RiskFactor parent
-                           marketObjectCode = "character",
+            fields = list( marketObjectCode = "character",
                            base  = "numeric",
                            data =  "timeSeries"
             ))
@@ -80,6 +80,24 @@ setMethod(f = "Index", signature =
             rfx$data  <- ts1
             return(rfx)
           })
+
+# ************************************************************
+# defineReferenceIndex(riskFactorDataFileName)
+# ************************************************************
+#' defineReferenceIndex
+#'
+#' defineReferenceIndex(rfdfp) takes as input a risk-factor-data-filepath 
+#'   reads this data and returns an initialized list of
+#'   ReferenceIndex objects with risk factors from this csv file.
+#'   
+#' @param rfdfp   character  Pathname of csv data file for the referenceIndex
+#' @return        list       list with S4 refs to class=ReferenceIndex objects
+#' @export
+#'   
+defineReferenceIndex <- function(rfdfp){
+  riskFactors <- riskFactors_df2list(riskFile2dataframe(rfdfp))
+  return(riskFactors)
+}
 
 
 # ************************************************************
@@ -155,28 +173,6 @@ sampleReferenceIndex <- function(rxdfp, rfID, moc, base){
    rfx <- Index(rfID,moc, base,,rxddf$Date,rxddf$Rate)
    return(rfx)
 }
-
-
-# *******************************
-# FNP inderited functions not used
-#
-# DEBUG COMMENT OUT
-#setMethod(f = "valueAt", signature = c("ReferenceIndex", "character"),
-#          definition = function(object, at, ...){
-#            datums <- sort(as.Date(unlist(rownames(object$Data))))
-#            bool_matrix <- t(sapply(at, function(x) datums <= as.Date(x)))
-#            indices <- unname(apply(bool_matrix,1,function(x) max(which(x))))
-#            return(object$Data[,"Values"][indices])
-#         })
-# END DEBUG comment out
-# FNP comment out the show function below which seems to have an issue
-# not aware of any use in FEMSdev01
-# setMethod(f = "show", signature = c("ReferenceIndex"),
-#          definition = function(object){
-#            cat(paste0("Label: ", object$label,", Base: ",object$base,"\n"))
-#            print("Time Series:")
-#            print(object$data)
-#          })
 
 
 # **********************************************

@@ -21,6 +21,14 @@ contractFile2dataframe <- function(cdfn, sep = ",") {
   return(df)
 }
 
+riskFile2dataframe <- function(fname, sep = ","){
+  # this read.csv works for csv with no dayCountConvention column. Warning
+  df = utils::read.csv(fname)
+  # convert all missing data into text null
+  df[is.na(df)] <- "NULL"
+  return(df)
+}
+
 # ************************************
 # contracts_df2list(contracts_df)
 #   build list of contracts from df
@@ -45,6 +53,31 @@ contracts_df2list<- function(contracts_df){
     outlist <- append (outlist, datarow2Contract(terms_df,legs_df,irow) )
   }
   return (outlist)
+}
+
+# ************************************
+# riskFactors_df2list(riskFactors_df)
+#   input: dataframe riskFactor data,
+#   returns list of riskFactor objects
+#   convert date, value pairs in risk Factor row
+#   all riskFactors are referenceIndex for now
+# ************************************************
+
+riskFactors_df2list <- function(riskFactors_df){
+  rfxlist <- list()
+  nhdrs <- 4        # rfType, moc, base, dataPairCount are " row headers"
+  for ( irow in 1:nrow(riskFactors_df)){
+    rfRow <- riskFactors_df[irow,]
+    tset <- as.character(rfRow[nhdrs-1+(1:rfRow$dataPairCount)*2])
+    # vector of dates
+    vset <- as.numeric(rfRow[nhdrs+(1:rfRow$dataPairCount)*2])
+    # vector of numeric values
+    rfID <- paste0("sample$",rfRow$marketObjectCode)
+    rfxlist <-append(rfxlist,
+                     Index(rfID,rfRow$marketObjectCode,rfRow$base,,
+                           tset,vset))
+  }
+  return(rfxlist)
 }
 
 # ***********************************************
@@ -77,7 +110,6 @@ datarow2Contract<- function(terms_df, legs_df,irow){
   set(object = contract, what = contractTerms)
   return(contract)
 }
-
 
 # ***********************************************
 # longName(name)

@@ -81,7 +81,6 @@ samplePortfolio <- function(cdfn) {
 }
 
 
-
 #' getContractIDs  <ptf>     Generic method definition
 #'
 #' Defines a generic method on S4 Class Portfolio. Returns a vector with the
@@ -153,9 +152,96 @@ setMethod ( f = "getContract",  signature = c("Portfolio", "character"),
             } )
 
 
+#' getPortfolioAsDataFrame <ptf>     Generic method definition
+#'
+#'   Defines a generic method on S4 Class Portfolio to transform
+#'   portfolio ptf given as input parameter to a data.frame
+#'   with reduced attributes.
+#'
+#' @param ptf   S4 reference Class=Portfolio Portfolio with a list of contracts
+#' @return      A data.frame with reduced attributes for given Portfolio
+#' 
+setGeneric(name = "getPortfolioAsDataFrame",
+           def = function(ptf) standardGeneric("getPortfolioAsDataFrame"))
 
 
+#' getPortfolioAsDataFrame(ptf)
+#'
+#'   Defines a generic method on S4 Class Portfolio to transform
+#'   portfolio ptf given as input parameter to a data.frame
+#'   with reduced attributes.
+#'   
+#'   Attributes in data.frame:
+#'    - ContractID
+#'    - ContractRole
+#'    - StatusDate
+#'    - Currency
+#'    - NotionalPrincipal
+#'    - NominalInterestRate
+#'    - SpreadRate
+#'    - ContractDealDate
+#'    - InitialExchangeDate
+#'    - MaturityDate
+#'    - MarketObjectCode
+#'
+#' @param ptf   S4 ref to class=Portfolio object with list of contracts
+#' @return      A data.frame with reduced attributes for given Portfolio
+#' @export
+#'
+setMethod ( f = "getPortfolioAsDataFrame",  signature = c("Portfolio"),
+            definition = function(ptf) {
+              1:length(ptf$contracts)
+              
+              crid <- 1:length(ptf$contracts)
+              contracts_df <-data.frame(crid)
+              
+              Contract_Field_Names <- c("contractID", "contractRole", "statusDate", "currency", "notionalPrincipal",
+                                        "nominalInterestRate", "rateSpread", "contractDealDate", "initialExchangeDate",
+                                        "maturityDate")
+              
+              for(i in 1:length(ptf$contracts)){
+                
+                for(crfield in Contract_Field_Names) {
+                  contracts_df[crfield] <- unlist(sapply(ptf$contracts,
+                                                         function(ct){ct$contractTerms[[crfield]]}))
+                }
+              }
+              contracts_df <- subset(contracts_df, select = -crid)
+              return(contracts_df)
+            } )
 
+
+#' mergePortfolios <ptf1, ptf2>     Generic method definition
+#'
+#'   Defines a generic method on S4 Class Portfolio to merge
+#'   two portfolios ptf1 and ptf2 given as input parameter into one Portfolio 
+#'   holding all the required of an institution.
+#'
+#' @param ptf1   S4 ref to class=Portfolio object with list of contracts
+#' @param ptf2   S4 ref to class=Portfolio object with list of contracts
+#' @return       S4 ref to class=Portfolio object with merged list of contracts
+#' 
+setGeneric(name = "mergePortfolios",
+           def = function(ptf1, ptf2) standardGeneric("mergePortfolios"))
+
+
+#' mergePortfolios(ptf1, ptf2)
+#'
+#'   mergePortfolios(ptf1, ptf2) takes as input two S4 Class Portfolio to merge
+#'   them into one Portfolio holding all the required of an institution.
+#'
+#' @param ptf1   S4 ref to class=Portfolio object with list of contracts
+#' @param ptf2   S4 ref to class=Portfolio object with list of contracts
+#' @return       S4 ref to class=Portfolio object with merged list of contracts
+#' @export
+#'
+setMethod ( f = "mergePortfolios",  signature = c("Portfolio", "Portfolio"),
+            definition = function(ptf1, ptf2) {
+              ptf <- Portfolio()
+              ptf$contracts <- append(ptf$contracts, ptf1$contracts)
+              ptf$contracts <- append(ptf$contracts, ptf2$contracts)
+              return(ptf)
+            } )
 
 
 

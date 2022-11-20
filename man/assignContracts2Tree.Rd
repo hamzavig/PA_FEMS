@@ -2,12 +2,12 @@
 % Please edit documentation in R/Institution.R
 \name{assignContracts2Tree}
 \alias{assignContracts2Tree}
-\title{Function of assign a given portfolio (from class Portfolio) to the respective
-leaf of the institution tree.}
+\title{assignContracts2Tree}
 \usage{
 assignContracts2Tree(institution, ptf, ...)
 }
 \description{
-Function of assign a given portfolio (from class Portfolio) to the respective
-leaf of the institution tree.
+assignContracts2Tree(institution, ptf) assigns a given Portfolio <ptf>
+to the respective leaf of the institution tree while converting the contracts
+of the given Portfolio <ptf> into a data.frame first.
 }

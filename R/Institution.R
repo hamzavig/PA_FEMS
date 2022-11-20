@@ -3,9 +3,9 @@
 # package: PA_FEMS
 # Date: 08.11.2022
 # Autor: Vigan Hamzai (hamzavig@students.zhaw.ch)
-#*******************************************************************************
+#*************************************************************
 
-################################################################################
+##############################################################
 #' 
 #' Class that contains the whole model of an enterprise or institution.
 #' 
@@ -18,9 +18,13 @@
 Institution <- R6Class("Institution",
                        inherit = Node)
 
-#################################################################################
+# ************************************************************
+# createInstitution(institutionName)
+# ************************************************************
+#' createInstitution
 #' 
-#' Function of class Institution to create the whole hierarchy of the institution.
+#' createInstitution(name) function of class Institution 
+#' creates the whole hierarchy of the institution with name <name>.
 #' 
 #' @export
 #' @rdname createInstitution
@@ -67,16 +71,22 @@ createInstitution <- function(name, ...) {
   return(institution)
 }
 
-#################################################################################
+# ************************************************************
+# assignContracts2Tree(institution, ptf)
+# ************************************************************
+#' assignContracts2Tree
 #' 
-#' Function of assign a given portfolio (from class Portfolio) to the respective
-#' leaf of the institution tree.
+#' assignContracts2Tree(institution, ptf) assigns a given Portfolio <ptf>
+#' to the respective leaf of the institution tree while converting the contracts
+#' of the given Portfolio <ptf> into a data.frame first.
 #' 
-#' @include utils.R
+#' @include Portfolio.R
 #' @export
 #' @rdname assignContracts2Tree
+
 assignContracts2Tree <- function(institution, ptf, ...) {
   
+  contracts_df <- getPortfolioAsDataFrame(ptf)
   
   return(institution)
 }

@@ -2,10 +2,11 @@
 % Please edit documentation in R/Institution.R
 \name{createInstitution}
 \alias{createInstitution}
-\title{Function of class Institution to create the whole hierarchy of the institution.}
+\title{createInstitution}
 \usage{
 createInstitution(name, ...)
 }
 \description{
-Function of class Institution to create the whole hierarchy of the institution.
+createInstitution(name) function of class Institution 
+creates the whole hierarchy of the institution with name <name>.
 }

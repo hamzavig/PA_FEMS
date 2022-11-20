@@ -2,7 +2,6 @@ devtools::install_github("hamzavig/PA_FEMS")
 library(PAFEMS)
 
 bank <- createInstitution("Bank")
-bank
 
 annPortfolio <- "src/data/bankA/ann_ptf.csv"
 pamPortfolio <- "src/data/bankA/pam_ptf.csv"
@@ -20,3 +19,4 @@ c1
 
 evs <- generateEventSeries(c1,riskFactors,serverURL)
 evs$events_df
+cashflowPlot(evs)

@@ -135,26 +135,3 @@ longName <- function(name) {
   }
   return(out)
 }
-
-
-# ***********************************************
-# unifyPortfolio(ptf1, ptf2)
-#    merge two portfolios
-# ************************************************
-
-# would make maybe more sense to export function to Portfolio.R as it operates with portfolios
-mergePortfolio <- function(ptf1, ptf2) {
-  ptf <- do.call(c, list(ptf1, ptf2))
-  return(ptf)
-}
-
-# ***********************************************
-# ptfList2df(ptf)
-#    merge two portfolios
-# ************************************************
-
-# would make maybe more sense to export function to Portfolio.R as it operates with portfolios
-ptfList2df <- function(ptf) {
-  df <- data.frame()
-  return(df)
-}

@@ -190,7 +190,6 @@ setGeneric(name = "getPortfolioAsDataFrame",
 #'
 setMethod ( f = "getPortfolioAsDataFrame",  signature = c("Portfolio"),
             definition = function(ptf) {
-              1:length(ptf$contracts)
               
               crid <- 1:length(ptf$contracts)
               contracts_df <-data.frame(crid)

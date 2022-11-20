@@ -81,6 +81,7 @@ createInstitution <- function(name, ...) {
 #' of the given Portfolio <ptf> into a data.frame first.
 #' 
 #' @include Portfolio.R
+#' @include ContractType.R
 #' @export
 #' @rdname assignContracts2Tree
 
@@ -102,21 +103,63 @@ assignContracts2Tree <- function(institution, ptf, ...) {
                    "OER" = institution$Operations$Expenses$Rent,
                    "OEO" = institution$Operations$Expenses$Other
                    )
-  
-  contracts_df <- getPortfolioAsDataFrame(ptf)
-  
-  for(i in 1:nrow(contracts_df)){
+
+  for(i in 1:length(ptf$contracts)){
     
-    ct_leaf_key <- substr(contracts_df[i,"contractID"],1,3)
+    contractID <- getCIDfromContract(ptf$contracts[[i]])
+    ct_leaf_key <- substr(contractID,1,3)
     leaf <- tree_dict[ct_leaf_key]
     
     stopifnot(leaf[[ct_leaf_key]]$isLeaf)
-    leaf[[ct_leaf_key]]$contracts <- c(leaf[[ct_leaf_key]]$contracts, contracts_df[i,])
+    leaf[[ct_leaf_key]]$contracts <- c(leaf[[ct_leaf_key]]$contracts, ptf$contracts[[i]])
   }
 
   return(institution)
 }
 
 
+# ************************************************************
+# getLeafsAsDataFrames(institution)
+# ************************************************************
+#' getLeafsAsDataFrames
+#' 
+#' getLeafsAsDataFrames(institution) converts each leaf and it's contracts
+#' to a data.frame and returns a list of data.frames.
+#' 
+#' @include Portfolio.R
+#' @include ContractType.R
+#' @export
+#' @rdname getLeafsAsDataFrames
 
-
+getLeafsAsDataFrames <- function(institution, ...) {
+  
+  leaf_paths <- c("Assets$ShortTerm$LiquidAssets",
+                  "Assets$LongTerm$Loans",
+                  "Assets$LongTerm$Mortgages",
+                  "Assets$FixedAssets",
+                  "Liabilities$ShortTerm$Deposits",
+                  "Liabilities$LongTerm$Loans",
+                  "Liabilities$Equity",
+                  "Operations$Revenues$Interests",
+                  "Operations$Revenues$Commissions",
+                  "Operations$Revenues$Rent",
+                  "Operations$Revenues$Other",
+                  "Operations$Expenses$Interests",
+                  "Operations$Expenses$Salaries",
+                  "Operations$Expenses$Rent",
+                  "Operations$Expenses$Other"
+  )
+  
+  leaf_dfs <- list()
+  
+  for(i in 1:length(institution$leaves)){
+    
+    leaf_ptf <- Portfolio()
+    leaf_ptf$contracts <- bank$leaves[[i]]$contracts
+    leaf_df <- getPortfolioAsDataFrame(leaf_ptf)
+    leaf_df$leaf <- c(rep(leaf_paths[i], nrow(leaf_df)))
+    leaf_dfs[[i]] <- leaf_df
+  }
+  
+  return(leaf_dfs)
+}

@@ -28,7 +28,7 @@ setRefClass("EventSeries",
             )
 )
 # *********************
-#  constructors:  EventSeries() : (), (<contract_list>, <rf_list>, <serverURL> )
+#  constructors:  EventSeries() : (), (<contract>, <rf_list>, <serverURL> )
 setGeneric(name = "EventSeries",
            def = function(contract, riskFactors, serverURL){
              standardGeneric("EventSeries")
@@ -41,8 +41,11 @@ setMethod(f = "EventSeries", signature = c(),
 
 setMethod(f = "EventSeries", signature = c("ContractType", "list", "character"),
           definition = function(contract, riskFactors, serverURL){
-
-            contractDefs <- preJcontract(contract)
+            # cast contract as list of list
+            contracts <- list(contract)
+            
+            # prepare list in necessary structure to pass to JSON generator
+            contractDefs <- lapply(contracts,preJcontract)
             riskFactors <-  preJSONrfxs(riskFactors)
             fin_list <- list(contracts = contractDefs,
                              riskFactors = riskFactors)

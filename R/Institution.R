@@ -154,11 +154,16 @@ getLeafsAsDataFrames <- function(institution, ...) {
   
   for(i in 1:length(institution$leaves)){
     
-    leaf_ptf <- Portfolio()
-    leaf_ptf$contracts <- bank$leaves[[i]]$contracts
-    leaf_df <- getPortfolioAsDataFrame(leaf_ptf)
-    leaf_df$leaf <- c(rep(leaf_paths[i], nrow(leaf_df)))
-    leaf_dfs[[i]] <- leaf_df
+    if(!is.null(bank$leaves[[i]]$contracts)){
+      leaf_ptf <- Portfolio()
+      leaf_ptf$contracts <- bank$leaves[[i]]$contracts
+      leaf_df <- getPortfolioAsDataFrame(leaf_ptf)
+    }else{
+      leaf_df <- data.frame()
+    }
+    
+    leaf_dfs[[i]] <- list(leaf = leaf_paths[i],
+                          contracts = leaf_df)
   }
   
   return(leaf_dfs)

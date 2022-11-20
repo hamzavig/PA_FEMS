@@ -196,7 +196,7 @@ setMethod ( f = "getPortfolioAsDataFrame",  signature = c("Portfolio"),
               contracts_df <-data.frame(crid)
               
               Contract_Field_Names <- c("contractID", "contractRole", "statusDate", "currency", "notionalPrincipal",
-                                        "nominalInterestRate", "rateSpread", "contractDealDate", "initialExchangeDate",
+                                        "nominalInterestRate", "contractDealDate", "initialExchangeDate",
                                         "maturityDate")
               
               for(i in 1:length(ptf$contracts)){

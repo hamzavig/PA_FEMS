@@ -86,8 +86,36 @@ createInstitution <- function(name, ...) {
 
 assignContracts2Tree <- function(institution, ptf, ...) {
   
+  tree_dict <-   c("ACT" = "Assets$Current",
+                   "ASL" = "Assets$ShortTerm$LiquidAssets",
+                   "ALL" = "Assets$LongTerm$Loans",
+                   "ALM" = "Assets$LongTerm$Mortgages",
+                   "AFA" = "Assets$FixedAssets",
+                   "LSD" = "Liabilities$ShortTerm$Deposits",
+                   "LLL" = "Liabilities$LongTerm$Loans",
+                   "LEQ" = "Liabilities$Equity",
+                   "ORI" = "Operations$Revenues$Interests",
+                   "ORC" = "Operations$Revenues$Commissions",
+                   "ORR" = "Operations$Revenues$Rent",
+                   "ORO" = "Operations$Revenues$Other",
+                   "OEI" = "Operations$Expenses$Interests",
+                   "OES" = "Operations$Expenses$Salaries",
+                   "OER" = "Operations$Expenses$Rent",
+                   "OEO" = "Operations$Expenses$Other"
+                   )
+  
   contracts_df <- getPortfolioAsDataFrame(ptf)
   
+  for(i in 1:nrow(contracts_df)){
+    
+    ct_leaf_key <- substr(contracts_df[i,"contractID"],1,3)
+    leaf <- FindNode(institution, tree_dict[ct_leaf_key])
+    
+    stopifnot(leaf$isLeaf)
+    
+    leaf$contracts <- c(leaf$contracts, contracts_df[i,])
+  }
+
   return(institution)
 }
 

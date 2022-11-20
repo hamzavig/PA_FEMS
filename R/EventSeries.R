@@ -39,10 +39,10 @@ setMethod(f = "EventSeries", signature = c(),
             return(new("EventSeries"))
           })
 
-setMethod(f = "EventSeries", signature = c("list", "list", "character"),
+setMethod(f = "EventSeries", signature = c("ContractType", "list", "character"),
           definition = function(contract, riskFactors, serverURL){
 
-            contractDefs <- lapply(contract,preJcontract)
+            contractDefs <- preJcontract(contract)
             riskFactors <-  preJSONrfxs(riskFactors)
             fin_list <- list(contracts = contractDefs,
                              riskFactors = riskFactors)
@@ -75,9 +75,9 @@ setMethod(f = "EventSeries", signature = c("list", "list", "character"),
             evs_list <- cshfl_rslt1$events
             # build the output EventSeries object
             evs <- EventSeries()
-            evs$contractID <- contract[[1]]$contractTerms$contractID
-            evs$contractType <- contract[[1]]$contractTerms$contractType
-            evs$statusDate <-  contract[[1]]$contractTerms$statusDate
+            evs$contractID <- contract$contractTerms$contractID
+            evs$contractType <- contract$contractTerms$contractType
+            evs$statusDate <-  contract$contractTerms$statusDate
             evs$riskFactors <- riskFactors
 
             # construct the 7 columns with event list data (no long loops please)
@@ -135,7 +135,7 @@ setGeneric(name = "generateEventSeries",
 #' @return              S4 ref     class=EventSeries
 #' @export
 #'
-setMethod(f = "generateEventSeries", signature = c("list", "list", "character"),
+setMethod(f = "generateEventSeries", signature = c("ContractType", "list", "character"),
           definition = function(contract, riskFactors, serverURL){
               evs <- EventSeries(contract,riskFactors,serverURL)
               return(evs)

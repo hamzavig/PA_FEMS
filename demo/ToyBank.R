@@ -15,6 +15,10 @@ ptf <- mergePortfolios(ann_ptf, pam_ptf)
 
 serverURL <- "https://demo.actusfrf.org:8080/"
 
+assignContracts2Tree(bank, ptf)
+
 c1 <- getContract(ptf, "LSD0002")
 
 evs <- generateEventSeries(c1,riskFactors,serverURL)
+
+getContractIDs(ptf)

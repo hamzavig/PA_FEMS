@@ -86,22 +86,21 @@ createInstitution <- function(name, ...) {
 
 assignContracts2Tree <- function(institution, ptf, ...) {
   
-  tree_dict <-   c("ACT" = "Assets$Current",
-                   "ASL" = "Assets$ShortTerm$LiquidAssets",
-                   "ALL" = "Assets$LongTerm$Loans",
-                   "ALM" = "Assets$LongTerm$Mortgages",
-                   "AFA" = "Assets$FixedAssets",
-                   "LSD" = "Liabilities$ShortTerm$Deposits",
-                   "LLL" = "Liabilities$LongTerm$Loans",
-                   "LEQ" = "Liabilities$Equity",
-                   "ORI" = "Operations$Revenues$Interests",
-                   "ORC" = "Operations$Revenues$Commissions",
-                   "ORR" = "Operations$Revenues$Rent",
-                   "ORO" = "Operations$Revenues$Other",
-                   "OEI" = "Operations$Expenses$Interests",
-                   "OES" = "Operations$Expenses$Salaries",
-                   "OER" = "Operations$Expenses$Rent",
-                   "OEO" = "Operations$Expenses$Other"
+  tree_dict <-   c("ASL" = institution$Assets$ShortTerm$LiquidAssets,
+                   "ALL" = institution$Assets$LongTerm$Loans,
+                   "ALM" = institution$Assets$LongTerm$Mortgages,
+                   "AFA" = institution$Assets$FixedAssets,
+                   "LSD" = institution$Liabilities$ShortTerm$Deposits,
+                   "LLL" = institution$Liabilities$LongTerm$Loans,
+                   "LEQ" = institution$Liabilities$Equity,
+                   "ORI" = institution$Operations$Revenues$Interests,
+                   "ORC" = institution$Operations$Revenues$Commissions,
+                   "ORR" = institution$Operations$Revenues$Rent,
+                   "ORO" = institution$Operations$Revenues$Other,
+                   "OEI" = institution$Operations$Expenses$Interests,
+                   "OES" = institution$Operations$Expenses$Salaries,
+                   "OER" = institution$Operations$Expenses$Rent,
+                   "OEO" = institution$Operations$Expenses$Other
                    )
   
   contracts_df <- getPortfolioAsDataFrame(ptf)
@@ -109,10 +108,9 @@ assignContracts2Tree <- function(institution, ptf, ...) {
   for(i in 1:nrow(contracts_df)){
     
     ct_leaf_key <- substr(contracts_df[i,"contractID"],1,3)
-    leaf <- FindNode(institution, tree_dict[ct_leaf_key])
+    leaf <- tree_dict[ct_leaf_key]
     
     stopifnot(leaf$isLeaf)
-    
     leaf$contracts <- c(leaf$contracts, contracts_df[i,])
   }
 

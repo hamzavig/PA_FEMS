@@ -4,9 +4,7 @@ library(devtools)
 library(DT)
 library(data.table)
 library(rlist)
-
-PAFEMS_available <- require("PAFEMS")
-if(!PAFEMS_available) devtools::install_github("hamzavig/PA_FEMS") 
+devtools::install_github("hamzavig/PA_FEMS") 
 library("PAFEMS")
 
 # Define UI for application that draws a histogram

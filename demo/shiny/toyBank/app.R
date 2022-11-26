@@ -17,8 +17,8 @@ ui <- fluidPage(
         style="float:right; padding-right:25px"),
     img(src="soe.png",height = 138, width = 239),
 
-    navbarPage("Risk Analysis and Risk Reporting",
-               tabPanel("Institution", fluid = TRUE,
+    navbarPage("Risk Analysis and Risk Reporting", fluid = TRUE,
+               tabPanel("Institution1", fluid = TRUE,
                         sidebarLayout(
                             sidebarPanel(
                                 width = 3,
@@ -41,37 +41,36 @@ ui <- fluidPage(
                                 tabsetPanel(
                                     tabPanel("Overview",
                                              mainPanel(
-                                                 width = 9,
-                                                 h3(textOutput("tableTitle_1")),
-                                                 DT::dataTableOutput("table_1"),
-                                                 h3(textOutput("tableTitle_2")),
-                                                 DT::dataTableOutput("table_2"),
-                                                 h3(textOutput("tableTitle_3")),
-                                                 DT::dataTableOutput("table_3"),
-                                                 h3(textOutput("tableTitle_4")),
-                                                 DT::dataTableOutput("table_4"),
-                                                 h3(textOutput("tableTitle_5")),
-                                                 DT::dataTableOutput("table_5"),
-                                                 h3(textOutput("tableTitle_6")),
-                                                 DT::dataTableOutput("table_6"),
-                                                 h3(textOutput("tableTitle_7")),
-                                                 DT::dataTableOutput("table_7"),
-                                                 h3(textOutput("tableTitle_8")),
-                                                 DT::dataTableOutput("table_8"),
-                                                 h3(textOutput("tableTitle_9")),
-                                                 DT::dataTableOutput("table_9"),
-                                                 h3(textOutput("tableTitle_10")),
-                                                 DT::dataTableOutput("table_10"),
-                                                 h3(textOutput("tableTitle_11")),
-                                                 DT::dataTableOutput("table_11"),
-                                                 h3(textOutput("tableTitle_12")),
-                                                 DT::dataTableOutput("table_12"),
-                                                 h3(textOutput("tableTitle_13")),
-                                                 DT::dataTableOutput("table_13"),
-                                                 h3(textOutput("tableTitle_14")),
-                                                 DT::dataTableOutput("table_14"),
-                                                 h3(textOutput("tableTitle_15")),
-                                                 DT::dataTableOutput("table_15")
+                                                 h4(textOutput('tableTitle_1')),
+                                                 div(DTOutput('table_1'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_2')),
+                                                 div(DTOutput('table_2'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_3')),
+                                                 div(DTOutput('table_3'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_4')),
+                                                 div(DTOutput('table_4'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_5')),
+                                                 div(DTOutput('table_5'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_6')),
+                                                 div(DTOutput('table_6'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_7')),
+                                                 div(DTOutput('table_7'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_8')),
+                                                 div(DTOutput('table_8'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_9')),
+                                                 div(DTOutput('table_9'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_10')),
+                                                 div(DTOutput('table_10'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_11')),
+                                                 div(DTOutput('table_11'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_12')),
+                                                 div(DTOutput('table_12'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_13')),
+                                                 div(DTOutput('table_13'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_14')),
+                                                 div(DTOutput('table_14'), style = "font-size: 75%;margin:10 0 10 0;"),
+                                                 h4(textOutput('tableTitle_15')),
+                                                 div(DTOutput('table_15'), style = "font-size: 75%;margin:10 0 10 0;")
                                              )),
                                     tabPanel("Financial Statements"),
                                     tabPanel("Risk Reporting")
@@ -97,50 +96,17 @@ server <- function(input, output, session) {
         inst <- assignContracts2Tree(inst, ptf)
         
         leaf_dfs <- getLeafsAsDataFrames(inst)
+
         
-        output$tableTitle_1 <- renderText({leaf_dfs[[1]]$leaf})
-        output$table_1 <- DT::renderDataTable({leaf_dfs[[1]]$contracts})
-        output$tableTitle_2 <- renderText({leaf_dfs[[2]]$leaf})
-        output$table_2 <- DT::renderDataTable({leaf_dfs[[2]]$contracts})
-        output$tableTitle_3 <- renderText({leaf_dfs[[3]]$leaf})
-        output$table_3 <- DT::renderDataTable({leaf_dfs[[3]]$contracts})
-        output$tableTitle_4 <- renderText({leaf_dfs[[4]]$leaf})
-        output$table_4 <- DT::renderDataTable({leaf_dfs[[4]]$contracts})
-        output$tableTitle_5 <- renderText({leaf_dfs[[5]]$leaf})
-        output$table_5 <- DT::renderDataTable({leaf_dfs[[5]]$contracts})
-        output$tableTitle_6 <- renderText({leaf_dfs[[6]]$leaf})
-        output$table_6 <- DT::renderDataTable({leaf_dfs[[6]]$contracts})
-        output$tableTitle_7 <- renderText({leaf_dfs[[7]]$leaf})
-        output$table_7 <- DT::renderDataTable({leaf_dfs[[7]]$contracts})
-        output$tableTitle_8 <- renderText({leaf_dfs[[8]]$leaf})
-        output$table_8 <- DT::renderDataTable({leaf_dfs[[8]]$contracts})
-        output$tableTitle_9 <- renderText({leaf_dfs[[9]]$leaf})
-        output$table_9 <- DT::renderDataTable({leaf_dfs[[9]]$contracts})
-        output$tableTitle_10 <- renderText({leaf_dfs[[10]]$leaf})
-        output$table_10 <- DT::renderDataTable({leaf_dfs[[10]]$contracts})
-        output$tableTitle_11 <- renderText({leaf_dfs[[11]]$leaf})
-        output$table_11 <- DT::renderDataTable({leaf_dfs[[11]]$contracts})
-        output$tableTitle_12 <- renderText({leaf_dfs[[12]]$leaf})
-        output$table_12 <- DT::renderDataTable({leaf_dfs[[12]]$contracts})
-        output$tableTitle_13 <- renderText({leaf_dfs[[13]]$leaf})
-        output$table_13 <- DT::renderDataTable({leaf_dfs[[13]]$contracts})
-        output$tableTitle_14 <- renderText({leaf_dfs[[14]]$leaf})
-        output$table_14 <- DT::renderDataTable({leaf_dfs[[14]]$contracts})
-        output$tableTitle_15 <- renderText({leaf_dfs[[15]]$leaf})
-        output$table_15 <- DT::renderDataTable({leaf_dfs[[15]]$contracts})
+        lapply(1:length(leaf_dfs), function(i) {
+            output[[paste0('tableTitle_', i)]] <- renderText({leaf_dfs[[i]]$leaf})
+        })
+        
+        lapply(1:length(leaf_dfs), function(i) {
+            output[[paste0('table_', i)]] <- DT::renderDataTable({leaf_dfs[[i]]$contracts})
+        })
     })
-    
-    # for(i in 1:length(leaf_dfs)){
-    #     
-    #     assign(paste0("output$tableTitle_", i), renderText({
-    #         leaf_dfs[[i]]$leaf
-    #     })
-    #     )
-    #     assign(paste0("output$table_", i), DT::renderDataTable({
-    #         leaf_dfs[[i]]$contracts
-    #     })
-    #     )
-    # }
+
 }
 
 # Run the application 

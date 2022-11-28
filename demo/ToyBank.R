@@ -38,11 +38,11 @@ cashflowPlot(evs)
 c1 <- getContract(ops_ptf, "AFA0004")
 c1
 InvEvents <- EventSeries(c1, "2022-01-01")
+InvEvents
 
-
-
-
-
-
+c2 <- getContract(ops_ptf, "ORC0001")
+c2Evs <- EventSeries(c2, "2022-01-01")
+c2Evs
+cashflowPlot(c2Evs)
 
 

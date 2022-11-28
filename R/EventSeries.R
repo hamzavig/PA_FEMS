@@ -45,7 +45,7 @@ setMethod(f = "EventSeries", signature = c(),
 setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
           definition = function(object, processor, riskFactors){
             # cast contract as list of list
-            contracts <- list(contract)
+            contracts <- list(object)
             
             # prepare list in necessary structure to pass to JSON generator
             contractDefs <- lapply(contracts,preJcontract)
@@ -81,9 +81,9 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
             evs_list <- cshfl_rslt1$events
             # build the output EventSeries object
             evs <- EventSeries()
-            evs$contractID <- contract$contractTerms$contractID
-            evs$contractType <- contract$contractTerms$contractType
-            evs$statusDate <-  contract$contractTerms$statusDate
+            evs$contractID <- object$contractTerms$contractID
+            evs$contractType <- object$contractTerms$contractType
+            evs$statusDate <-  object$contractTerms$statusDate
             evs$riskFactors <- riskFactors
 
             # construct the 7 columns with event list data (no long loops please)

@@ -68,15 +68,24 @@ setMethod(f = "Portfolio", signature = "ContractType",
 #'   reads this data and returns an initialized
 #'   Portfolio object with contracts and from this csv file.
 #' @param cdfn      character string -  a contract-data-filepath
+#' @param type      character string - defines if operations or contracts
 #'
 #' @return   Portfolio s4 object initialized with the data from the input files
 #' @export
 #' @include utils.R
 #' @importFrom utils read.csv
 #'
-samplePortfolio <- function(cdfn) {
+samplePortfolio <- function(cdfn, type) {
   ptf <- Portfolio()  # create portfolio object no attributes set
-  ptf$contracts <- contracts_df2list(contractFile2dataframe(cdfn))
+  
+  if(type == "contracts"){
+    ptf$contracts <- contracts_df2list(contractFile2dataframe(cdfn))
+  }else if (type == "operations"){
+    ptf$contracts <- operations_df2list(operationFile2dataframe(cdfn))
+  }else{
+    stop("Portfolio: No known type")
+  }
+  
   return(ptf)
 }
 
@@ -194,11 +203,15 @@ setMethod ( f = "getPortfolioAsDataFrame",  signature = c("Portfolio"),
               crid <- 1:length(ptf$contracts)
               contracts_df <-data.frame(crid)
               
-              Contract_Field_Names <- c("contractID", "contractRole", "statusDate", "currency", "notionalPrincipal",
-                                        "nominalInterestRate", "contractDealDate", "initialExchangeDate",
-                                        "maturityDate")
-              
               for(i in 1:length(ptf$contracts)){
+                
+                if(!ptf$contracts[[i]]$contractTerms$ContractType %in% c("Investments", "OperationalCF")){
+                  Contract_Field_Names <- c("contractID", "contractRole", "statusDate", "currency", "notionalPrincipal",
+                                            "nominalInterestRate", "contractDealDate", "initialExchangeDate","maturityDate")
+                }else{
+                  
+                  Contract_Field_Names <- c("contractID", "contractType", "currency", "initialExchangeDate","maturityDate", "notionalPrincipal")
+                }
                 
                 for(crfield in Contract_Field_Names) {
                   contracts_df[crfield] <- unlist(sapply(ptf$contracts,

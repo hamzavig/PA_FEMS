@@ -205,7 +205,7 @@ setMethod ( f = "getPortfolioAsDataFrame",  signature = c("Portfolio"),
               
               for(i in 1:length(ptf$contracts)){
                 
-                if(!ptf$contracts[[i]]$contractTerms$ContractType %in% c("Investments", "OperationalCF")){
+                if(!ptf$contracts[[i]]$contractTerms$contractType %in% c("Investments", "OperationalCF")){
                   Contract_Field_Names <- c("contractID", "contractRole", "statusDate", "currency", "notionalPrincipal",
                                             "nominalInterestRate", "contractDealDate", "initialExchangeDate","maturityDate")
                 }else{

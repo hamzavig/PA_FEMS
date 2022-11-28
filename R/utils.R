@@ -168,7 +168,7 @@ datarow2Contract<- function(terms_df, legs_df,irow){
 
 
 datarow2Operation <- function(terms_df, pattern, args, irow){
-  contractTypeName <- terms_df$ContractType[irow]
+  contractTypeName <- terms_df$contractType[irow]
   operation <- FEMSCT(contractTypeName)
   operation$pattern <- pattern
   operation$args <- args

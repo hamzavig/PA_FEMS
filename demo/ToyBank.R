@@ -35,6 +35,14 @@ evs <- generateEventSeries(c1,serverURL, riskFactors)
 evs
 cashflowPlot(evs)
 
+c1 <- getContract(ops_ptf, "AFA0004")
+c1
+InvEvents <- EventSeries(c1, "2022-01-01")
+
+
+
+
+
 
 
 

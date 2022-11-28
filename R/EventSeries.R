@@ -13,6 +13,11 @@
 #' @include RiskFactor.R
 #' @include Portfolio.R
 #' @include ContractType.R
+#' @include FEMSContract.R
+#' @include Investments.R
+#' @include OperationalCF.R
+#' @include AnalysisDate.R
+#' @include Events.R
 #' @include utils.R
 #' @export EventSeries
 #' @exportClass EventSeries
@@ -24,13 +29,11 @@ setRefClass("EventSeries",
               contractID = "character",
               contractType = "character",  # short form e.g. 'PAM'
               statusDate = "character",    # text yyyy-mm-dd
-              riskFactors = "list"
+              riskFactors = "list")
             )
-)
-# *********************
-#  constructors:  EventSeries() : (), (<contract>, <rf_list>, <serverURL> )
+
 setGeneric(name = "EventSeries",
-           def = function(contract, riskFactors, serverURL){
+           def = function(object, processor, riskFactors){
              standardGeneric("EventSeries")
            })
 
@@ -39,8 +42,8 @@ setMethod(f = "EventSeries", signature = c(),
             return(new("EventSeries"))
           })
 
-setMethod(f = "EventSeries", signature = c("ContractType", "list", "character"),
-          definition = function(contract, riskFactors, serverURL){
+setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
+          definition = function(object, processor, riskFactors){
             # cast contract as list of list
             contracts <- list(contract)
             
@@ -102,6 +105,199 @@ setMethod(f = "EventSeries", signature = c("ContractType", "list", "character"),
             return(evs)
           })
 
+
+# EventSeries methods for Operations contract
+
+setMethod(f = "EventSeries", signature = c("FEMSContract", "character", "missing"),
+          definition = function(object, processor, riskFactors){
+            EventSeries(object,timeDate(substring(ad,1,10)))
+          })
+
+setMethod(f = "EventSeries", signature = c("FEMSContract", "AD0", "missing"),
+          definition = function(object, processor, riskFactors){
+            EventSeries(object,as.character(ad))
+          })
+
+setMethod(f = "EventSeries", signature = c("OperationalCF", "timeDate", "missing"),
+          definition = function(object, processor, riskFactors){
+            
+            # create event series object
+            out <- new("EventSeries")
+            out$contractID <- object$contractTerms$contractID
+            out$contractType <- object$contractTerms$ContractType
+            
+            # AD0 event
+            events <- data.frame(Date=as.character(ad),
+                                 Value=0.0,
+                                 Type="AD0",
+                                 Level="P",
+                                 Currency=object$contractTerms$currency,
+                                 Time=0.0,
+                                 NominalValue=0.0,
+                                 NominalRate=0.0,
+                                 NominalAccrued=0.0)
+            
+            ops <- do.call(object$pattern, object$args)
+
+            if(!is.null(ops)) {
+              vals <- as.numeric(series(ops))
+              events <- rbind(events, data.frame(Date=as.character(time(ops)),
+                                                 Value=c(vals[1],vals[2:length(vals)]),
+                                                 Type="OPS", 
+                                                 Level="P", 
+                                                 Currency=object$contractTerms$currency,
+                                                 Time=yearFraction(as.character(ad), as.character(time(ops)),convention = "30E360"),
+                                                 NominalValue=0.0, 
+                                                 NominalRate=0.0, 
+                                                 NominalAccrued=0.0)
+                              )
+            }
+
+            # convert to (sorted) timeSeries
+            # Note: AD0 event needs to be after all other events of the same instant
+            tms <- paste0(events$Date,"T00:00:00")
+            tms[events$Type=="AD0"] <- paste0(substring(tms[events$Type=="AD0"],1,10),"T23:59:59")
+            events <- events[order(tms),]
+            evs.ts <- timeSeries(events,timeDate(events$Date))
+            
+            # compute nominal value
+            evs.ts$NominalValue <- cumsum(evs.ts$NominalValue)
+            
+            # exclude pre-ad0 events
+            # Note, its a sorted series so just look for AD0-event index
+            evs.ts <- tail(evs.ts,nrow(evs.ts)-(which(evs.ts$Type=="AD0")-1))
+            
+            # convert back to data.frame
+            events <- as.data.frame(series(evs.ts))
+            events$Value <- as.numeric(events$Value)
+            events$Time <- as.numeric(events$Time)
+            events$NominalValue <- as.numeric(events$NominalValue)
+            events$NominalRate <- as.numeric(events$NominalRate)
+            events$NominalAccrued <- as.numeric(events$NominalAccrued)
+            rownames(events) <- NULL
+            
+            # attach events to series
+            out$events_df  <-  events
+            
+            return(out)
+          })
+
+
+setMethod(f = "EventSeries", signature = c("Investments", "timeDate", "missing"),
+          definition = function(object, processor, riskFactors){
+            
+            # create event series object
+            out <- new("EventSeries")
+            out$contractID <- object$contractTerms$contractID
+            out$contractType <- object$contractTerms$ContractType
+            
+            # AD0 event
+            events <- data.frame(Date=as.character(ad),
+                                 Value=0.0,
+                                 Type="AD0",
+                                 Level="P",
+                                 Currency=object$contractTerns$currency,
+                                 Time=0.0,
+                                 NominalValue=0.0,
+                                 NominalRate=0.0,
+                                 NominalAccrued=0.0)
+            
+            ops <- do.call(object$pattern, object$args)
+
+            if(!is.null(ops)) {
+              if (length(ops)<2) stop("An investment pattern needs to have length>1!")
+              vals <- c(ops[1,],diff(ops)[-1,])
+              events <- rbind(events, data.frame(Date=as.character(time(ops)),
+                                                 Value=c(-vals[1],vals[2:length(vals)]),
+                                                 Type=c("IED",rep("DPR",length(ops)-1)),
+                                                 Level="P", 
+                                                 Currency=object$contractTerns$currency,
+                                                 Time=yearFraction(as.character(ad), as.character(time(ops)),convention = "30E360"),
+                                                 NominalValue=vals,
+                                                 NominalRate=0.0,
+                                                 NominalAccrued=0.0
+                                                 )
+                              )
+            }
+            # If there is a salvage value (write-off no till 0)
+            # we add a last event of type MD and the remaining value
+            if ( tail(ops,1) > 0 ) {
+              tmp <- tail(ops,1)
+              vals <- as.numeric(series(tmp))
+              events <- rbind(events, 
+                              data.frame(Date=as.character(time(tmp)),
+                                         Value=vals,
+                                         Type="MD",
+                                         Level="P",
+                                         Currency=object$Currency,
+                                         Time=yearFraction(as.character(ad), as.character(time(tmp)), convention = "30E360"),
+                                         NominalValue=-vals,
+                                         NominalRate=0.0,
+                                         NominalAccrued=0.0
+                                         )
+                              )
+              object$contractTerms$maturityDate <- events[events$Type == "MD","Date"]
+            }else{
+              min_idx <- min(which(events$NominalValue==0))
+              object$contractTerms$maturityDate <- events[min_idx, "Date"]
+            }
+            
+            # convert to (sorted) timeSeries
+            # Note: AD0 event needs to be after all other events of the same instant
+            tms <- paste0(events$Date,"T00:00:00")
+            tms[events$Type=="AD0"] <- paste0(substring(tms[events$Type=="AD0"],1,10),"T23:59:59")
+            events <- events[order(tms),]
+            evs.ts <- timeSeries(events,timeDate(events$Date))
+            
+            # compute nominal value
+            evs.ts$NominalValue <- cumsum(evs.ts$NominalValue)
+            
+            # exclude pre-ad0 events
+            # Note, its a sorted series so just look for AD0-event index
+            evs.ts <- tail(evs.ts,nrow(evs.ts)-(which(evs.ts$Type=="AD0")-1))
+            
+            # convert back to data.frame
+            events <- as.data.frame(series(evs.ts))
+            events$Value <- as.numeric(events$Value)
+            events$Time <- as.numeric(events$Time)
+            events$NominalValue <- as.numeric(events$NominalValue)
+            events$NominalRate <- as.numeric(events$NominalRate)
+            events$NominalAccrued <- as.numeric(events$NominalAccrued)
+            rownames(events) <- NULL
+            
+            # attach events to series
+            out$events_df  <-  events
+            
+            return(out)
+          })
+
+
+
+## -----------------------------------------------------------------
+## events methods for Operations contract
+#' @export
+#' @rdname ev-methods
+setMethod(f = "events", signature = c("FEMSContract", "character", "missing"),
+          definition = function(object, processor, riskFactors){
+            return(PAFEMS:::events(object,timeDate(substring(processor,1,10))))
+          })
+
+#' @export
+#' @rdname ev-methods
+setMethod(f = "events", signature = c("FEMSContract", "AD0", "missing"),
+          definition = function(object, processor, riskFactors){
+            return(PAFEMS:::events(object, as.character(processor)))
+          })
+
+#' @export
+#' @rdname ev-methods
+setMethod(f = "events", signature = c("FEMSContract", "timeDate", "missing"),
+          definition = function(object, processor, riskFactors){
+            return(PAFEMS:::EventSeries(object,processor))
+          })
+
+
+
 #' generateEventSeries      Generic method definition
 #'
 #' Defines a generic method on S4 Class Eventseries. The instance is
@@ -113,11 +309,11 @@ setMethod(f = "EventSeries", signature = c("ContractType", "list", "character"),
 #' @return              an EventSeries with cashflow events for the contract
 #' 
 setGeneric(name = "generateEventSeries",
-           def = function(contract, riskFactors, serverURL){
+           def = function(object, processor, riskFactors){
              standardGeneric("generateEventSeries")
            })
 
-#' generateEventSeries        <contract>, <risk-factor-list>, <ACTUS-server-URL>
+#' generateEventSeries        <contract>, <ACTUS-server-URL>, <risk-factor-list>
 #'
 #' exported function to simulate a contract cashflows and create an
 #'   EventSeries using  "ContractType", "list", "character" method instance.
@@ -138,8 +334,8 @@ setGeneric(name = "generateEventSeries",
 #' @return              S4 ref     class=EventSeries
 #' @export
 #'
-setMethod(f = "generateEventSeries", signature = c("ContractType", "list", "character"),
-          definition = function(contract, riskFactors, serverURL){
-              evs <- EventSeries(contract,riskFactors,serverURL)
+setMethod(f = "generateEventSeries", signature = c("ContractType", "character", "list"),
+          definition = function(object, processor, riskFactors){
+              evs <- EventSeries(object, processor, riskFactors)
               return(evs)
           })

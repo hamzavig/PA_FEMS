@@ -23,11 +23,16 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.2
 Collate: 
+    'AnalysisDate.R'
     'ContractABC.R'
     'ContractModel.R'
     'ContractType.R'
     'Annuity.R'
     'utils.R'
+    'Events.R'
+    'FEMSContract.R'
+    'OperationalCF.R'
+    'Investments.R'
     'Portfolio.R'
     'RiskFactor.R'
     'EventSeries.R'
@@ -35,3 +40,4 @@ Collate:
     'Institution.R'
     'PrincipalAtMaturity.R'
     'ReferenceIndex.R'
+    'yearFraction.R'

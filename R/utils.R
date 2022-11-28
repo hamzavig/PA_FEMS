@@ -21,6 +21,12 @@ contractFile2dataframe <- function(cdfn, sep = ",") {
   return(df)
 }
 
+operationFile2dataframe <- function(odfn, sep = ",") {
+  df <- utils::read.csv(odfn)
+  df[is.na(df)] <- NULL
+  return(df)
+}
+
 riskFile2dataframe <- function(fname, sep = ","){
   # this read.csv works for csv with no dayCountConvention column. Warning
   df = utils::read.csv(fname)
@@ -54,6 +60,55 @@ contracts_df2list<- function(contracts_df){
   }
   return (outlist)
 }
+
+
+# ***************************************3********************
+# operations_df2list(operations_df)
+#   build list of operations from df
+#  Split df: terms, pattern, args (once)
+#  for each row: createOperations(terms, pattern, args, irow)
+# ************************************************************
+operations_df2list <- function(operations_df) {
+  nonTermCols <- c("repetition", "frequency",	"times", "inverted", "description")
+  terms_df <- operations_df[!names(operations_df) %in% nonTermCols]
+  
+  outlist <- list()
+  for(irow in 1:nrow(operations_df)){
+    
+    timeSeq <- timeSequence(from = timeDate(operations_df$initialExchangeDate[irow]),
+                            by = operations_df$frequency[irow],
+                            length = operations_df$times[irow])
+    
+    if(operations_df$contractType == "Investments"){
+      
+      pattern <- function(value, n, times){
+        timeSeries(seq(value, 0, length.out=n), times)
+      }
+      
+      args <- list(value = operations_df$notionalPrincipal[irow],
+                   n = operations_df$times[irow],
+                   times = timeSeq)
+    }else if(operations_df$contractType == "OperationalCF") {
+      
+      pattern <- function(cfs, times){
+        timeSeries(data=cfs, charvec=times)
+      }
+      
+      cfs <- rep(operations_df$notionalPrincipal[irow], operations_df$repetition[irow])
+      
+      timesIdx <- if (operations_df$inverted[irow]) -operations_df$times[irow] else -1
+      args <- list(data = cfs,
+                   times = timeSeq[timesIdx])
+      
+    }else{
+      stop("Operations: No known contract type.")
+    }
+    
+    outlist <- append(outlist, datarow2Operation(terms_df, pattern, args, irow))
+  }
+  return(outlist)
+}
+
 
 # ************************************
 # riskFactors_df2list(riskFactors_df)
@@ -109,6 +164,21 @@ datarow2Contract<- function(terms_df, legs_df,irow){
   
   set(object = contract, what = contractTerms)
   return(contract)
+}
+
+
+datarow2Operation <- function(terms_df, pattern, args, irow){
+  contractTypeName <- terms_df$ContractType[irow]
+  operation <- FEMSCT(contractTypeName)
+  operation$pattern <- pattern
+  operation$args <- args
+  
+  contractTerms <- as.list(t(terms_df[irow,]))
+  names(contractTerms) <- colnames(terms_df)
+
+  set(object = operation, what = contractTerms)
+  
+  return(operation)  
 }
 
 # ***********************************************

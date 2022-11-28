@@ -27,3 +27,13 @@ setGeneric(name = "set", useAsDefault = TRUE,
            def = function(object, what, ...){
              standardGeneric("set")
            })
+
+setGeneric(name = "get", useAsDefault = TRUE,
+           def = function(object, what, ...){
+             standardGeneric("get")
+           })
+
+setGeneric(name = "terms", useAsDefault = TRUE,
+           def = function(object){
+             standardGeneric("terms")
+           })

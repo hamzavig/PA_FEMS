@@ -150,7 +150,7 @@ server <- function(input, output, session) {
         ptf <- mergePortfolios(ann_ptf, pam_ptf)
         riskFactors <- defineReferenceIndex(input$rfs$datapath)
         c1 <- getContract(ptf, input$CID)
-        evs <- generateEventSeries(c1,riskFactors,serverURL)
+        evs <- generateEventSeries(c1,serverURL, riskFactors)
         
         #creation of the desired plot
         output$cashFlowPlot <- renderPlot({

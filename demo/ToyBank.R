@@ -15,19 +15,18 @@ pam_ptf <- samplePortfolio(pamPortfolio, "contracts")
 ptf <- mergePortfolios(ann_ptf, pam_ptf)
 
 ops_ptf <- samplePortfolio(opsPortfolio, "operations")
-
+ops_ptf
 
 serverURL <- "https://demo.actusfrf.org:8080/"
 
 bank <- assignContracts2Tree(bank, ptf)
 bank <- assignContracts2Tree(bank, ops_ptf)
 
-bank$leaves[[1]]$contracts
+bank$leaves[[4]]$contracts
 
 test <- bank$leaves[[1]]$contracts
 
 leaf_dfs <- getLeafsAsDataFrames(bank)
-
 length(leaf_dfs)
 
 c1 <- getContract(ptf, "LSD0002")

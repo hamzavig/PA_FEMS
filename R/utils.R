@@ -90,14 +90,14 @@ operations_df2list <- function(operations_df) {
                    times = timeSeq)
     }else if(operations_df$contractType[irow] == "OperationalCF") {
       
-      pattern <- function(cfs, times){
-        timeSeries(data=cfs, charvec=times)
+      pattern <- function(dat, times){
+        timeSeries(data=dat, charvec=times)
       }
       
       cfs <- rep(operations_df$notionalPrincipal[irow], operations_df$repetition[irow])
       
       timesIdx <- if (operations_df$inverted[irow]) -operations_df$times[irow] else -1
-      args <- list(data = cfs,
+      args <- list(dat = cfs,
                    times = timeSeq[timesIdx])
       
     }else{

@@ -110,12 +110,12 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
 
 setMethod(f = "EventSeries", signature = c("FEMSContract", "character", "missing"),
           definition = function(object, processor, riskFactors){
-            EventSeries(object,timeDate(substring(ad,1,10)))
+            EventSeries(object,timeDate(substring(processor,1,10)))
           })
 
 setMethod(f = "EventSeries", signature = c("FEMSContract", "AD0", "missing"),
           definition = function(object, processor, riskFactors){
-            EventSeries(object,as.character(ad))
+            EventSeries(object,as.character(processor))
           })
 
 setMethod(f = "EventSeries", signature = c("OperationalCF", "timeDate", "missing"),
@@ -127,7 +127,7 @@ setMethod(f = "EventSeries", signature = c("OperationalCF", "timeDate", "missing
             out$contractType <- object$contractTerms$ContractType
             
             # AD0 event
-            events <- data.frame(Date=as.character(ad),
+            events <- data.frame(Date=as.character(processor),
                                  Value=0.0,
                                  Type="AD0",
                                  Level="P",
@@ -146,7 +146,7 @@ setMethod(f = "EventSeries", signature = c("OperationalCF", "timeDate", "missing
                                                  Type="OPS", 
                                                  Level="P", 
                                                  Currency=object$contractTerms$currency,
-                                                 Time=yearFraction(as.character(ad), as.character(time(ops)),convention = "30E360"),
+                                                 Time=yearFraction(as.character(processor), as.character(time(ops)),convention = "30E360"),
                                                  NominalValue=0.0, 
                                                  NominalRate=0.0, 
                                                  NominalAccrued=0.0)
@@ -192,7 +192,7 @@ setMethod(f = "EventSeries", signature = c("Investments", "timeDate", "missing")
             out$contractType <- object$contractTerms$ContractType
             
             # AD0 event
-            events <- data.frame(Date=as.character(ad),
+            events <- data.frame(Date=as.character(processor),
                                  Value=0.0,
                                  Type="AD0",
                                  Level="P",
@@ -212,7 +212,7 @@ setMethod(f = "EventSeries", signature = c("Investments", "timeDate", "missing")
                                                  Type=c("IED",rep("DPR",length(ops)-1)),
                                                  Level="P", 
                                                  Currency=object$contractTerns$currency,
-                                                 Time=yearFraction(as.character(ad), as.character(time(ops)),convention = "30E360"),
+                                                 Time=yearFraction(as.character(processor), as.character(time(ops)),convention = "30E360"),
                                                  NominalValue=vals,
                                                  NominalRate=0.0,
                                                  NominalAccrued=0.0
@@ -230,7 +230,7 @@ setMethod(f = "EventSeries", signature = c("Investments", "timeDate", "missing")
                                          Type="MD",
                                          Level="P",
                                          Currency=object$Currency,
-                                         Time=yearFraction(as.character(ad), as.character(time(tmp)), convention = "30E360"),
+                                         Time=yearFraction(as.character(processor), as.character(time(tmp)), convention = "30E360"),
                                          NominalValue=-vals,
                                          NominalRate=0.0,
                                          NominalAccrued=0.0

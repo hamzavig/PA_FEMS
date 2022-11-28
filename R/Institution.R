@@ -59,7 +59,7 @@ createInstitution <- function(name, ...) {
   institution$Operations$AddChild("Expenses")
   
   institution$Operations$Revenues$AddChild("Interests")
-  institution$Operations$Revenues$AddChild("Commisions")
+  institution$Operations$Revenues$AddChild("Commissions")
   institution$Operations$Revenues$AddChild("Rent")
   institution$Operations$Revenues$AddChild("Other")
   

@@ -16,9 +16,12 @@ ptf <- mergePortfolios(ann_ptf, pam_ptf)
 
 ops_ptf <- samplePortfolio(opsPortfolio, "operations")
 
+
 serverURL <- "https://demo.actusfrf.org:8080/"
 
 bank <- assignContracts2Tree(bank, ptf)
+bank <- assignContracts2Tree(bank, ops_ptf)
+
 bank$leaves[[1]]$contracts
 
 test <- bank$leaves[[1]]$contracts

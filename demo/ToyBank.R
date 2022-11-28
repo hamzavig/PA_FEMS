@@ -5,13 +5,16 @@ bank <- createInstitution("Bank")
 
 annPortfolio <- "src/data/bankA/ann_ptf.csv"
 pamPortfolio <- "src/data/bankA/pam_ptf.csv"
+opsPortfolio <- "src/data/bankA/operations.csv"
 riskFactorsFile <- "src/data/bankA/RiskFactors.csv"
 
 riskFactors <- defineReferenceIndex(riskFactorsFile)
 
-ann_ptf <- samplePortfolio(annPortfolio)
-pam_ptf <- samplePortfolio(pamPortfolio)
+ann_ptf <- samplePortfolio(annPortfolio, "contracts")
+pam_ptf <- samplePortfolio(pamPortfolio, "contracts")
 ptf <- mergePortfolios(ann_ptf, pam_ptf)
+
+ops_ptf <- samplePortfolio(opsPortfolio, "operations")
 
 serverURL <- "https://demo.actusfrf.org:8080/"
 
@@ -29,3 +32,7 @@ c1
 evs <- generateEventSeries(c1,serverURL, riskFactors)
 evs
 cashflowPlot(evs)
+
+
+
+

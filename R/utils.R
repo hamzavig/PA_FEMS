@@ -79,7 +79,7 @@ operations_df2list <- function(operations_df) {
                             by = operations_df$frequency[irow],
                             length = operations_df$times[irow])
     
-    if(operations_df$contractType == "Investments"){
+    if(operations_df$contractType[irow] == "Investments"){
       
       pattern <- function(value, n, times){
         timeSeries(seq(value, 0, length.out=n), times)
@@ -88,7 +88,7 @@ operations_df2list <- function(operations_df) {
       args <- list(value = operations_df$notionalPrincipal[irow],
                    n = operations_df$times[irow],
                    times = timeSeq)
-    }else if(operations_df$contractType == "OperationalCF") {
+    }else if(operations_df$contractType[irow] == "OperationalCF") {
       
       pattern <- function(cfs, times){
         timeSeries(data=cfs, charvec=times)

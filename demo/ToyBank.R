@@ -32,7 +32,7 @@ length(leaf_dfs)
 c1 <- getContract(ptf, "LSD0002")
 c1
 evs <- generateEventSeries(c1,serverURL, riskFactors)
-evs
+evsdf <- evs$events_df
 cashflowPlot(evs)
 
 c1 <- getContract(ops_ptf, "AFA0004")
@@ -42,7 +42,5 @@ InvEvents
 
 c2 <- getContract(ops_ptf, "ORC0001")
 c2Evs <- EventSeries(c2, "2022-01-01")
-c2Evs
+c2evsdf <- c2Evs$events_df
 cashflowPlot(c2Evs)
-
-

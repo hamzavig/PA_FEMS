@@ -135,22 +135,21 @@ assignContracts2Tree <- function(institution, ptf, ...) {
 
 assignEvents2Tree <- function(institution, rf, ...) {
   
-  for(i in 1:length(institution$Assets$leaves)){
+  for(i in 1:length(institution$Assets$leaves)) {
     
-    institution$Assets$leaves[[i]]$events <- list()
+    leaf_event_list <- list()
     
-    for(j in 1:length(institution$Assets$leaves[[i]]$contracts)){
+    for(j in 1:length(institution$Assets$leaves[[i]]$contracts)) {
       
       if(institution$Assets$leaves[[i]]$contracts[[j]]$contractTerms$contractType %in% c("PAM","ANN")){
-      
+        
         contract <- institution$Assets$leaves[[i]]$contracts[[j]]
         serverURL <- "https://demo.actusfrf.org:8080/"
         riskFactors <- rf
         
         ctr_events <- EventSeries(contract, serverURL, riskFactors)
-        leaf_events <- institution$Assets$leaves[[i]]$events
-        leaf_events <- append(leaf_events, ctr_events)
-                
+        leaf_event_list <- append(leaf_event_list, ctr_events)
+        
       }else{
         
         contract <- institution$Assets$leaves[[i]]$contracts[[j]]
@@ -158,12 +157,49 @@ assignEvents2Tree <- function(institution, rf, ...) {
         riskFactors <- rf
         
         ctr_events <- EventSeries(contract, ctr_start)
-        leaf_events <- institution$Assets$leaves[[i]]$events
-        leaf_events <- append(leaf_events, ctr_events)
+        leaf_event_list <- append(leaf_event_list, ctr_events)
         
       }
     }
+    
+    leaf <- institution$Assets$leaves[[i]]
+    leaf$events <- leaf_event_list
+    
   }
+  
+  
+  for(i in 1:length(institution$Liabilities$leaves)) {
+    
+    leaf_event_list <- list()
+    
+    for(j in 1:length(institution$Liabilities$leaves[[i]]$contracts)) {
+      
+      if(institution$Liabilities$leaves[[i]]$contracts[[j]]$contractTerms$contractType %in% c("PAM","ANN")){
+        
+        contract <- institution$Liabilities$leaves[[i]]$contracts[[j]]
+        serverURL <- "https://demo.actusfrf.org:8080/"
+        riskFactors <- rf
+        
+        ctr_events <- EventSeries(contract, serverURL, riskFactors)
+        leaf_event_list <- append(leaf_event_list, ctr_events)
+        
+      }else{
+        
+        contract <- institution$Liabilities$leaves[[i]]$contracts[[j]]
+        ctr_start <- contract$contractTerms$initialExchangeDate
+        riskFactors <- rf
+        
+        ctr_events <- EventSeries(contract, ctr_start)
+        leaf_event_list <- append(leaf_event_list, ctr_events)
+        
+      }
+    }
+    
+    leaf <- institution$Liabilities$leaves[[i]]
+    leaf$events <- leaf_event_list
+    
+  }
+  
   
   return(institution)
   

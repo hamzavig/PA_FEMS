@@ -133,7 +133,7 @@ assignContracts2Tree <- function(institution, ptf, ...) {
 #' @export
 #' @rdname assignEvents2Tree
 
-assignEvents2Tree <- function(institution, riskFactors) {
+assignEvents2Tree <- function(institution, rf, ...) {
   
   for(i in 1:length(institution$Assets$leaves)){
     
@@ -145,7 +145,7 @@ assignEvents2Tree <- function(institution, riskFactors) {
       
         contract <- institution$Assets$leaves[[i]]$contracts[[j]]
         serverURL <- "https://demo.actusfrf.org:8080/"
-        riskFactors <- riskFactors
+        riskFactors <- rf
         
         ctr_events <- EventSeries(contract, serverURL, riskFactors)
         leaf_events <- institution$Assets$leaves[[i]]$events
@@ -155,6 +155,7 @@ assignEvents2Tree <- function(institution, riskFactors) {
         
         contract <- institution$Assets$leaves[[i]]$contracts[[j]]
         ctr_start <- contract$contractTerms$initialExchangeDate
+        riskFactors <- rf
         
         ctr_events <- EventSeries(contract, ctr_start)
         leaf_events <- institution$Assets$leaves[[i]]$events
@@ -165,6 +166,7 @@ assignEvents2Tree <- function(institution, riskFactors) {
   }
   
   return(institution)
+  
 }
 
 

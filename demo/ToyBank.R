@@ -22,6 +22,14 @@ serverURL <- "https://demo.actusfrf.org:8080/"
 bank <- assignContracts2Tree(bank, ptf)
 bank <- assignContracts2Tree(bank, ops_ptf)
 
+bank <- assignEvents2Tree(bank, riskFactors)
+
+
+
+
+
+
+
 bank$leaves[[4]]$contracts
 
 test <- bank$leaves[[1]]$contracts

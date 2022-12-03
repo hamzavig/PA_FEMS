@@ -118,6 +118,58 @@ assignContracts2Tree <- function(institution, ptf, ...) {
 }
 
 
+
+# ************************************************************
+# assignEvents2Tree(institution)
+# ************************************************************
+#' assignEvents2Tree
+#' 
+#' assignEvents2Tree(institution) assigns all corresponding events of the contracts
+#' in the respective leaf of the institution tree
+#' 
+#' @include Portfolio.R
+#' @include ContractType.R
+#' @include EventSeries.R
+#' @export
+#' @rdname assignContracts2Tree
+
+assignEvents2Tree <- function(institution, ...) {
+  
+  pars <- list(...)
+  
+  for(i in 1:length(institution$Assets$leaves)){
+    
+    institution$Assets$leaves[[i]]$events <- list()
+    
+    for(j in 1:length(institution$Assets$leaves[[i]]$contracts)){
+      
+      if(institution$Assets$leaves[[i]]$contracts[[j]]$contractTerms$contractType %in% c("PAM","ANN")){
+      
+        contract <- institution$Assets$leaves[[i]]$contracts[[j]]
+        serverURL <- "https://demo.actusfrf.org:8080/"
+        riskFactors <- pars[[1]]
+        
+        ctr_events <- EventSeries(contract, serverURL, riskFactors)
+        leaf_events <- institution$Assets$leaves[[i]]$events
+        leaf_events <- append(leaf_events, ctr_events)
+                
+      }else{
+        
+        contract <- institution$Assets$leaves[[i]]$contracts[[j]]
+        ctr_start <- contract$contractTerms$initialExchangeDate
+        
+        ctr_events <- EventSeries(contract, ctr_start)
+        leaf_events <- institution$Assets$leaves[[i]]$events
+        leaf_events <- append(leaf_events, ctr_events)
+        
+      }
+    }
+  }
+  
+  return(institution)
+}
+
+
 # ************************************************************
 # getLeafsAsDataFrames(institution)
 # ************************************************************

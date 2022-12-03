@@ -131,7 +131,7 @@ assignContracts2Tree <- function(institution, ptf, ...) {
 #' @include ContractType.R
 #' @include EventSeries.R
 #' @export
-#' @rdname assignContracts2Tree
+#' @rdname assignEvents2Tree
 
 assignEvents2Tree <- function(institution, ...) {
   

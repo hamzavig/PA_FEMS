@@ -4,10 +4,12 @@
 \alias{samplePortfolio}
 \title{samplePortFolio}
 \usage{
-samplePortfolio(cdfn)
+samplePortfolio(cdfn, type)
 }
 \arguments{
 \item{cdfn}{character string -  a contract-data-filepath}
+
+\item{type}{character string - defines if operations or contracts}
 }
 \value{
 Portfolio s4 object initialized with the data from the input files

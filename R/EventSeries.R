@@ -47,6 +47,9 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
             # cast contract as list of list
             contracts <- list(object)
             
+            # pass serverURL since unification of EventSeries this variable is named processor
+            serverURL <- processor
+            
             # prepare list in necessary structure to pass to JSON generator
             contractDefs <- lapply(contracts,preJcontract)
             riskFactors <-  preJSONrfxs(riskFactors)

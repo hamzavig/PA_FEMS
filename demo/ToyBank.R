@@ -20,4 +20,4 @@ ops_ptf
 bank <- assignContracts2Tree(bank, ptf)
 bank <- assignContracts2Tree(bank, ops_ptf)
 
-bank <- assignE2Tree(bank, riskFactors)
+bank <- assignEvents2Tree(bank, riskFactors)

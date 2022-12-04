@@ -168,7 +168,7 @@ assignEvents2Tree <- function(institution, rf, ...) {
   }
   
   
-  for(i in 1:length(institution$Liabilities$leaves)-1) {
+  for(i in 1:(length(institution$Liabilities$leaves)-1)) {
     
     leaf_event_list <- list()
     

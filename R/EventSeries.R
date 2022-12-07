@@ -93,7 +93,7 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
             # initialize the data.frame with a row index evid
             evid <- 1:length(evs_list)
             events_df <-data.frame(evid)
-            Event_Field_Names <- c("type","date","value","currency",
+            Event_Field_Names <- c("type","time","payoff","currency",
                                    "nominalValue","nominalRate","nominalAccrued")
             for(evfield in Event_Field_Names) {
               events_df[evfield] <- unlist(sapply(evs_list,
@@ -102,7 +102,7 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
             # now remove the evid column used to size events_df
             events_df <- subset(events_df, select = -evid) #drop starter column
 
-            events_df$date <- sapply(events_df$date,
+            events_df$time <- sapply(events_df$time,
                                      function(t){substr(t,1,10)}) # format dates
             evs$events_df <- events_df
             return(evs)
@@ -130,8 +130,8 @@ setMethod(f = "EventSeries", signature = c("OperationalCF", "timeDate", "missing
             out$contractType <- object$contractTerms$contractType
             
             # AD0 event
-            events <- data.frame(date=as.character(processor),
-                                 value=0.0,
+            events <- data.frame(time=as.character(processor),
+                                 payoff=0.0,
                                  type="AD0",
                                  currency=object$contractTerms$currency,
                                  nominalValue=0.0,
@@ -142,8 +142,8 @@ setMethod(f = "EventSeries", signature = c("OperationalCF", "timeDate", "missing
 
             if(!is.null(ops)) {
               vals <- as.numeric(series(ops))
-              events <- rbind(events, data.frame(date=as.character(time(ops)),
-                                                 value=c(vals[1],vals[2:length(vals)]),
+              events <- rbind(events, data.frame(time=as.character(time(ops)),
+                                                 payoff=c(vals[1],vals[2:length(vals)]),
                                                  type="OPS", 
                                                  currency=object$contractTerms$currency,
                                                  nominalValue=0.0, 
@@ -154,10 +154,10 @@ setMethod(f = "EventSeries", signature = c("OperationalCF", "timeDate", "missing
 
             # convert to (sorted) timeSeries
             # Note: AD0 event needs to be after all other events of the same instant
-            tms <- paste0(events$date,"T00:00:00")
+            tms <- paste0(events$time,"T00:00:00")
             tms[events$type=="AD0"] <- paste0(substring(tms[events$type=="AD0"],1,10),"T23:59:59")
             events <- events[order(tms),]
-            evs.ts <- timeSeries(events,timeDate(events$date))
+            evs.ts <- timeSeries(events,timeDate(events$time))
             
             # compute nominal value
             evs.ts$nominalValue <- cumsum(evs.ts$nominalValue)
@@ -168,7 +168,7 @@ setMethod(f = "EventSeries", signature = c("OperationalCF", "timeDate", "missing
             
             # convert back to data.frame
             events <- as.data.frame(series(evs.ts))
-            events$value <- as.numeric(events$value)
+            events$payoff <- as.numeric(events$payoff)
             events$nominalValue <- as.numeric(events$nominalValue)
             events$nominalRate <- as.numeric(events$nominalRate)
             events$nominalAccrued <- as.numeric(events$nominalAccrued)
@@ -190,8 +190,8 @@ setMethod(f = "EventSeries", signature = c("Investments", "timeDate", "missing")
             out$contractType <- object$contractTerms$contractType
             
             # AD0 event
-            events <- data.frame(date=as.character(processor),
-                                 value=0.0,
+            events <- data.frame(time=as.character(processor),
+                                 payoff=0.0,
                                  type="AD0",
                                  currency=object$contractTerms$currency,
                                  nominalValue=0.0,
@@ -203,8 +203,8 @@ setMethod(f = "EventSeries", signature = c("Investments", "timeDate", "missing")
             if(!is.null(ops)) {
               if (length(ops)<2) stop("An investment pattern needs to have length>1!")
               vals <- c(ops[1,],diff(ops)[-1,])
-              events <- rbind(events, data.frame(date=as.character(time(ops)),
-                                                 value=c(-vals[1],vals[2:length(vals)]),
+              events <- rbind(events, data.frame(time=as.character(time(ops)),
+                                                 payoff=c(-vals[1],vals[2:length(vals)]),
                                                  type=c("IED",rep("DPR",length(ops)-1)),
                                                  currency=object$contractTerms$currency,
                                                  nominalValue=vals,
@@ -219,27 +219,27 @@ setMethod(f = "EventSeries", signature = c("Investments", "timeDate", "missing")
               tmp <- tail(ops,1)
               vals <- as.numeric(series(tmp))
               events <- rbind(events, 
-                              data.frame(date=as.character(time(tmp)),
+                              data.frame(time=as.character(time(tmp)),
                                          value=vals,
-                                         type="MD",
+                                         payoff="MD",
                                          currency=object$contractTerms$currency,
                                          nominalValue=-vals,
                                          nominalRate=0.0,
                                          nominalAccrued=0.0
                                          )
                               )
-              object$contractTerms$maturityDate <- events[events$type == "MD","date"]
+              object$contractTerms$maturityDate <- events[events$type == "MD","time"]
             }else{
               min_idx <- min(which(events$nominalValue==0))
-              object$contractTerms$maturityDate <- events[min_idx, "date"]
+              object$contractTerms$maturityDate <- events[min_idx, "time"]
             }
             
             # convert to (sorted) timeSeries
             # Note: AD0 event needs to be after all other events of the same instant
-            tms <- paste0(events$date,"T00:00:00")
+            tms <- paste0(events$time,"T00:00:00")
             tms[events$type=="AD0"] <- paste0(substring(tms[events$type=="AD0"],1,10),"T23:59:59")
             events <- events[order(tms),]
-            evs.ts <- timeSeries(events,timeDate(events$date))
+            evs.ts <- timeSeries(events,timeDate(events$time))
             
             # compute nominal value
             evs.ts$nominalValue <- cumsum(evs.ts$nominalValue)
@@ -250,7 +250,7 @@ setMethod(f = "EventSeries", signature = c("Investments", "timeDate", "missing")
             
             # convert back to data.frame
             events <- as.data.frame(series(evs.ts))
-            events$value <- as.numeric(events$value)
+            events$payoff <- as.numeric(events$payoff)
             events$nominalValue <- as.numeric(events$nominalValue)
             events$nominalRate <- as.numeric(events$nominalRate)
             events$nominalAccrued <- as.numeric(events$nominalAccrued)

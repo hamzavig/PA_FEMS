@@ -65,8 +65,8 @@ setMethod(f = "value", signature = c("EventSeries", "character", "character", "D
               FEMS::set(dc, list(Rates=FEMS::get(dc, "Rates") + spread))
               val = sapply(by, function(ad) { # loop over elements in "by"
                 evs = data.frame(
-                  object$events_df$date,
-                  object$events_df$value,
+                  object$events_df$time,
+                  object$events_df$payoff,
                   object$events_df$type
                 )
                 colnames(evs) = c("times", "values", "types")
@@ -101,7 +101,7 @@ setMethod(f = "value", signature = c("EventSeries", "character", "character", "m
             if(type=="nominal") {
               val = sapply(by, function(ad) {
                 evs = data.frame(
-                  object$events_df$date,
+                  object$events_df$time,
                   object$events_df$nominalValue,
                   object$events_df$type
                 )

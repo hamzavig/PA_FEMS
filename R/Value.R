@@ -57,12 +57,12 @@ setGeneric(name = "value", def = function(object, by, type, method, ...){
 setMethod(f = "value", signature = c("EventSeries", "character", "character", "DiscountingEngine"),
           definition = function(object, by, type, method, digits = 2, ...){
             if(type=="nominal") {
-              val = FEMS::value(object, by, "nominal", digits=digits, ...)
+              val = PAFEMS::value(object, by, "nominal", digits=digits, ...)
             } else if (type %in% c("market")) {
               # add spread to interest rate
-              spread <- FEMS::get(method, "dc.spread")
-              dc <- FEMS::get(method, "dc.object")
-              FEMS::set(dc, list(Rates=FEMS::get(dc, "Rates") + spread))
+              spread <- PAFEMS::get(method, "dc.spread")
+              dc <- PAFEMS::get(method, "dc.object")
+              PAFEMS::set(dc, list(Rates=FEMS::get(dc, "Rates") + spread))
               val = sapply(by, function(ad) { # loop over elements in "by"
                 evs = data.frame(
                   object$events_df$time,
@@ -80,7 +80,7 @@ setMethod(f = "value", signature = c("EventSeries", "character", "character", "D
                 } else {
                   cfs = evs.sub$values
                   dts = as.character(evs.sub$times)
-                  dfs = FEMS::discountFactors(dc, from=ad, to=dts)
+                  dfs = PAFEMS::discountFactors(dc, from=ad, to=dts)
                   return( as.numeric (cfs%*%dfs ))
                 }
               })

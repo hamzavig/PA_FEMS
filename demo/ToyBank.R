@@ -21,3 +21,10 @@ bank <- assignContracts2Tree(bank, ptf)
 bank <- assignContracts2Tree(bank, ops_ptf)
 
 bank <- assignEvents2Tree(bank, riskFactors)
+
+by <- timeSequence("2022-01-01", by="1 years", length.out=6)
+(tb <- timeBuckets(by, bucketLabs=2022:2026, 
+                   breakLabs=substr(as.character(by),3,10)))
+bank$Assets$ShortTerm$LiquidAssets$events
+scale = 1000000
+(val.nom <- value(bank, tb, scale=scale, digits=2))

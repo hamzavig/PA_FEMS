@@ -102,7 +102,7 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
             # now remove the evid column used to size events_df
             events_df <- subset(events_df, select = -evid) #drop starter column
 
-            events_df$time <- sapply(events_df$time,
+            events_df$date <- sapply(events_df$date,
                                      function(t){substr(t,1,10)}) # format dates
             evs$events_df <- events_df
             return(evs)

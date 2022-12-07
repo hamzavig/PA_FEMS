@@ -4,7 +4,7 @@
 \alias{assignEvents2Tree}
 \title{assignEvents2Tree}
 \usage{
-assignEvents2Tree(institution, riskFactors)
+assignEvents2Tree(institution, rf, ...)
 }
 \description{
 assignEvents2Tree(institution) assigns all corresponding events of the contracts

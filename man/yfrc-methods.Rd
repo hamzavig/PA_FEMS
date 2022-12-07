@@ -27,3 +27,10 @@ This function takes two date arrays and an optional input
 for the daycount convention and calculates year fractions
 accordingly.
 }
+\examples{
+yearFraction("2020-01-01","2020-01-31","30E/360")
+yearFraction(c("2020-01-01","2020-01-31"),"2020-01-31")
+yearFraction("2020-01-01",c("2020-01-01","2020-01-31"))
+yearFraction(c("2020-01-01","2020-01-31"),c("2020-01-31","2020-02-28"))
+
+}

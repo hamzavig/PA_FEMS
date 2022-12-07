@@ -5,6 +5,9 @@
 # Autor: Vigan Hamzai (hamzavig@students.zhaw.ch)
 #*************************************************************
 
+#' @import data.tree
+setOldClass("Node")
+
 ##############################################################
 #' 
 #' Class that contains the whole model of an enterprise or institution.
@@ -197,13 +200,11 @@ assignEvents2Tree <- function(institution, rf, ...) {
     
     leaf <- institution$Liabilities$leaves[[i]]
     leaf$events <- leaf_event_list
-    print(leaf)
   }
   
   return(institution)
   
 }
-
 
 # ************************************************************
 # getLeafsAsDataFrames(institution)
@@ -254,4 +255,157 @@ getLeafsAsDataFrames <- function(institution, ...) {
   }
   
   return(leaf_dfs)
+}
+
+
+
+
+####--------------------------------------------------------------------------
+## value methods
+
+#' @include Value.R
+#' @include TimeBuckets.R
+#' @rdname val-methods
+#' @export
+setMethod(f = "value", signature = c("Node", "timeBuckets", "ANY"),
+          definition = function(object, by, type, method, scale=1, digits=2) {
+            
+            if (missing(method)) {
+              method <- DcEngine()
+            }
+            if (missing(type)) {
+              type <- "nominal"
+            }
+            res <- value(object, as.timeDate(by), type=type, method=method,
+                         scale=scale, digits=digits)
+            colnames(res) <- by@breakLabs
+            return(res)
+          })
+
+
+#' @include Value.R
+#' @rdname val-methods
+#' @export
+setMethod(f = "value", signature = c("Node", "timeDate", "ANY"),
+          definition = function(object, by, type, method, scale=1, digits=2) {
+            if (missing(method)) {
+              method <- DcEngine()
+            }
+            if (missing(type)) {
+              type <- "nominal"
+            }
+            # Compute value for whole tree
+            clearAnalytics(object, "value")
+            
+            object$Do(fun=fAnalytics, "value", by=as.character(by), type=type,
+                      method=method, filterFun=isLeaf)
+            
+            aggregateAnalytics(object, "value")
+            
+            object$Liabilities$Equity$value <- -object$value
+            object$Liabilities$value <- object$Liabilities$ShortTerm$value + object$Liabilities$LongTerm$value + object$Liabilities$Equity$value
+            object$value <- rep(0, length(object$value))
+            
+            object2 <- Clone(object)
+            if ( type == "nominal" && is.element("Operations", names(object2$children)) )
+              object2$RemoveChild("Operations")
+            
+            res <- data.frame(
+              t(object2$Get("value", format = function(x) as.numeric(ff(x,0)))  ),
+              check.names=FALSE, fix.empty.names=FALSE)
+            # res <- value(object, as.character(by), type=type, method=method,
+            #              scale=scale, digits=digits)
+            rownames(res) <- capture.output(print(object2))[-1]
+            colnames(res) <- as.character(by)
+            return(round(res/scale,digits))
+          })
+
+
+##################################################
+#' general function for computing analytics on a data.tree structure of class Node
+#'
+#' This function computes analytics individually for the leafs of a tree
+#' The analytics to be computed must be passed as first argument.
+#' This function thus subsumes the function of all three specialized 
+#' functions above (which are commented out)
+fAnalytics = function(node, ...) {
+  
+  pars = list(...)
+  idx = 0
+  # clear analytics
+  node[[ pars[[1]] ]] <- NULL
+  if ( is.null(node$events) || length(node$events)==0 ) {
+    node[[ pars[[1]] ]] <- rep(0, length(pars[["by"]]))
+    if ( is.null(names(pars[["by"]])) ) {
+      names(node[[pars[[1]] ]]) = as.character(pars[["by"]])
+    } else {
+      names(node[[pars[[1]] ]]) = names(pars[["by"]])
+    }
+  } else {
+    ctrs = node$contracts
+    res = sapply(
+      X=ctrs,
+      FUN = function(x, pars) {
+        pars = list(...)
+        fnam = pars[[1]] # the name of the analytics [liquidity|income|value]
+        Id = idx + 1
+        object = node$events[[Id]] # the eventSeries of the contract
+        pars = pars[c(-1)]
+        do.call(fnam, c(object=object, pars))
+      })
+    if (!is.null(dim(res)) ) {
+      res = rowSums(res)
+    } else if (length(res) == 0) {
+      res <- NULL
+    }
+    node[[pars[[1]] ]] = res
+  }
+}
+
+# This function aggregates the results computed by fAnalytics
+aggregateAnalytics = function(node, analytics) {
+  if (!isLeaf(node)) {
+    res = sapply(
+      node$children,
+      FUN=function(child, analytics) {
+        x = analytics
+        if (!is.null(child[[x]])) {
+          child[[x]]
+        } else if (!isLeaf(child)) {
+          aggregateAnalytics(child, analytics=x)
+        }
+      }, analytics=analytics, simplify=TRUE)
+    if ( !is.null(dim(res)) ) res = rowSums(res)
+    node[[analytics]] = res
+  }
+}
+
+
+# Clears previously computed the analytics "analytics" from the tree "node"
+clearAnalytics = function(node, analytics) {
+  node[[analytics]] = NULL
+  nodes = Traverse(node, traversal="pre-order")
+  for (n in nodes) {
+    n[[analytics]] = NULL
+  }
+}
+
+#' Clears previously computed the analytics "analytics" from the tree "node"
+#' @export
+clearEvents = function(node) {
+  clearAnalytics(node, "events")
+}
+
+
+# Formatting function.
+# Notice that the 'ifelse' command doesn't return the right result.
+ff = function (x, digits = 3) 
+{
+  if (is.null(x) || is.na(x) ) {
+    ch = ""
+  } else {
+    ch = sprintf(paste0("%.", digits, "f"), x)
+    names(ch) = names(x)
+  }
+  return(ch)
 }

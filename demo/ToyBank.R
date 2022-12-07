@@ -21,8 +21,3 @@ bank <- assignContracts2Tree(bank, ptf)
 bank <- assignContracts2Tree(bank, ops_ptf)
 
 bank <- assignEvents2Tree(bank, riskFactors)
-
-
-
-
-

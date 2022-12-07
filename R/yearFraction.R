@@ -2,6 +2,8 @@
 # Copyright (c) 2020 by ZHAW.
 # Please see accompanying distribution file for license.
 #*************************************************************
+
+
 ##############################################################
 #' Generic function to calculate year fractions
 #'
@@ -19,6 +21,12 @@
 #'
 #' @return numeric Array of year fraction calculated from 
 #'         date vectors
+#' 
+#' @examples
+#' yearFraction("2020-01-01","2020-01-31","30E/360")
+#' yearFraction(c("2020-01-01","2020-01-31"),"2020-01-31")
+#' yearFraction("2020-01-01",c("2020-01-01","2020-01-31"))
+#' yearFraction(c("2020-01-01","2020-01-31"),c("2020-01-31","2020-02-28"))
 #' 
 #' @export
 #' @rdname yfrc-methods
@@ -44,6 +52,7 @@ setMethod(f = "yearFraction", signature = c("character", "character"),
           })
 
 
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # yearFraction - Helper Function
 # test if dates inputs are appropriately set
 
@@ -63,9 +72,20 @@ test.dates.yearFraction <- function(start_dates, end_dates){
       stop("ErrorIn::yearFraction:: Array lengths for ' start_dates ' and ' end_dates ' are not valid !!!")
     }
   }
+  
+  # check if max start date comes before end date if one date array is of length 1
+  # if ((length(start_dates) == 1) | (length(end_dates) == 1)) {
+  #   if (max(as.Date(start_dates)) > min(as.Date(end_dates))) {
+  #     stop("ErrorIn::yearFraction:: 'start_dates' have to be set before 'end_dates' !!!")
+  #   }
+  # } else if (any(as.Date(start_dates) > as.Date(end_dates))) {
+  #   stop("ErrorIn::yearFraction:: 'start_dates' have to be set before 'end_dates' !!!")
+  # }
+
 }
 
 
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # yearFraction - Helper Function
 # map the ACTUS daycount conventions to the allowed values from 
 # 'fmdates' package
@@ -75,6 +95,10 @@ map.conventions.yearFraction <- function(actus_conv) {
   # Note: ACTUS convention B/252 and <wildcard> is not supported !!!
   allowed_convs <- c("30e/360", "30e/360isda", "act/360", "act/365","act/actisda")
   names(allowed_convs) <- c("30E360", "30E360ISDA", "A360", "A365", "AA")
+  
+  # all possible values in the function year_frac are the following:
+  # "30/360", "30/360us", "30e/360", "30e/360isda", "30e+/360", 
+  # "act/360", "act/365","act/actisda")
   
   if(actus_conv %in% names(allowed_convs)) {
     conv <- allowed_convs[[actus_conv]]

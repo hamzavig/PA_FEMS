@@ -230,10 +230,13 @@ income.from.payments = function(eventSeries, by, digits=2, ...) {
 
 
 income.from.accruals.new = function(eventSeries, by, digits=2, ...) {
-
-  if (is.nan(eventSeries$events_df[eventSeries$events_df[,"type"]=="AD0","nominalAccrued"])) {
-    eventSeries$events_df[eventSeries$events_df[,"type"]=="AD0","nominalAccrued"] <- 0
+  
+  if (eventSeries$events_df[eventSeries$events_df[,"type"]=="AD0",] > 0){
+    if (is.nan(eventSeries$events_df[eventSeries$events_df[,"type"]=="AD0","nominalAccrued"])) {
+      eventSeries$events_df[eventSeries$events_df[,"type"]=="AD0","nominalAccrued"] <- 0
+    }
   }
+  
   ev.df <- eventSeries$events_df[, c("time","type","nominalAccrued")]
   ev.df$time <- substring(ev.df$time, 1, 10)
   ev.target <- data.frame(time = c(as.character(min(by) - 24 * 60 * 60), as.character(by)), type = c("Init",rep("Accr",length(by))),

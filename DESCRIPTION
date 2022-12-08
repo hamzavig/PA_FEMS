@@ -42,6 +42,7 @@ Collate:
     'ValuationEngine.R'
     'DiscountingEngine.R'
     'TimeBuckets.R'
+    'Income.R'
     'Value.R'
     'Institution.R'
     'PrincipalAtMaturity.R'

@@ -322,6 +322,7 @@ setMethod(f = "value", signature = c("Node", "timeDate", "ANY"),
 ## income methods
 
 #' @include Income.R
+#' @include TimeBuckets.R
 #' @rdname inc-methods
 #' @export
 setMethod(f = "income", signature = c("Node", "timeBuckets", "ANY"),

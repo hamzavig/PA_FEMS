@@ -108,6 +108,7 @@ setGeneric(name = "income",
 ##------------------------------------------------------------------------------
 
 #' @include EventSeries.R
+#' @include TimeBuckets.R
 #' @export
 #' @rdname inc-methods
 setMethod(f = "income", 
@@ -118,7 +119,6 @@ setMethod(f = "income",
 
 
 #' @include EventSeries.R
-#' @include DiscountingEngine.R
 #' @export
 #' @rdname inc-methods
 setMethod(f = "income", 
@@ -139,6 +139,7 @@ setMethod(f = "income",
 
 
 #' @include EventSeries.R
+#' @include TimeBuckets.R
 #' @export
 #' @rdname inc-methods
 setMethod(f = "income", 
@@ -148,7 +149,6 @@ setMethod(f = "income",
           })
 
 #' @include EventSeries.R
-#' @include DiscountingEngine.R
 #' @export
 #' @rdname inc-methods
 setMethod(f = "income", 
@@ -173,6 +173,8 @@ setMethod(f = "income",
 
 
 #' @include EventSeries.R
+#' @include DiscountingEngine.R
+#' @include TimeBuckets.R
 #' @export
 #' @rdname inc-methods
 setMethod(f = "income", 

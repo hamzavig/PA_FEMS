@@ -257,9 +257,6 @@ getLeafsAsDataFrames <- function(institution, ...) {
   return(leaf_dfs)
 }
 
-
-
-
 ####--------------------------------------------------------------------------
 ## value methods
 
@@ -321,7 +318,44 @@ setMethod(f = "value", signature = c("Node", "timeDate", "ANY"),
           })
 
 
-##################################################
+####--------------------------------------------------------------------------
+## income methods
+
+#' @include Income.R
+#' @rdname inc-methods
+#' @export
+setMethod(f = "income", signature = c("Node", "timeBuckets", "ANY"),
+          definition = function(object, by, type, revaluation.gains, 
+                                method, scale=1, digits=2){
+            
+            # Compute income for whole tree
+            if (missing(method)) {
+              method <- DcEngine()
+            }
+            if (missing(type)) {
+              type <- "marginal"
+            }
+            if (missing(revaluation.gains)) {
+              revaluation.gains <- FALSE
+            }
+            clearAnalytics(object, "income")
+            
+            object$Do(fun=fAnalytics, "income", by=by, type=type, method=method, 
+                      revaluation.gains=revaluation.gains, filterFun=isLeaf)
+            
+            aggregateAnalytics(object, "income")
+            
+            res <- data.frame(
+              t(object$Get("income", format = function(x) as.numeric(ff(x,0))) ),
+              check.names=FALSE, fix.empty.names=FALSE)
+            
+            rownames(res) <- capture.output(print(object))[-1]
+            colnames(res) <- by@bucketLabs
+            return(round(res/scale,digits))
+          })
+
+
+##################################################################################
 #' general function for computing analytics on a data.tree structure of class Node
 #'
 #' This function computes analytics individually for the leafs of a tree

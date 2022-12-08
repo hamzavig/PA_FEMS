@@ -231,7 +231,7 @@ income.from.payments = function(eventSeries, by, digits=2, ...) {
 
 income.from.accruals.new = function(eventSeries, by, digits=2, ...) {
   
-  if (eventSeries$events_df[eventSeries$events_df[,"type"]=="AD0",] > 0){
+  if (nrow(eventSeries$events_df[eventSeries$events_df[,"type"]=="AD0",]) > 0){
     if (is.nan(eventSeries$events_df[eventSeries$events_df[,"type"]=="AD0","nominalAccrued"])) {
       eventSeries$events_df[eventSeries$events_df[,"type"]=="AD0","nominalAccrued"] <- 0
     }

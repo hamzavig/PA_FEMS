@@ -7,6 +7,6 @@
 addEvents(node, ...)
 }
 \description{
-assignEvents2Tree(node) assigns all corresponding events of the contracts
+addEvents(node) assigns all corresponding events of the contracts
 in the respective leaf of the institution tree
 }

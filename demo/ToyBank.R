@@ -18,6 +18,8 @@ ops_ptf <- samplePortfolio(opsPortfolio, "operations")
 
 bank <- assignContracts2Tree(bank, ptf)
 bank <- assignContracts2Tree(bank, ops_ptf)
+bank <- events(object=bank, riskFactors = riskFactors)
+
 
 bank <- assignEvents2Tree(bank, riskFactors)
 

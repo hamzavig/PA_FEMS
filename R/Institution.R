@@ -164,7 +164,7 @@ addEvents <- function(node, ...){
                    ctr_start <- x$contractTerms$initialExchangeDate
                    riskFactors <- pars[[1]]
                    
-                   ctr_events <- EventSeries(contract, ctr_start)
+                   ctr_events <- EventSeries(x, ctr_start)
                  }
                  
                  if (!is.null(ctr_events) ) {

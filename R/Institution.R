@@ -179,90 +179,6 @@ addEvents <- function(node, ...){
 
 
 # ************************************************************
-# assignEvents2Tree(institution)
-# ************************************************************
-#' assignEvents2Tree
-#' 
-#' assignEvents2Tree(institution) assigns all corresponding events of the contracts
-#' in the respective leaf of the institution tree
-#' 
-#' @include Portfolio.R
-#' @include ContractType.R
-#' @include EventSeries.R
-#' @export
-#' @rdname assignEvents2Tree
-
-assignEvents2Tree <- function(institution, rf, ...) {
-  
-  for(i in 1:length(institution$Assets$leaves)) {
-    
-    leaf_event_list <- list()
-    
-    for(j in 1:length(institution$Assets$leaves[[i]]$contracts)) {
-      
-      if(institution$Assets$leaves[[i]]$contracts[[j]]$contractTerms$contractType %in% c("PAM","ANN")){
-        
-        contract <- institution$Assets$leaves[[i]]$contracts[[j]]
-        serverURL <- "https://demo.actusfrf.org:8080/"
-        riskFactors <- rf
-        
-        ctr_events <- EventSeries(contract, serverURL, riskFactors)
-        leaf_event_list <- append(leaf_event_list, ctr_events)
-        
-      }else{
-        
-        contract <- institution$Assets$leaves[[i]]$contracts[[j]]
-        ctr_start <- contract$contractTerms$initialExchangeDate
-        riskFactors <- rf
-        
-        ctr_events <- EventSeries(contract, ctr_start)
-        leaf_event_list <- append(leaf_event_list, ctr_events)
-        
-      }
-    }
-    
-    leaf <- institution$Assets$leaves[[i]]
-    leaf$events <- leaf_event_list
-    
-  }
-  
-  
-  for(i in 1:(length(institution$Liabilities$leaves)-1)) {
-    
-    leaf_event_list <- list()
-    
-    for(j in 1:length(institution$Liabilities$leaves[[i]]$contracts)) {
-      
-      if(institution$Liabilities$leaves[[i]]$contracts[[j]]$contractTerms$contractType %in% c("PAM","ANN")){
-        
-        contract <- institution$Liabilities$leaves[[i]]$contracts[[j]]
-        serverURL <- "https://demo.actusfrf.org:8080/"
-        riskFactors <- rf
-        
-        ctr_events <- EventSeries(contract, serverURL, riskFactors)
-        leaf_event_list <- append(leaf_event_list, ctr_events)
-        
-      }else{
-        
-        contract <- institution$Liabilities$leaves[[i]]$contracts[[j]]
-        ctr_start <- contract$contractTerms$initialExchangeDate
-        riskFactors <- rf
-        
-        ctr_events <- EventSeries(contract, ctr_start)
-        leaf_event_list <- append(leaf_event_list, ctr_events)
-        
-      }
-    }
-    
-    leaf <- institution$Liabilities$leaves[[i]]
-    leaf$events <- leaf_event_list
-  }
-  
-  return(institution)
-  
-}
-
-# ************************************************************
 # getLeafsAsDataFrames(institution)
 # ************************************************************
 #' getLeafsAsDataFrames
@@ -408,6 +324,33 @@ setMethod(f = "income", signature = c("Node", "timeBuckets", "ANY"),
             colnames(res) <- by@bucketLabs
             return(round(res/scale,digits))
           })
+
+
+
+####----------------------------------------------------------------------------
+## liquidity
+
+#' @include Liquidity.R
+#' @rdname liq-methods
+#' @export
+setMethod(f = "liquidity", signature = c("Node", "timeBuckets", "ANY"),
+          definition = function(object, by, type, scale=1, digits=2){
+            if (missing(type)) {
+              type <- "marginal"
+            }
+            # Compute liquidity for whole tree
+            clearAnalytics(object, "liquidity")
+            object$Do(fun=fAnalytics, "liquidity", by=by, type=type, 
+                      filterFun=isLeaf)
+            aggregateAnalytics(object, "liquidity")
+            res = data.frame(
+              t(object$Get("liquidity", format = function(x) as.numeric(ff(x,0))) ),
+              check.names=FALSE, fix.empty.names=FALSE)
+            rownames(res) = capture.output(print(object))[-1]
+            colnames(res) <- by@bucketLabs
+            return(round(res/scale,digits))
+          })
+
 
 
 ##################################################################################

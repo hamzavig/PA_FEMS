@@ -19,9 +19,7 @@ ops_ptf <- samplePortfolio(opsPortfolio, "operations")
 bank <- assignContracts2Tree(bank, ptf)
 bank <- assignContracts2Tree(bank, ops_ptf)
 bank <- events(object=bank, riskFactors = riskFactors)
-
-
-bank <- assignEvents2Tree(bank, riskFactors)
+bank$Assets$ShortTerm$LiquidAssets$events
 
 by <- timeSequence("2022-01-01", by="1 years", length.out=6)
 tb <- timeBuckets(by, bucketLabs=2022:2026, 

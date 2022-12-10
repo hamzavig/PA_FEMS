@@ -9,6 +9,3 @@
 
 setRefClass("ContractABC",
             fields = list())
-
-# omit ctnames - but might be useful
-# show , summary and checkAttributes suppressed for now

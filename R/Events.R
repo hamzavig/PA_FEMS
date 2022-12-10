@@ -29,6 +29,8 @@
 #' @export
 #' @docType methods
 #' @rdname ev-methods
+
 setGeneric(name = "events", def = function(object, processor, riskFactors, ...){
   standardGeneric("events")
+  
 })

@@ -26,5 +26,5 @@ tb <- timeBuckets(by, bucketLabs=2022:2026,
                    breakLabs=substr(as.character(by),3,10))
 
 scale = 1000000
-(val.nom <- value(bank, tb, scale=scale, digits=2))
-(inc.nom <- income(bank, tb, "marginal", scale=scale, digits=2))
+val.nom <- value(bank, tb, scale=scale, digits=2)
+inc.nom <- income(bank, tb, "marginal", scale=scale, digits=2)

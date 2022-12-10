@@ -61,12 +61,10 @@ createInstitution <- function(name, ...) {
   institution$Operations$AddChild("Revenues")
   institution$Operations$AddChild("Expenses")
   
-  institution$Operations$Revenues$AddChild("Interests")
   institution$Operations$Revenues$AddChild("Commissions")
   institution$Operations$Revenues$AddChild("Rent")
   institution$Operations$Revenues$AddChild("Other")
   
-  institution$Operations$Expenses$AddChild("Interests")
   institution$Operations$Expenses$AddChild("Salaries")
   institution$Operations$Expenses$AddChild("Rent")
   institution$Operations$Expenses$AddChild("Other")
@@ -97,11 +95,9 @@ assignContracts2Tree <- function(institution, ptf, ...) {
                    "LSD" = institution$Liabilities$ShortTerm$Deposits,
                    "LLL" = institution$Liabilities$LongTerm$Loans,
                    "LEQ" = institution$Liabilities$Equity,
-                   "ORI" = institution$Operations$Revenues$Interests,
                    "ORC" = institution$Operations$Revenues$Commissions,
                    "ORR" = institution$Operations$Revenues$Rent,
                    "ORO" = institution$Operations$Revenues$Other,
-                   "OEI" = institution$Operations$Expenses$Interests,
                    "OES" = institution$Operations$Expenses$Salaries,
                    "OER" = institution$Operations$Expenses$Rent,
                    "OEO" = institution$Operations$Expenses$Other
@@ -120,6 +116,66 @@ assignContracts2Tree <- function(institution, ptf, ...) {
   return(institution)
 }
 
+
+
+#' @include Events.R
+#' @include EventSeries.R
+#' @rdname events-methods
+#' @export
+setMethod(f = "events", signature = c("Node", "missing", "list"),
+          definition = function(object, processor, riskFactors) {
+            clearEvents(object)
+            object$Do(fun=addEvents, rf = riskFactors, filterFun=isLeaf)
+            
+            return(object)
+          })
+
+# ************************************************************
+# addEvents(node)
+# ************************************************************
+#' addEvents
+#' 
+#' assignEvents2Tree(node) assigns all corresponding events of the contracts
+#' in the respective leaf of the institution tree
+#' 
+#' @include Portfolio.R
+#' @include ContractType.R
+#' @include EventSeries.R
+#' @export
+#' @rdname addEvents
+
+addEvents <- function(node, ...){
+  
+  node$events <- NULL
+  pars = list(...)
+  ctrs = node$contracts
+  
+  res = sapply(X=ctrs,
+               FUN = function(x, pars) {
+                 
+                 if(x$contractTerms$contractType %in% c("PAM","ANN")){
+
+                   serverURL <- "https://demo.actusfrf.org:8080/"
+                   riskFactors <- pars[[1]]
+                   
+                   ctr_events <- EventSeries(x, serverURL, riskFactors)
+                 }else{
+                   
+                   ctr_start <- x$contractTerms$initialExchangeDate
+                   riskFactors <- pars[[1]]
+                   
+                   ctr_events <- EventSeries(contract, ctr_start)
+                 }
+                 
+                 if (!is.null(ctr_events) ) {
+                   if (is.null(node$events)) {
+                     node$events <- list()
+                   }
+                   node$events <- c(node$events, ctr_events)
+                 }
+                 
+              }, pars)
+}
 
 
 # ************************************************************
@@ -228,11 +284,9 @@ getLeafsAsDataFrames <- function(institution, ...) {
                   "Liabilities$ShortTerm$Deposits",
                   "Liabilities$LongTerm$Loans",
                   "Liabilities$Equity",
-                  "Operations$Revenues$Interests",
                   "Operations$Revenues$Commissions",
                   "Operations$Revenues$Rent",
                   "Operations$Revenues$Other",
-                  "Operations$Expenses$Interests",
                   "Operations$Expenses$Salaries",
                   "Operations$Expenses$Rent",
                   "Operations$Expenses$Other"

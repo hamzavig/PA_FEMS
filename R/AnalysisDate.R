@@ -69,41 +69,6 @@ setMethod(f = "AD0",signature = c("timeDate"),
 #' @aliases AD0,character-method
 setMethod(f = "AD0",signature = c("character"),
           definition = function(date, ...){
-            
-            # tryCatch(
-            #   {as.Date(date,tryFormats = c("%Y-%m-%dT%H:%M:%S"))
-            #    sec <- substr(date, nchar(date) - 1, nchar(date))
-            #    min <- substr(date, nchar(date) - 4, nchar(date) - 3)
-            #    hour <- substr(date, nchar(date) - 7, nchar(date) - 6)},
-            #      error = function(e) { 
-            # 
-            #        tryCatch(
-            #          {as.Date(date,tryFormats = c("%Y-%m-%dT%H:%M"))
-            #           sec <- "00"
-            #           min <- substr(date, nchar(date) - 1, nchar(date))
-            #           hour <- substr(date, nchar(date) - 4, nchar(date) - 3)},
-            #             error = function(e) {
-            #               
-            #               tryCatch(
-            #                 {as.Date(date,tryFormats = c("%Y-%m-%dT%H"))
-            #                   sec <- "00"
-            #                   min <- "00"
-            #                   hour <- substr(date, nchar(date) - 1, nchar(date))},
-            #                   error = function(e) { 
-            #                     sec <- "00"
-            #                     min <- "00"
-            #                     hour <- "00" })
-            #               })
-            #        })
-            # 
-            # tryCatch(
-            #   {as.Date(date,tryFormats = c("%Y-%m-%d"))
-            #     full_date <- date},
-            #   error = function(e) { 
-            #     stop("ErrorIn::AnalysisDate:: Date format is not supported !!!")
-            #   })
-            # ad0$timestamp <- ymd_hms(paste(full_date,"T",hour,":",min,":",sec))
-            
               ad0 <- new("AD0")
               if(length(grep("T",date))==0) date=paste0(date,"T00")
               ad0$timestamp <- date

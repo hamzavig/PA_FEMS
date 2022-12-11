@@ -57,5 +57,5 @@ set(dc, what=list(
 
 }
 \seealso{
-\code{\link{VEM, DcEng}}
+\code{\link{DcEng}}
 }

@@ -18,6 +18,6 @@ Engine types as a means for designing method-inheritage.
 
 
 \seealso{
-\code{\link{ValuationEngineModel, DiscountingEngine, 
+\code{\link{DiscountingEngine, 
                CAPMEngine, MultiCurrencyDiscountingEngine}}
 }

@@ -2,8 +2,6 @@
 # Copyright (c) 2020 by ZHAW.
 # Please see accompanying distribution file for license.
 #*************************************************************
-
-
 ##############################################################
 #' A Reference Class extending \code{\link{RiskFactor}} class
 #' and representing a yield curve risk factor
@@ -41,7 +39,6 @@ setRefClass("YieldCurve",
                           TenorDates = "character",
                           DayCountConvention = "character",
                           FUN = "function"
-                          # ,fParams = "list"
                           ))
                           
 
@@ -88,10 +85,6 @@ setMethod(f = "YieldCurve",signature = c(),
             fill_fields$Rates <- Inf
             fill_fields$DayCountConvention <- "30E360"
             fill_fields$FUN <- NULL
-            # names(fill_fields) <- 
-            #   c("label", "ReferenceDate", "Tenors", "Rates", "DayCountConvention",
-            #     "FUN")
-            # fill_fields$fParams <- NULL
             
             if (length(names(pars)) != 0) {
               
@@ -126,10 +119,6 @@ setMethod(f = "YieldCurve",signature = c(),
               }
               if ("FUN" %in% pars_names) {
                 fill_fields$FUN <- pars$FUN
-                # if ( !("fParams" %in% pars_names) ) {
-                #   stop(paste("If 'FUN' is defined, 'fParams' must be defined, too!"))
-                # } 
-                # fill_fields$fParams <- pars$fParams
               }
               
             }
@@ -287,175 +276,3 @@ setMethod(f = "names", signature = c("YieldCurve"),
           definition = function(x){
             return(names(x$getRefClass()$fields()))
           })
-
-
-# WHAT are these two for???
-## @include
-## @export
-# setMethod("[[", signature = c("YieldCurve", "ANY"),
-#           definition = function(x, i) {
-#             l <- x
-#             names(l[["Rates"]]) = l[["Tenors"]]
-#             l[[i]]
-#           }
-# )
-
-## @include
-## @export
-
-# setMethod("[[<-", signature = c("YieldCurve", "ANY"),
-#           definition = function(x, i, value) {
-#             y <- x
-#             y[[i]] <- value
-#             set(x, list(
-#               MarketObjectCode = y[["MarketObjectCode"]],
-#               ReferenceDate = y[["ReferenceDate"]],
-#               Tenors = y[["Tenors"]],
-#               Rates = y[["Rates"]],
-#               DayCountConvention = y[["DayCountConvention"]],
-#               TenorDates = y[["TenorDates"]]
-#             ))
-#             x
-#           }
-# )
-
-
-
-
-# ##############################################################
-# #' A Reference Class 
-# #' 
-# #' 
-# #' Note: A class of the same name is defined in 'DynamicYieldCurve.R'
-# #' 
-# #' @export
-# Interpolator <- setRefClass("Interpolator", 
-#             fields = list(xValues = "numeric",
-#                           yValues = "numeric"),
-#             methods = list(
-#               initialize = function(...) {
-#                 pars <- list(...)
-#                 
-#                 all_fields <- names(getRefClass("Interpolator")$fields())
-#                 pars_names <- names(pars)
-#                 test_pars_names <- pars_names %in% all_fields
-#                 if (!all(test_pars_names)) {
-#                   stop(paste(
-#                     "ErrorInYieldCurve::Interpolator:: Interpolator has no field called: ", 
-#                     pars_names[!test_pars_names], "!!!"))
-#                 }
-#                 
-#                 if (length(pars$xValues) != length(pars$yValues)) {
-#                   stop("ErrorInYieldCurve::Interpolator:: xValues and yValues must have same length !!!")
-#                 }
-#                 .self$xValues <- pars$xValues
-#                 .self$yValues <- pars$yValues
-#               },
-#               getValueAt = function(x){
-#                 xOut <- approx(xValues, yValues, x, method = "linear", rule = 2)
-#                 return(xOut$y)
-#               }
-#             ))
-
-## -----------------------------------------------------------------
-## helper methods
-# existing fields in the YieldCurve class
-# ATTENTION: This is EXACT replica of a function in 'DynamicYieldCurve.R'
-# This function is used nowhere in this package
-# validYieldCurveFields <- function() {
-#   return(c("Rates", "Tenors", "ReferenceDate", "label", 
-#            "DayCountConvention", "TenorDates"))
-# }
-
-# check if fields are valid
-# ATTENTION: This is EXACT replica of a function in 'DynamicYieldCurve.R'
-# This function is used nowhere in this package
-# is.valid.yieldcurve.field <- function(x) {
-#   valid <- validYieldCurveFields()
-#   return(x %in% valid)
-# }
-
-# convert character terms to dates relative to a refDate
-# new function with extension in "DynamicYieldCurve.R
-# tenors2dates <- function(refDate, tenors){
-#   
-#   relativeDates <- c("")
-#   for (i in 1:length(tenors)) {
-#     count <- as.numeric(substr(tenors[i], 1, nchar(tenors[i])-1))
-#     switch(substr(tenors[i], nchar(tenors[i]), nchar(tenors[i])),
-#            "D" = {
-#              relativeDates[i] <- as.character(ymd(refDate) %m+% days(count))
-#            },
-#            "W" =  {
-#              relativeDates[i] <- as.character(ymd(refDate) %m+% weeks(count))
-#            },
-#            "M" = {
-#              relativeDates[i] <- as.character(ymd(refDate) %m+% months(count))
-#            },
-#            "Q" = {
-#              quarter_count <- count * 3
-#              relativeDates[i] <- as.character(ymd(refDate) %m+% months(quarter_count))
-#            },
-#            "H" = {
-#              halfyear_count <- count * 6
-#              relativeDates[i] <- as.character(ymd(refDate) %m+% months(halfyear_count))
-#            },
-#            "Y" = {
-#              relativeDates[i] <- as.character(ymd(refDate) %m+% years(count))
-#            }
-#     )
-#   }
-#   return(relativeDates)
-# }
-
-# Duplicate, cf. DynamicYieldCurve.R
-# shiftDates <- function(dates, shift){
-#   
-#   count <- as.numeric(substr(shift, 1, 1))
-#   switch(substr(shift, nchar(shift), nchar(shift)),
-#          "D" = {
-#            relativeDates <- as.character(ymd(dates) %m+% days(count))
-#          },
-#          "W" =  {
-#            relativeDates <- as.character(ymd(dates) %m+% weeks(count))
-#          },
-#          "M" = {
-#            relativeDates <- as.character(ymd(dates) %m+% months(count))
-#          },
-#          "Q" = {
-#            quarter_count <- count * 3
-#            relativeDates <- as.character(ymd(dates) %m+% months(quarter_count))
-#          },
-#          "H" = {
-#            halfyear_count <- count * 6
-#            relativeDates <- as.character(ymd(dates) %m+% months(halfyear_count))
-#          },
-#          "Y" = {
-#            relativeDates <- as.character(ymd(dates) %m+% years(count))
-#          }
-#   )
-#   return(relativeDates)
-# }
-
-# Duplicate, cf. DynamicYieldCurve.R
-# test.dates <- function(date) {
-#   tryCatch({
-#     as.Date(date)
-#   }, error = function(e) {
-#     stop("ErrorIn::YieldCurve Dates are not valid !!!")
-#   })
-# }
-
-
-# Duplicate, cf. DynamicYieldCurve.R
-# convert.rate.period <- function(period) {
-#   allowed_periods <- c(1, 2, 4, 12, 52, 360)
-#   names(allowed_periods) <- c("Y", "H", "Q", "M", "W","D")
-#   
-#   if(period %in% names(allowed_periods)) {
-#     period_num <- allowed_periods[[period]]
-#   } else {
-#     stop(paste("ErrorIn::discountFactorsv2:: ", period, " is not a valid interest rate period !!!", sep=" "))
-#   }
-#   return(period_num)
-# }

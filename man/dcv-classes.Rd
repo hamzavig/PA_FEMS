@@ -20,6 +20,5 @@ class.
 
 
 \seealso{
-\code{\link{DiscountingEngineModel, ValuationEngine, 
-               ValuationEngineModel}}
+\code{\link{DiscountingEngineModel, ValuationEngine}}
 }

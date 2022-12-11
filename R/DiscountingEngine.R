@@ -15,8 +15,7 @@
 #' 
 #' @field jref A rJava java object reference
 #' 
-#' @seealso \code{\link{DiscountingEngineModel, ValuationEngine, 
-#'                ValuationEngineModel}}
+#' @seealso \code{\link{DiscountingEngineModel, ValuationEngine}}
 #'
 ## @examples
 #' 

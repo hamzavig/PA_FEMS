@@ -20,7 +20,6 @@ setRefClass("FEMSContract",
               args = "list"
             ))
 
-
 setGeneric(name = "FEMSCT",
            def = function(contract_name){
              standardGeneric("FEMSCT")

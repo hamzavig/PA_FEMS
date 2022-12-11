@@ -8,4 +8,5 @@
 #' as means for designing method-inheritage.
 
 setRefClass("ContractABC",
-            fields = list())
+            fields = list()
+            )

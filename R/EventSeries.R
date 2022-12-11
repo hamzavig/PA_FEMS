@@ -77,6 +77,12 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "RiskFac
                     mat <- as.character(ymd(anchor_dt) %m+% years(30))
                   }
                   
+                  print(contracts[[1]]$contractTerms$contractId)
+                  print(factor)
+                  print(anchor_dt)
+                  print(cycle)
+                  print(mat)
+                  
                   factor$Data <- get.data.rate.reset(factor, anchor_dt, cycle, mat)
                   
                   temp_list <- list(marketObjectCode = factor$label)

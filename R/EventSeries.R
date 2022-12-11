@@ -54,10 +54,21 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "RiskFac
             # prepare list in necessary structure to pass to JSON generator
             contractDefs <- lapply(contracts,preJcontract)
             
+            
+            
             riskFactorsList <- list()
             if (length(riskFactors$riskfactors) > 0) {
               for (i in 1:length(riskFactors$riskfactors)) {
                   factor <- riskFactors$riskfactors[[i]]
+                  
+                  anchor_dt <- contracts[[1]]$contractTerms$cycleAnchorDateOfRateReset
+                  cycle <- contracts[[1]]$contractTerms$cycleOfRateReset
+                  mat <- contracts[[1]]$contractTerms$maturityDate
+                  if (mat=="NULL"){
+                    mat <- as.character(ymd(anchor_dt) %m+% years(30))
+                  }
+                  factor$Data <- get.data.rate.reset(factor, anchor_dt, cycle, mat)
+                  
                   temp_list <- list(marketObjectCode = factor$label)
                   if (is(factor, "YieldCurve")) {
                     temp_list$base <- 1

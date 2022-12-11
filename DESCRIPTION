@@ -41,6 +41,7 @@ Collate:
     'YieldCurve.R'
     'ValuationEngine.R'
     'DiscountingEngine.R'
+    'DynamicYieldCurve.R'
     'TimeBuckets.R'
     'Income.R'
     'Liquidity.R'

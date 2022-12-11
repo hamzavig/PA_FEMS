@@ -96,7 +96,7 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "RiskFac
                              riskFactors = riskFactorsList)
             
             # create final request body in json format
-            request_body <- toJSON(fin_list, pretty = TRUE, auto_unbox = FALSE)
+            request_body <- toJSON(fin_list, pretty = TRUE, auto_unbox = TRUE)
             
             # configure httr to NOT check certificTES on SSL / https connection
             httr::set_config(httr::config(ssl_verifypeer = 0L,

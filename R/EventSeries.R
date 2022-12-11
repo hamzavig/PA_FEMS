@@ -60,7 +60,13 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "RiskFac
                   factor <- riskFactors$riskfactors[[i]]
                   
                   anchor_dt <- contracts[[1]]$contractTerms$cycleAnchorDateOfRateReset
+                  if (anchor_dt=="NULL"){
+                    anchor_dt <- as.character(ymd(factor$ReferenceDate) %m+% years(30))
+                  }
                   cycle <- contracts[[1]]$contractTerms$cycleOfRateReset
+                  if (cycle=="NULL"){
+                    cycle <- "P1YL1"
+                  }
                   mat <- contracts[[1]]$contractTerms$maturityDate
                   if (mat=="NULL"){
                     mat <- as.character(ymd(anchor_dt) %m+% years(30))

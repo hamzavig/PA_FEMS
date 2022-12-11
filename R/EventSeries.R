@@ -63,7 +63,7 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "RiskFac
                   if ("cycleAnchorDateOfRateReset" %in% names(contracts[[1]]$contractTerms)){
                     anchor_dt <- contracts[[1]]$contractTerms$cycleAnchorDateOfRateReset
                   }else{
-                    anchor_dt <- as.character(ymd(factor$ReferenceDate) %m+% years(30))
+                    anchor_dt <- factor$ReferenceDate
                   }
                   
                   if ("cycleOfRateReset" %in% names(contracts[[1]]$contractTerms)){
@@ -76,12 +76,6 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "RiskFac
                   if (mat=="NULL"){
                     mat <- as.character(ymd(anchor_dt) %m+% years(30))
                   }
-                  
-                  print(contracts[[1]]$contractTerms$contractId)
-                  print(factor)
-                  print(anchor_dt)
-                  print(cycle)
-                  print(mat)
                   
                   factor$Data <- get.data.rate.reset(factor, anchor_dt, cycle, mat)
                   

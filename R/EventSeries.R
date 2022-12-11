@@ -55,21 +55,25 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "RiskFac
             contractDefs <- lapply(contracts,preJcontract)
             
             riskFactorsList <- list()
-            if (length(riskFactors$riskfactors) > 0) {
-              for (i in 1:length(riskFactors$riskfactors)) {
-                if (riskFactors$riskfactors[[i]]$label == contracts[[1]]$contractTerms$marketObjectCodeOfRateReset){
-                  factor <- riskFactors$riskfactors[[i]]
-                  temp_list <- list(marketObjectCode = factor$label)
-                  if (is(factor, "YieldCurve")) {
-                    temp_list$base <- 1
-                  } else {
-                    temp_list$base <- factor$Data$Values[1]
+            if ("marketObjectCodeOfRateReset" %in% names(contracts[[1]])){
+              if (length(riskFactors$riskfactors) > 0) {
+                for (i in 1:length(riskFactors$riskfactors)) {
+                  if (riskFactors$riskfactors[[i]]$label == contracts[[1]]$contractTerms$marketObjectCodeOfRateReset){
+                    factor <- riskFactors$riskfactors[[i]]
+                    temp_list <- list(marketObjectCode = factor$label)
+                    if (is(factor, "YieldCurve")) {
+                      temp_list$base <- 1
+                    } else {
+                      temp_list$base <- factor$Data$Values[1]
+                    }
+                    temp_list$data <- data.frame(time = rownames(factor$Data), 
+                                                 value =  as.character(factor$Data$Values))
+                    temp_list$data$time <- paste0(temp_list$data$time,"T00:00:00")
+                    riskFactorsList[[i]] <- temp_list
                   }
-                  temp_list$data <- data.frame(time = rownames(factor$Data), 
-                                               value =  as.character(factor$Data$Values))
-                  temp_list$data$time <- paste0(temp_list$data$time,"T00:00:00")
-                  riskFactorsList[[i]] <- temp_list
                 }
+              }else{
+                stop("Please specify a YieldCurve!")
               }
             }
             

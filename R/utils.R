@@ -219,10 +219,7 @@ longName <- function(name) {
 # private util methods
 # get rates from YieldCurve for rate reset schedule 
 get.data.rate.reset <-  function(yc, anchor_dt, cycle, end_dt, ISO = TRUE){
-  
-  if (end_dt < anchor_dt) {
-    return(NULL)
-  }
+
   times <- as.character(timeSequence(
     from = anchor_dt,  
     to = timeSequence(end_dt, by = convert.Duration(cycle, ISO), length.out = 2)[2],

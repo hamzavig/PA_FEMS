@@ -53,10 +53,8 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "RiskFac
             
             # prepare list in necessary structure to pass to JSON generator
             contractDefs <- lapply(contracts,preJcontract)
-            
-            
-            
             riskFactorsList <- list()
+            
             if (length(riskFactors$riskfactors) > 0) {
               for (i in 1:length(riskFactors$riskfactors)) {
                   factor <- riskFactors$riskfactors[[i]]

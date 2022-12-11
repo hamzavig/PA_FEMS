@@ -114,6 +114,10 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "RiskFac
               print(response_content)
               stop("ErrorIn::ContractType::API response error; Check if all necessary contractTerms were set correctly!!!")
             }
+          
+            print(request_body)
+            print(response_events)
+            print(response_content)
             
             # Run the cashflow generation on this portfolio
             cshfl_rslt1 <- response_content[[1]]

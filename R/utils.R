@@ -115,24 +115,31 @@ operations_df2list <- function(operations_df) {
 #   input: dataframe riskFactor data,
 #   returns list of riskFactor objects
 #   convert date, value pairs in risk Factor row
-#   all riskFactors are referenceIndex for now
+#   all riskFactors are YieldCurves for now
 # ************************************************
 
 riskFactors_df2list <- function(riskFactors_df){
-  rfxlist <- list()
-  nhdrs <- 4        # rfType, moc, base, dataPairCount are " row headers"
-  for ( irow in 1:nrow(riskFactors_df)){
-    rfRow <- riskFactors_df[irow,]
-    tset <- as.character(rfRow[nhdrs-1+(1:rfRow$dataPairCount)*2])
-    # vector of dates
-    vset <- as.numeric(rfRow[nhdrs+(1:rfRow$dataPairCount)*2])
-    # vector of numeric values
-    rfID <- paste0("sample$",rfRow$marketObjectCode)
-    rfxlist <-append(rfxlist,
-                     Index(rfID,rfRow$marketObjectCode,rfRow$base,,
-                           tset,vset))
+  
+  rfList <- list()
+  
+  for(irow in 1:nrow(riskFactors_df)){
+    
+    if(riskFactors_df[irow,"rfType"] == "YieldCurve"){
+      label <- riskFactors_df[irow, "label"]
+      referenceDate <- riskFactors_df[irow, "referenceDate"]
+      tenors <- as.character(riskFactors_df[irow, grepl("tenor", names(riskFactors_df))])
+      rates <- as.numeric(riskFactors_df[irow, grepl("rate", names(riskFactors_df))])
+      
+      yc <- YieldCurve(label = label, 
+                       ReferenceDate = referenceDate, 
+                       Tenors = tenors,
+                       Rates = rates)
+      rfList <- append(rfList, yc)  
+    }else{
+      stop("Other risk factors than Yield Curves are not supported yet!")
+    }
   }
-  return(rfxlist)
+  return(rfList)
 }
 
 # ***********************************************

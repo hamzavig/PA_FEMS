@@ -120,9 +120,10 @@ assignContracts2Tree <- function(institution, ptf, ...) {
 
 #' @include Events.R
 #' @include EventSeries.R
+#' @include RiskFactorConnector.R
 #' @rdname events-methods
 #' @export
-setMethod(f = "events", signature = c("Node", "missing", "list"),
+setMethod(f = "events", signature = c("Node", "missing", "RiskFactorConnector"),
           definition = function(object, processor, riskFactors) {
             clearEvents(object)
             object$Do(fun=addEvents, rf = riskFactors, filterFun=isLeaf)

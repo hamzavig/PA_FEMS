@@ -17,6 +17,7 @@
 #' @include Investments.R
 #' @include OperationalCF.R
 #' @include AnalysisDate.R
+#' @include RiskFactorConnector.R
 #' @include Events.R
 #' @include utils.R
 #' @export EventSeries
@@ -42,7 +43,7 @@ setMethod(f = "EventSeries", signature = c(),
             return(new("EventSeries"))
           })
 
-setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
+setMethod(f = "EventSeries", signature = c("ContractType", "character", "RiskFactorConnector"),
           definition = function(object, processor, riskFactors){
             # cast contract as list of list
             contracts <- list(object)
@@ -52,9 +53,28 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
             
             # prepare list in necessary structure to pass to JSON generator
             contractDefs <- lapply(contracts,preJcontract)
-            riskFactors <-  preJSONrfxs(riskFactors)
+            
+            riskFactorsList <- list()
+            if (length(riskFactors$riskfactors) > 0) {
+              for (i in 1:length(riskFactors$riskfactors)) {
+                if (riskFactors$riskfactors[[i]]$label == contracts[[1]]$contractTerms$marketObjectCodeOfRateReset){
+                  factor <- riskFactors$riskfactors[[i]]
+                  temp_list <- list(marketObjectCode = factor$label)
+                  if (is(factor, "YieldCurve")) {
+                    temp_list$base <- 1
+                  } else {
+                    temp_list$base <- factor$Data$Values[1]
+                  }
+                  temp_list$data <- data.frame(time = rownames(factor$Data), 
+                                               value =  as.character(factor$Data$Values))
+                  temp_list$data$time <- paste0(temp_list$data$time,"T00:00:00")
+                  riskFactorsList[[i]] <- temp_list
+                }
+              }
+            }
+            
             fin_list <- list(contracts = contractDefs,
-                             riskFactors = riskFactors)
+                             riskFactors = riskFactorsList)
             
             # create final request body in json format
             request_body <- toJSON(fin_list, pretty = TRUE, auto_unbox = FALSE)
@@ -87,7 +107,7 @@ setMethod(f = "EventSeries", signature = c("ContractType", "character", "list"),
             evs$contractID <- object$contractTerms$contractID
             evs$contractType <- object$contractTerms$contractType
             evs$statusDate <-  object$contractTerms$statusDate
-            evs$riskFactors <- riskFactors
+            evs$riskFactors <- riskFactorsList
 
             # construct the 7 columns with event list data (no long loops please)
             # initialize the data.frame with a row index evid

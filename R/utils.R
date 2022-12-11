@@ -260,6 +260,3 @@ convert.Duration <- function(duration, ISO) {
   }
   return(out)
 }
-
-
-convert.Duration("P1YL1", TRUE)

@@ -48,3 +48,4 @@ Collate:
     'Value.R'
     'Institution.R'
     'PrincipalAtMaturity.R'
+    'yearFraction.R'

@@ -37,7 +37,7 @@ ui <- fluidPage(
                                          column(3,
                                                 fileInput(inputId = "ops", 
                                                           label = "Import your Operations:"),
-                                                fileInput(inputId = "rfs", 
+                                                fileInput(inputId = "rfsC", 
                                                           label = "Import your Risk Factors:"),
                                                 actionButton("send", "Send")
                                                 ),
@@ -87,11 +87,7 @@ ui <- fluidPage(
                                                 h4(textOutput('tableTitle_12')),
                                                 DTOutput('table_12'),
                                                 h4(textOutput('tableTitle_13')),
-                                                DTOutput('table_13'),
-                                                h4(textOutput('tableTitle_14')),
-                                                DTOutput('table_14'),
-                                                h4(textOutput('tableTitle_15')),
-                                                DTOutput('table_15'),
+                                                DTOutput('table_13')
                                                 )
                                      )
                             ),
@@ -121,18 +117,18 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
     
-    # set the ACTUS serverURL
-    serverURL = "https://demo.actusfrf.org:8080/"
-    
     observeEvent(input$send, {
         inst <- createInstitution(input$instName)
-        ann_ptf <- samplePortfolio(input$anns$datapath)
-        pam_ptf <- samplePortfolio(input$pams$datapath)
+        ann_ptf <- samplePortfolio(input$anns$datapath, "contracts")
+        pam_ptf <- samplePortfolio(input$pams$datapath, "contracts")
         ptf <- mergePortfolios(ann_ptf, pam_ptf)
+        
+        ops_ptf <- samplePortfolio(input$ops$datapath, "operations")
+        
         inst <- assignContracts2Tree(inst, ptf)
+        inst <- assignContracts2Tree(inst, ops_ptf)
         
         leaf_dfs <- getLeafsAsDataFrames(inst)
-        
         
         lapply(1:length(leaf_dfs), function(i) {
             output[[paste0('tableTitle_', i)]] <- renderText({leaf_dfs[[i]]$leaf})
@@ -145,12 +141,23 @@ server <- function(input, output, session) {
     
     observeEvent(input$getEvent, {
         
-        ann_ptf <- samplePortfolio(input$anns$datapath)
-        pam_ptf <- samplePortfolio(input$pams$datapath)
+        inst <- createInstitution(input$instName)
+        ann_ptf <- samplePortfolio(input$anns$datapath, "contracts")
+        pam_ptf <- samplePortfolio(input$pams$datapath, "contracts")
         ptf <- mergePortfolios(ann_ptf, pam_ptf)
-        riskFactors <- defineReferenceIndex(input$rfs$datapath)
-        c1 <- getContract(ptf, input$CID)
-        evs <- generateEventSeries(c1,serverURL, riskFactors)
+        
+        ops_ptf <- samplePortfolio(input$ops$datapath, "operations")
+        
+        inst <- assignContracts2Tree(inst, ptf)
+        inst <- assignContracts2Tree(inst, ops_ptf)
+        
+        rfList <- getRFList(input$rfsC$datapath)
+        rfCtrs <- RFConn()
+        add(rfCtrs, rfList)
+        
+        inst <- events(object=inst, riskFactors = rfCtrs)
+        
+        evs <- getEvents(inst, input$CID)
         
         #creation of the desired plot
         output$cashFlowPlot <- renderPlot({

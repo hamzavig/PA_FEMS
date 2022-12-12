@@ -179,6 +179,35 @@ addEvents <- function(node, ...){
 }
 
 
+
+# ************************************************************
+# getEvents(node, cid)
+# ************************************************************
+#' getEvents
+#' 
+#' getEvents(node, cid) gets all corresponding events of the contract
+#' in the respective leaf of the institution tree
+#' 
+#' @include EventSeries.R
+#' @export
+#' @rdname getEvents
+
+getEvents <- function(node, cid, ...){
+  
+  for (i in 1:length(node$leaves)){
+    leaf_evs <- node$leaves[[i]]$events
+    
+    for(j in 1:length(leaf_evs)){
+      
+      if(leaf_evs[[j]]$contractID == cid){
+        return(leaf_evs[[j]])
+      }
+    }
+  }
+}
+
+
+
 # ************************************************************
 # getLeafsAsDataFrames(institution)
 # ************************************************************

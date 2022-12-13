@@ -23,7 +23,7 @@ bank <- assignContracts2Tree(bank, ops_ptf)
 bank <- events(object=bank, riskFactors = rfCtrs)
 
 by <- timeSequence("2022-01-01", by="1 years", length.out=6)
-tb <- timeBuckets(by, bucketLabs=2022:2026, 
+tb <- timeBuckets(by, bucketLabs=2021:2026, 
                    breakLabs=substr(as.character(by),3,10))
 scale = 1000000
 

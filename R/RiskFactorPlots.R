@@ -10,8 +10,6 @@
 #' object.
 #' 
 #' @param object The \link{YieldCurve} object to plot
-#'
-#' @return 
 #' 
 #' @seealso \link{YieldCurve},\link{plot}
 #' 
@@ -25,7 +23,6 @@
 #' 
 
 #' @include YieldCurve.R
-#' @include util.R
 #' @export
 #' @docType methods
 #' @rdname plt-methods
@@ -80,8 +77,6 @@ setMethod("plot", signature("YieldCurve", "missing"),
 #' \link{RiskFactor}-object.
 #' 
 #' @param object The \link{RiskFactor} object to plot
-#'
-#' @return 
 #' 
 #' @seealso \link{ReferenceIndex},\link{plot}
 #' 

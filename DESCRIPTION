@@ -48,4 +48,5 @@ Collate:
     'Value.R'
     'Institution.R'
     'PrincipalAtMaturity.R'
+    'RiskFactorPlots.R'
     'yearFraction.R'

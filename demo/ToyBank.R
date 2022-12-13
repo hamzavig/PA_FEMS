@@ -32,27 +32,3 @@ inc.nom <- income(bank, tb, type="marginal", scale=scale, digits=2)
 liq.nom <- liquidity(bank, tb, scale=scale, digits=2)
 
 plot(rfCtrs$riskfactors$YC_CTRS)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -121,3 +121,40 @@ setMethod(f = "value", signature = c("EventSeries", "character", "character", "m
             }
             return(round(val, digits))
           })
+
+
+setGeneric(name = "valueEquityRatio", def = function(object, ...){
+  standardGeneric("valueEquityRatio")
+})
+
+
+#' The equity ratio is computed from the value data.frame
+#' @export
+#' @rdname val-methods
+setMethod(f = "valueEquityRatio", signature = c("data.frame"),
+          definition = function(object, ...){
+            
+            ratio <- round(100*(-object[grep("-Equity",rownames(object)),]/object[grep("-Assets",rownames(object)),]),2)
+            rownames(ratio) <- "Equity Ratio"
+            return(ratio)
+            
+          })
+
+
+setGeneric(name = "valueLiquidityCoverageRatio", def = function(object, ...){
+  standardGeneric("valueLiquidityCoverageRatio")
+})
+
+
+#' The equity ratio is computed from the value data.frame
+#' @export
+#' @rdname val-methods
+setMethod(f = "valueLiquidityCoverageRatio", signature = c("data.frame"),
+          definition = function(object, ...){
+            
+            ratio <- round(100*(-(val.nom[grep("-Assets",rownames(object))+1,])/val.nom[grep("-Liabilities",rownames(object))+1,]),2)
+            rownames(ratio) <- "Liquiditiy Coverage Ratio"
+            return(ratio)
+            
+          })
+

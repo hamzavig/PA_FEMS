@@ -104,39 +104,6 @@ ui <- fluidPage(
                                               )
                                      )
                             ),
-                            tabPanel("Financial Statements", fluid = TRUE,
-                                     
-                                     fluidRow(style = "margin: 10px 0px 10px 0px; border: 1px solid lightgrey; border-top: none;",
-                                              column(3,
-                                                     h4("Balance Sheet"),
-                                                     textInput(inputId = "valueT0", 
-                                                               label = "From", 
-                                                               placeholder = "YYYY-MM-DD"),
-                                                     textInput(inputId = "valueTn", 
-                                                               label = "To", 
-                                                               placeholder = "YYYY-MM-DD"),
-                                                     selectInput(inputId = "valueType",
-                                                                 label = "Type",
-                                                                 choices = c("nominal", "market"),
-                                                                 selected = NULL,
-                                                                 multiple = FALSE)
-                                              ),
-                                              column(3,
-                                                     h4("Market Environment"),
-                                                     fileInput(inputId = "valueRfs", 
-                                                               label = "Import your market environment"),
-                                                     actionButton("getValue", "Send")
-                                              ),
-                                              column(6,
-                                                     h4("Yield Curve: Market")
-                                              )
-                                     ),
-                                     fluidRow(style = "margin: 10px 0px 10px 0px; border: 1px solid lightgrey; border-top: none;",
-                                              column(6,
-                                                     verbatimTextOutput("treeValue")
-                                              )
-                                     )
-                            ),
                             tabPanel("Risk Reporting")
                             
                         )
@@ -200,57 +167,6 @@ server <- function(input, output, session) {
         output$CFDF <- renderDataTable({
         evs$events_df
         })
-    })
-    
-    
-    observeEvent(input$getValue, {
-        
-        inst <- createInstitution(input$instName)
-        ann_ptf <- samplePortfolio(input$anns$datapath, "contracts")
-        pam_ptf <- samplePortfolio(input$pams$datapath, "contracts")
-        ptf <- mergePortfolios(ann_ptf, pam_ptf)
-        
-        ops_ptf <- samplePortfolio(input$ops$datapath, "operations")
-        
-        inst <- assignContracts2Tree(inst, ptf)
-        inst <- assignContracts2Tree(inst, ops_ptf)
-        
-        rfList <- getRFList(input$rfsC$datapath)
-        rfCtrs <- RFConn()
-        add(rfCtrs, rfList)
-        
-        inst <- events(object=inst, riskFactors = rfCtrs)
-        
-        t0 <- input$valueT0
-        tn <- input$valueTn
-        
-        n <- yearFraction(t0, tn)
-        t0Year <- as.numeric(substr(t0,1,4))
-        tnYear <- as.numeric(substr(tn,1,4))
-        by <- timeSequence(t0, by="1 years", length.out=n+1)
-        tb <- timeBuckets(by, bucketLabs=t0Year:tnYear, 
-                          breakLabs=substr(as.character(by),3,10))
-        scale = 1000000
-        
-        rfList2 <- getRFList(input$valueRfs$datapath)
-        rfEnv <- RFConn()
-        add(rfEnv, rfList2)
-        
-        method <- DcEngine(rfEnv)
-        
-        if (input$valueType == "nominal"){
-            val <- value(inst, tb, type="nominal", scale=scale, digits=2)
-        }else{
-            val <- value(inst, by, type=input$type, method = method, scale=scale, digits=2)
-        }
-        
-        output$valueMarketYC <- renderPlot({
-            plot(rfList2[[1]])
-        })
-        
-        output$treeValue <- renderPrint({
-            print(val)
-        }) 
     })
     
 }

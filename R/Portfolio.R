@@ -210,7 +210,7 @@ setMethod ( f = "getPortfolioAsDataFrame",  signature = c("Portfolio"),
                                             "nominalInterestRate", "contractDealDate", "initialExchangeDate","maturityDate")
                 }else{
                   
-                  Contract_Field_Names <- c("contractID", "contractType", "role", "currency", "initialExchangeDate","maturityDate", "notionalPrincipal")
+                  Contract_Field_Names <- c("contractID", "contractType", "contractRole", "currency", "initialExchangeDate","maturityDate", "notionalPrincipal")
                 }
                 
                 for(crfield in Contract_Field_Names) {

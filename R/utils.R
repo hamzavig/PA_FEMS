@@ -85,7 +85,7 @@ operations_df2list <- function(operations_df) {
         timeSeries(seq(value, 0, length.out=n), times)
       }
       
-      if (operations_df$role[irow] == "long"){
+      if (operations_df$contractRole[irow] == "long"){
         notionalPrincipal <- operations_df$notionalPrincipal[irow]
       }else{
         notionalPrincipal <- -operations_df$notionalPrincipal[irow]
@@ -100,7 +100,7 @@ operations_df2list <- function(operations_df) {
         timeSeries(data=dat, charvec=times)
       }
       
-      if (operations_df$role[irow] == "long"){
+      if (operations_df$contractRole[irow] == "long"){
         notionalPrincipal <- operations_df$notionalPrincipal[irow]
       }else{
         notionalPrincipal <- -operations_df$notionalPrincipal[irow]

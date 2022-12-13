@@ -1,4 +1,4 @@
-﻿contractType,contractID,role,currency,notionalPrincipal,initialExchangeDate,maturityDate,repetition,frequency,times,inverted,description
+﻿contractType,contractID,contractRole,currency,notionalPrincipal,initialExchangeDate,maturityDate,repetition,frequency,times,inverted,description
 Investments,AFA0001,long,CHF,8500000,2022-01-01,9999-01-01,,1 years,51,FALSE,Fixed Asset: Real Estate 1 with linear deprecation over 50 years
 Investments,AFA0002,long,CHF,3500000,2022-01-01,9999-01-01,,1 years,51,FALSE,Fixed Asset: Real Estate 2 with linear deprecation over 50 years
 Investments,AFA0003,long,CHF,6000000,2022-01-01,9999-01-01,,1 years,51,FALSE,Fixed Asset: Real Estate 3 with linear deprecation over 50 years

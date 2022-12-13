@@ -70,6 +70,31 @@ setMethod("plot", signature("YieldCurve", "missing"),
             
           })
 
+
+
+cycle.to.by <- function(x) {
+  x = gsub("+", "", x)
+  x = gsub("-", "", x)
+  counter = substring(x, 1, nchar(x)-1)
+  unit.char = substring(x, nchar(x), nchar(x))
+  unit = switch(unit.char,
+                Y="years",
+                Q="months",
+                M="months",
+                W="weeks",
+                D="days",
+                "unknown")
+  mult = switch(unit.char,
+                Y=1,
+                Q=3,
+                M=1,
+                W=1,
+                D=1,
+                "unknown")
+  return(paste(mult*as.integer(counter), unit, sep=" "))
+}
+
+
 ##############################################################
 #' Plot an index-like \link{RiskFactor}
 #'

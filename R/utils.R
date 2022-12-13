@@ -23,7 +23,7 @@ contractFile2dataframe <- function(cdfn, sep = ",") {
 
 operationFile2dataframe <- function(odfn, sep = ",") {
   df <- utils::read.csv(odfn)
-  df[is.na(df)] <- NULL
+  df[is.na(df)] <- "NULL"
   return(df)
 }
 

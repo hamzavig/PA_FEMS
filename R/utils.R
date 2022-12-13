@@ -85,7 +85,13 @@ operations_df2list <- function(operations_df) {
         timeSeries(seq(value, 0, length.out=n), times)
       }
       
-      args <- list(value = operations_df$notionalPrincipal[irow],
+      if (operations_df$role[irow] == "long"){
+        notionalPrincipal <- operations_df$notionalPrincipal[irow]
+      }else{
+        notionalPrincipal <- -operations_df$notionalPrincipal[irow]
+      }
+      
+      args <- list(value = notionalPrincipal,
                    n = operations_df$times[irow],
                    times = timeSeq)
     }else if(operations_df$contractType[irow] == "OperationalCF") {
@@ -94,7 +100,13 @@ operations_df2list <- function(operations_df) {
         timeSeries(data=dat, charvec=times)
       }
       
-      cfs <- rep(operations_df$notionalPrincipal[irow], operations_df$repetition[irow])
+      if (operations_df$role[irow] == "long"){
+        notionalPrincipal <- operations_df$notionalPrincipal[irow]
+      }else{
+        notionalPrincipal <- -operations_df$notionalPrincipal[irow]
+      }
+      
+      cfs <- rep(notionalPrincipal, operations_df$repetition[irow])
       
       timesIdx <- if (operations_df$inverted[irow]) -operations_df$times[irow] else -1
       args <- list(dat = cfs,

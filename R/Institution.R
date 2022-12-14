@@ -136,7 +136,11 @@ addMarketObject2Contracts <- function(institution, yc, spread, cycle, ...) {
   for(i in 1:length(institution$leaves)){
     
     leaf <- institution$leaves[[i]]
-    lapply(leaf$Get("contracts"), FUN = updateContract, yc = yc, spread = spread, cycle = cycle)
+    
+    for(j in 1:length(leaf$contracts)){
+      ctr <- leaf$contracts[[j]]
+      leaf$contracts[[j]] <- updateContract(ctr, yc = yc, spread = spread, cycle = cycle)
+    }
     
     return(institution)
     

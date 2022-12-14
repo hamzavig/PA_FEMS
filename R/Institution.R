@@ -168,6 +168,8 @@ updateContract <- function(contract, yc, spread, cycle){
     
   }
   
+  return(contract)
+  
 }
 
 

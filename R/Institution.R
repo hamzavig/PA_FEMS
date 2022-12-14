@@ -149,7 +149,7 @@ updateContract <- function(contract, yc, spread, cycle){
   
   if(contract$contractTerms$contractType == "ANN"){
     
-    contract$contractTerms$marketObjectCodeOfRateReset <- yc$Label
+    contract$contractTerms$marketObjectCodeOfRateReset <- yc$label
     contract$contractTerms$rateSpread <- spread
     contract$contractTerms$cycleOfRateReset <- cycle
     

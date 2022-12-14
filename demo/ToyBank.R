@@ -34,7 +34,7 @@ ycShifted
 
 bankShifted <- bank
 bankShifted <- addMarketObject2Contracts(bankShifted, ycShifted, spread, cycle)
-
+bankShifted$Get("contracts")
 rfShifted <- RFConn()
 add(rfShifted, list(ycShifted))
 
@@ -60,7 +60,6 @@ liquidityCoverageRatio <- valueLiquidityCoverageRatio(val)
 
 equityRatioShifted <- valueEquityRatio(valShifted)
 liquidityCoverageRatioShifted <- valueLiquidityCoverageRatio(valShifted)
-
 
 
 #assetsDuration <- duration()

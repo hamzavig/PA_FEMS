@@ -5,6 +5,10 @@
 \alias{value}
 \alias{value,EventSeries,character,character,DiscountingEngine-method}
 \alias{value,EventSeries,character,character,missing-method}
+\alias{valueEquityRatio}
+\alias{valueEquityRatio,data.frame-method}
+\alias{valueLiquidityCoverageRatio}
+\alias{valueLiquidityCoverageRatio,data.frame-method}
 \alias{value,Node,timeBuckets,ANY,ANY-method}
 \alias{value,Node,timeDate,ANY,ANY-method}
 \title{Derive the value at AD0 of a contract}
@@ -14,6 +18,14 @@ value(object, by, type, method, ...)
 \S4method{value}{EventSeries,character,character,DiscountingEngine}(object, by, type, method, digits = 2, ...)
 
 \S4method{value}{EventSeries,character,character,missing}(object, by, type, digits = 2, ...)
+
+valueEquityRatio(object, ...)
+
+\S4method{valueEquityRatio}{data.frame}(object, ...)
+
+valueLiquidityCoverageRatio(object, ...)
+
+\S4method{valueLiquidityCoverageRatio}{data.frame}(object, ...)
 
 \S4method{value}{Node,timeBuckets,ANY,ANY}(object, by, type, method, scale = 1, digits = 2)
 

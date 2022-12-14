@@ -5,6 +5,8 @@
 \alias{YieldCurve}
 \alias{YieldCurve-method}
 \alias{YieldCurve,ANY-method}
+\alias{shiftYieldCurve}
+\alias{shiftYieldCurve,YieldCurve,numeric-method}
 \alias{DynamicYieldCurve}
 \alias{DynamicYieldCurve-method}
 \alias{DynamicYieldCurve,ANY-method}
@@ -13,6 +15,10 @@
 YieldCurve(...)
 
 \S4method{YieldCurve}{ANY}(...)
+
+shiftYieldCurve(yc, spread)
+
+\S4method{shiftYieldCurve}{YieldCurve,numeric}(yc, spread)
 
 DynamicYieldCurve(...)
 

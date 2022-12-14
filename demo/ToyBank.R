@@ -6,11 +6,8 @@ bank <- createInstitution("Bank")
 annPortfolio <- "src/data/bankA/ann_ptf.csv"
 pamPortfolio <- "src/data/bankA/pam_ptf.csv"
 opsPortfolio <- "src/data/bankA/operations.csv"
-riskFactorsCtrs <- "src/data/bankA/rf_contracts.csv"
 
-rfList <- getRFList(riskFactorsCtrs)
-rfCtrs <- RFConn()
-add(rfCtrs, rfList)
+rfDefault <- RFConn()
 
 ann_ptf <- samplePortfolio(annPortfolio, "contracts")
 pam_ptf <- samplePortfolio(pamPortfolio, "contracts")
@@ -20,15 +17,52 @@ ops_ptf <- samplePortfolio(opsPortfolio, "operations")
 
 bank <- assignContracts2Tree(bank, ptf)
 bank <- assignContracts2Tree(bank, ops_ptf)
-bank <- events(object=bank, riskFactors = rfCtrs)
+bank <- events(object=bank, riskFactors = rfDefault)
+
+# Yield Curve Shift
+
+riskFactors <- "src/data/bankA/rf_contracts.csv"
+rfList <- getRFList(riskFactors)
+rf <- RFConn() 
+add(rf, rfList)
+
+yc <- rf$riskfactors[[1]]
+spread <- 0.01
+cycle <- "P1YL1"
+ycShifted <- shiftYieldCurve(yc, spread)
+
+bankShifted <- bank
+bankShifted <- addMarketObject2Contracts(bankShifted, ycShifted, spread, cycle)
+
+rfShifted <- RFConn()
+add(rfShifted, list(ycShifted))
+
+bankShifted <- events(object = bankShifted, riskFactors = rfShifted)
+
 
 by <- timeSequence("2022-01-01", by="1 years", length.out=6)
 tb <- timeBuckets(by, bucketLabs=2022:2026, 
-                   breakLabs=substr(as.character(by),3,10))
+                  breakLabs=substr(as.character(by),3,10))
 scale = 1000000
 
-val.nom <- value(bank, tb, scale=scale, digits=2)
-inc.nom <- income(bank, tb, type="marginal", scale=scale, digits=2)
-liq.nom <- liquidity(bank, tb, scale=scale, digits=2)
+val <- value(bank, tb, scale=scale, digits=2)
+inc <- income(bank, tb, type="marginal", scale=scale, digits=2)
+liq <- liquidity(bank, tb, scale=scale, digits=2)
 
-plot(rfCtrs$riskfactors$YC_CTRS)
+valShifted <- value(bankShifted, tb, scale=scale, digits=2)
+incShifted <- income(bankShifted, tb, type="marginal", scale=scale, digits=2)
+liqShifted <- liquidity(bankShifted, tb, scale=scale, digits=2)
+
+
+equityRatio <- valueEquityRatio(val)
+liquidityCoverageRatio <- valueLiquidityCoverageRatio(val)
+
+equityRatioShifted <- valueEquityRatio(valShifted)
+liquidityCoverageRatioShifted <- valueLiquidityCoverageRatio(valShifted)
+
+
+
+#assetsDuration <- duration()
+#assetsDurationShifted <- duration()
+
+

@@ -117,6 +117,60 @@ assignContracts2Tree <- function(institution, ptf, ...) {
 }
 
 
+# ************************************************************
+# addMarketObject2Contracts(institution, yc, cylce)
+# ************************************************************
+#' addMarketObject2Contracts
+#' 
+#' addMarketObject2Contracts(institution, yc, cylce) assigns a given
+#' MarketObject (YieldCurve) to the contracts which it applies to
+#' 
+#' @include ContractType.R
+#' @include YieldCurve.R
+#' 
+#' @export
+#' @rdname addMarketObject2Contracts
+
+addMarketObject2Contracts <- function(institution, yc, spread, cycle, ...) {
+  
+  for(i in 1:length(institution$leaves)){
+    
+    leaf <- institution$leaves[[i]]
+    lapply(leaf$Get("contracts"), FUN = updateContract, yc = yc, spread = spread, cycle = cycle)
+    
+    return(institution)
+    
+  }
+
+}
+
+
+updateContract <- function(contract, yc, cycle){
+  
+  if(contract$contractTerms$contractType == "ANN"){
+    
+    contract$contractTerms$marketObjectCodeOfRateReset <- yc$Label
+    contract$contractTerms$rateSpread <- spread
+    contract$contractTerms$cycleOfRateReset <- cycle
+    
+    if(cycle == "P1YL1"){
+      anchorDate <- as.character(ymd(contract$contractTerms$initialExhangeDate) %m+% years(1))
+      contract$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
+    }else if(cycle == "P6ML1"){
+      anchorDate <- as.character(ymd(contract$contractTerms$initialExhangeDate) %m+% months(6))
+      contract$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
+    }else if(cycle == "P1ML1"){
+      anchorDate <- as.character(ymd(contract$contractTerms$initialExhangeDate) %m+% months(1))
+      contract$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
+    }else{
+      stop("Cycle not known")
+    }
+    
+  }
+  
+}
+
+
 
 #' @include Events.R
 #' @include EventSeries.R

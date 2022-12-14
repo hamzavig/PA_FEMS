@@ -276,3 +276,27 @@ setMethod(f = "names", signature = c("YieldCurve"),
           definition = function(x){
             return(names(x$getRefClass()$fields()))
           })
+
+
+#' @export
+#' @rdname yc-methods
+#'
+setGeneric(name = "shiftYieldCurve",
+           def = function(yc, spread){
+               standardGeneric("shiftYieldCurve")
+           })
+
+#' @export
+#' @rdname yc-methods
+#' 
+setMethod(f = "shiftYieldCurve", signature = c("YieldCurve", "numeric"),
+          definition = function(yc, spread){
+            
+            rates <- get(yc, "Rates")
+            rates <- rates + spread
+            set(yc, list(Rates=rates))
+            
+            return(yc)
+          })
+
+

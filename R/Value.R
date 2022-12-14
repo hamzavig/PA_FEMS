@@ -122,7 +122,8 @@ setMethod(f = "value", signature = c("EventSeries", "character", "character", "m
             return(round(val, digits))
           })
 
-
+#' @export
+#' @rdname val-methods
 setGeneric(name = "valueEquityRatio", def = function(object, ...){
   standardGeneric("valueEquityRatio")
 })
@@ -140,7 +141,8 @@ setMethod(f = "valueEquityRatio", signature = c("data.frame"),
             
           })
 
-
+#' @export
+#' @rdname val-methods
 setGeneric(name = "valueLiquidityCoverageRatio", def = function(object, ...){
   standardGeneric("valueLiquidityCoverageRatio")
 })

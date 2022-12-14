@@ -137,6 +137,8 @@ addMarketObject2Contracts <- function(institution, yc, spread, cycle, ...) {
     
     leaf <- institution$leaves[[i]]
     
+    if (!is.null(leaf$contracts)){
+    
     for(j in 1:length(leaf$contracts)){
       
       if(leaf$contracts[[j]]$contractTerms$contractType == "ANN"){
@@ -158,6 +160,7 @@ addMarketObject2Contracts <- function(institution, yc, spread, cycle, ...) {
           stop("Cycle not known")
         }
       }
+    }
     }
   }
   

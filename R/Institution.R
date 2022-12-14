@@ -138,44 +138,31 @@ addMarketObject2Contracts <- function(institution, yc, spread, cycle, ...) {
     leaf <- institution$leaves[[i]]
     
     for(j in 1:length(leaf$contracts)){
-      ctr <- leaf$contracts[[j]]
-      leaf$contracts[[j]] <- updateContract(ctr, yc = yc, spread = spread, cycle = cycle)
+      
+      if(leaf$contracts[[j]]$contractTerms$contractType == "ANN"){
+        
+        leaf$contracts[[j]]$contractTerms$marketObjectCodeOfRateReset <- yc$label
+        leaf$contracts[[j]]$contractTerms$rateSpread <- spread
+        leaf$contracts[[j]]$contractTerms$cycleOfRateReset <- cycle
+        
+        if(cycle == "P1YL1"){
+          anchorDate <- as.character(ymd(leaf$contracts[[j]]$contractTerms$initialExhangeDate) %m+% years(1))
+          leaf$contracts[[j]]$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
+        }else if(cycle == "P6ML1"){
+          anchorDate <- as.character(ymd(leaf$contracts[[j]]$contractTerms$initialExhangeDate) %m+% months(6))
+          leaf$contracts[[j]]$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
+        }else if(cycle == "P1ML1"){
+          anchorDate <- as.character(ymd(leaf$contracts[[j]]$contractTerms$initialExhangeDate) %m+% months(1))
+          leaf$contracts[[j]]$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
+        }else{
+          stop("Cycle not known")
+        }
+      }
     }
-    
-    return(institution)
-    
-  }
-
-}
-
-
-updateContract <- function(contract, yc, spread, cycle){
-  
-  if(contract$contractTerms$contractType == "ANN"){
-    
-    contract$contractTerms$marketObjectCodeOfRateReset <- yc$label
-    contract$contractTerms$rateSpread <- spread
-    contract$contractTerms$cycleOfRateReset <- cycle
-    
-    if(cycle == "P1YL1"){
-      anchorDate <- as.character(ymd(contract$contractTerms$initialExhangeDate) %m+% years(1))
-      contract$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
-    }else if(cycle == "P6ML1"){
-      anchorDate <- as.character(ymd(contract$contractTerms$initialExhangeDate) %m+% months(6))
-      contract$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
-    }else if(cycle == "P1ML1"){
-      anchorDate <- as.character(ymd(contract$contractTerms$initialExhangeDate) %m+% months(1))
-      contract$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
-    }else{
-      stop("Cycle not known")
-    }
-    
   }
   
-  return(contract)
-  
+  return(institution)
 }
-
 
 
 #' @include Events.R

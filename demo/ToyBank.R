@@ -30,6 +30,7 @@ yc <- rf$riskfactors[[1]]
 spread <- 0.01
 cycle <- "P1YL1"
 ycShifted <- shiftYieldCurve(yc, spread)
+ycShifted
 
 bankShifted <- bank
 bankShifted <- addMarketObject2Contracts(bankShifted, ycShifted, spread, cycle)

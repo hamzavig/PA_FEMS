@@ -145,7 +145,7 @@ addMarketObject2Contracts <- function(institution, yc, spread, cycle, ...) {
 }
 
 
-updateContract <- function(contract, yc, cycle){
+updateContract <- function(contract, yc, spread, cycle){
   
   if(contract$contractTerms$contractType == "ANN"){
     

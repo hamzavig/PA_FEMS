@@ -148,13 +148,13 @@ addMarketObject2Contracts <- function(institution, yc, spread, cycle, ...) {
         leaf$contracts[[j]]$contractTerms$cycleOfRateReset <- cycle
         
         if(cycle == "P1YL1"){
-          anchorDate <- as.character(ymd(leaf$contracts[[j]]$contractTerms$initialExhangeDate) %m+% years(1))
+          anchorDate <- as.character(ymd(leaf$contracts[[j]]$contractTerms$initialExchangeDate) %m+% years(1))
           leaf$contracts[[j]]$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
         }else if(cycle == "P6ML1"){
-          anchorDate <- as.character(ymd(leaf$contracts[[j]]$contractTerms$initialExhangeDate) %m+% months(6))
+          anchorDate <- as.character(ymd(leaf$contracts[[j]]$contractTerms$initialExchangeDate) %m+% months(6))
           leaf$contracts[[j]]$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
         }else if(cycle == "P1ML1"){
-          anchorDate <- as.character(ymd(leaf$contracts[[j]]$contractTerms$initialExhangeDate) %m+% months(1))
+          anchorDate <- as.character(ymd(leaf$contracts[[j]]$contractTerms$initialExchangeDate) %m+% months(1))
           leaf$contracts[[j]]$contractTerms$cycleAnchorDateOfRateReset <- anchorDate
         }else{
           stop("Cycle not known")

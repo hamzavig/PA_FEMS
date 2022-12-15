@@ -47,11 +47,11 @@ tb <- timeBuckets(by, bucketLabs=2022:2026,
                   breakLabs=substr(as.character(by),3,10))
 scale = 1000000
 
-val <- value(bank, tb, scale=scale, digits=2)
+val <- value(bank, tb, type="market", method = DcEngine(rf), scale=scale, digits=2)
 inc <- income(bank, tb, type="marginal", scale=scale, digits=2)
 liq <- liquidity(bank, tb, scale=scale, digits=2)
 
-valShifted <- value(bankShifted, tb, scale=scale, digits=2)
+valShifted <- value(bankShifted, tb, type="market", method = DcEngine(rfShifted), scale=scale, digits=2)
 incShifted <- income(bankShifted, tb, type="marginal", scale=scale, digits=2)
 liqShifted <- liquidity(bankShifted, tb, scale=scale, digits=2)
 
@@ -61,6 +61,11 @@ liquidityCoverageRatio <- valueLiquidityCoverageRatio(val)
 
 equityRatioShifted <- valueEquityRatio(valShifted)
 liquidityCoverageRatioShifted <- valueLiquidityCoverageRatio(valShifted)
+val
+valShifted
+
+inc
+incShifted
 
 
 #assetsDuration <- duration()

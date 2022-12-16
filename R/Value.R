@@ -62,7 +62,7 @@ setMethod(f = "value", signature = c("EventSeries", "character", "character", "D
               # add spread to interest rate
               spread <- PAFEMS::get(method, "dc.spread")
               dc <- PAFEMS::get(method, "dc.object")
-              PAFEMS::set(dc, list(Rates=FEMS::get(dc, "Rates") + spread))
+              PAFEMS::set(dc, list(Rates=PAFEMS::get(dc, "Rates") + spread))
               val = sapply(by, function(ad) { # loop over elements in "by"
                 evs = data.frame(
                   object$events_df$time,
@@ -154,7 +154,7 @@ setGeneric(name = "valueLiquidityCoverageRatio", def = function(object, ...){
 setMethod(f = "valueLiquidityCoverageRatio", signature = c("data.frame"),
           definition = function(object, ...){
             
-            ratio <- round(100*(-(val.nom[grep("-Assets",rownames(object))+1,])/val.nom[grep("-Liabilities",rownames(object))+1,]),2)
+            ratio <- round(100*(-(object[grep("-Assets",rownames(object))+1,])/object[grep("-Liabilities",rownames(object))+1,]),2)
             rownames(ratio) <- "Liquiditiy Coverage Ratio"
             return(ratio)
             

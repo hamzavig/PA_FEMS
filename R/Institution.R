@@ -445,10 +445,6 @@ setMethod(f = "sensitivity", signature = c("Node", "YieldCurve"),
             clearAnalytics(object, "sensitivity")
             object$Do(fun=fSensitivityLeaf, "sensitivity", yield = yield, filterFun=isLeaf)
             object$Do(fun=fSensitivityAggregation, "sensitivity", yield = yield)
-            res = object$Get("sensitivity")
-            rownames(res) = capture.output(print(object))[-1]
-            return(res)
-            
           })
 
 ##################################################################################

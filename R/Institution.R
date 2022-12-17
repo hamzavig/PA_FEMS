@@ -548,7 +548,7 @@ fSensitivityAggregation = function(node, ...) {
     d = round(as.numeric(t(resPV.vector/sum(resPV.vector))%*%resD.vector),2)
     
     res <- data.frame(nodePath = node$pathString,
-                      ID = node$name,
+                      ID = "-",
                       PresentValue = pv,
                       Duration = d)
     

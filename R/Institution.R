@@ -463,7 +463,8 @@ fSensitivityLeaf = function(node, ...) {
   node[[pars[[1]]]] <- NULL
     
   if(is.null(node$events) || length(node$events)==0){
-    res <- data.frame(ID = node$name,
+    res <- data.frame(nodePath = node$pathString,
+                      ID = node$name,
                       PresentValue = 0,
                       Duration = 0)
   }else{
@@ -490,7 +491,8 @@ fSensitivityLeaf = function(node, ...) {
                      FUN = function(x){
                        as.character(x$contractTerms$contractID)
                      })
-    res <- data.frame(ID = resCtrs,
+    res <- data.frame(nodePath = rep(node$pathString,length(resCtrs)),
+                      ID = resCtrs,
                       PresentValue = resPV,
                       Duration = resD)
   }
@@ -545,7 +547,8 @@ fSensitivityAggregation = function(node, ...) {
     pv = sum(resPV.vector)
     d = round(as.numeric(t(resPV.vector/sum(resPV.vector))%*%resD.vector),2)
     
-    res <- data.frame(ID = node$name,
+    res <- data.frame(nodePath = node$pathString,
+                      ID = node$name,
                       PresentValue = pv,
                       Duration = d)
     

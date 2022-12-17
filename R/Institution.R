@@ -502,7 +502,7 @@ fSensitivity = function(node, ...) {
     
     resCtrs = sapply(X=ctrs,
                      FUN = function(x){
-                       as.character(ctrs$contractTerms$contractID)
+                       as.character(x$contractTerms$contractID)
                      })
     
     res <- data.frame(ID = resCtrs,

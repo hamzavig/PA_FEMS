@@ -443,8 +443,8 @@ setMethod(f = "sensitivity", signature = c("Node", "YieldCurve"),
           definition = function(object, yield){
             # Compute sensitivity for whole tree
             clearAnalytics(object, "sensitivity")
-            object$Do(fun=fSensitivity, "sensitivity", yield = yield, filterFun=isLeaf)
-            object$Do(fun=fSensitivity, "sensitivity", yield = yield, filterFun=!isLeaf)
+            object$Do(fun=fSensitivityLeaf, "sensitivity", yield = yield, filterFun=isLeaf)
+            object$Do(fun=fSensitivityAggregation, "sensitivity", yield = yield)
             res = object$Get("sensitivity")
             rownames(res) = capture.output(print(object))[-1]
             return(res)
@@ -460,48 +460,65 @@ setMethod(f = "sensitivity", signature = c("Node", "YieldCurve"),
 #' This function thus subsumes the function of all three specialized 
 #' functions above (which are commented out)
  
-fSensitivity = function(node, ...) {
+fSensitivityLeaf = function(node, ...) {
   
   pars = list(...)
-  idx = 0
   # clear analytics
   node[[pars[[1]]]] <- NULL
-  
-  if(node$isLeaf){
     
-    if(is.null(node$events) || length(node$events)==0){
-      res <- data.frame(ID = node$name,
-                        PresentValue = 0,
-                        Duration = 0)
-    }else{
-      ctrs = node$contracts
-      resPV = sapply(X=1:length(ctrs),
-                     FUN = function(x, pars) {
-                       pars = list(...)
-                       fnam = "presentValue"
-                       Id = x
-                       object = node$events[[Id]]
-                       pars = pars[c(-1)]
-                       do.call(fnam, c(object=object, pars))
-                     })
-      resD = sapply(X=1:length(ctrs),
-                    FUN = function(x, pars) {
-                      pars = list(...)
-                      fnam = "duration"
-                      Id = x
-                      object = node$events[[Id]]
-                      pars = pars[c(-1)]
-                      do.call(fnam, c(object=object, pars))
-                    })
-      resCtrs = sapply(X=ctrs,
-                       FUN = function(x){
-                         as.character(x$contractTerms$contractID)
-                       })
-      res <- data.frame(ID = resCtrs,
-                        PresentValue = resPV,
-                        Duration = resD)
-    }
+  if(is.null(node$events) || length(node$events)==0){
+    res <- data.frame(ID = node$name,
+                      PresentValue = 0,
+                      Duration = 0)
   }else{
+    ctrs = node$contracts
+    resPV = sapply(X=1:length(ctrs),
+                   FUN = function(x, pars) {
+                     pars = list(...)
+                     fnam = "presentValue"
+                     Id = x
+                     object = node$events[[Id]]
+                     pars = pars[c(-1)]
+                     do.call(fnam, c(object=object, pars))
+                   })
+    resD = sapply(X=1:length(ctrs),
+                  FUN = function(x, pars) {
+                    pars = list(...)
+                    fnam = "duration"
+                    Id = x
+                    object = node$events[[Id]]
+                    pars = pars[c(-1)]
+                    do.call(fnam, c(object=object, pars))
+                  })
+    resCtrs = sapply(X=ctrs,
+                     FUN = function(x){
+                       as.character(x$contractTerms$contractID)
+                     })
+    res <- data.frame(ID = resCtrs,
+                      PresentValue = resPV,
+                      Duration = resD)
+  }
+  
+  node[[pars[[1]]]] <- res
+}
+
+
+##################################################################################
+#' specific function for computing sensitivity analytics on a data.tree structure 
+#' of class Node
+#'
+#' This function computes analytics individually for the leafs of a tree
+#' The analytics to be computed must be passed as first argument.
+#' This function thus subsumes the function of all three specialized 
+#' functions above (which are commented out)
+
+fSensitivityAggregation = function(node, ...) {
+  
+  if(!node$isLeaf){
+    
+    pars = list(...)
+    # clear analytics
+    node[[pars[[1]]]] <- NULL
     
     children <- node$children
     
@@ -535,9 +552,9 @@ fSensitivity = function(node, ...) {
     res <- data.frame(ID = node$name,
                       PresentValue = pv,
                       Duration = d)
+    
+    node[[pars[[1]]]] <- res
   }
-  
-  node[[pars[[1]]]] <- res
 }
 
 

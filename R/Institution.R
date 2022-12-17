@@ -453,7 +453,6 @@ setMethod(f = "sensitivity", signature = c("Node", "YieldCurve"),
             
           })
 
-
 ##################################################################################
 #' specific function for computing sensitivity analytics on a data.tree structure 
 #' of class Node
@@ -480,21 +479,21 @@ fSensitivity = function(node, ...) {
   }else{
     ctrs = node$contracts
     
-    resPV = sapply(X=ctrs,
+    resPV = sapply(X=1:length(ctrs),
                    FUN = function(x, pars) {
                      pars = list(...)
                      fnam = "presentValue"
-                     Id = idx + 1
+                     Id = x
                      object = node$events[[Id]]
                      pars = pars[c(-1)]
                      do.call(fnam, c(object=object, pars))
                    })
     
-    resD = sapply(X=ctrs,
+    resD = sapply(X=1:length(ctrs),
                   FUN = function(x, pars) {
                     pars = list(...)
                     fnam = "duration"
-                    Id = idx + 1
+                    Id = x
                     object = node$events[[Id]]
                     pars = pars[c(-1)]
                     do.call(fnam, c(object=object, pars))
@@ -514,7 +513,6 @@ fSensitivity = function(node, ...) {
 }
 
 
-
 ##################################################################################
 #' general function for computing analytics on a data.tree structure of class Node
 #'
@@ -525,7 +523,6 @@ fSensitivity = function(node, ...) {
 fAnalytics = function(node, ...) {
   
   pars = list(...)
-  idx = 0
   # clear analytics
   node[[ pars[[1]] ]] <- NULL
   if ( is.null(node$events) || length(node$events)==0 ) {
@@ -538,11 +535,11 @@ fAnalytics = function(node, ...) {
   } else {
     ctrs = node$contracts
     res = sapply(
-      X=ctrs,
+      X=1:length(ctrs),
       FUN = function(x, pars) {
         pars = list(...)
         fnam = pars[[1]] # the name of the analytics [liquidity|income|value]
-        Id = idx + 1
+        Id = x
         object = node$events[[Id]] # the eventSeries of the contract
         pars = pars[c(-1)]
         do.call(fnam, c(object=object, pars))

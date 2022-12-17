@@ -42,8 +42,7 @@
 #' @include YieldCurve.R
 #' @export
 #' 
-setGeneric(name = "presentValue", def = function(object, yield, by, isPercentage, isPrice, digits, 
-                                                 method, period, convention, ...){
+setGeneric(name = "presentValue", def = function(object, yield, ...){
   standardGeneric("presentValue")
 })
 

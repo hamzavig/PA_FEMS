@@ -35,8 +35,7 @@
 #' @include DynamicYieldCurve.R YieldCurve.R
 #' @export 
 #' 
-setGeneric(name = "duration", def = function(object, yield, by, type, price,
-                                             isPercentage, digits, ...){
+setGeneric(name = "duration", def = function(object, yield, ...){
   standardGeneric("duration")
 })
 

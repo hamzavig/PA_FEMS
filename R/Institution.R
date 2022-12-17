@@ -433,6 +433,88 @@ setMethod(f = "liquidity", signature = c("Node", "timeBuckets", "ANY"),
 
 
 
+####----------------------------------------------------------------------------
+## sensitivity
+
+#' @include Sensitivity.R
+#' @rdname sen-methods
+#' @export
+setMethod(f = "sensitivity", signature = c("Node", "YieldCurve"),
+          definition = function(object, yield){
+            # Compute sensitivity for whole tree
+            clearAnalytics(object, "sensitivity")
+            object$Do(fun=fSensitivity, "sensitivity", yield = yield, filterFun=isLeaf)
+            
+            aggregateAnalytics(object, "sensitivity")
+            
+            res = object$Get("sensitivity")
+            rownames(res) = capture.output(print(object))[-1]
+            return(res)
+            
+          })
+
+
+##################################################################################
+#' specific function for computing sensitivity analytics on a data.tree structure 
+#' of class Node
+#'
+#' This function computes analytics individually for the leafs of a tree
+#' The analytics to be computed must be passed as first argument.
+#' This function thus subsumes the function of all three specialized 
+#' functions above (which are commented out)
+ 
+fSensitivity = function(node, ...) {
+  
+  pars = list(...)
+  idx = 0
+  # clear analytics
+  node[[pars[[1]]]] <- NULL
+  
+  
+  if(is.null(node$events) || length(node$events)==0){
+    
+    res <- data.frame(ID = node$name,
+                     PresentValue = 0,
+                     Duration = 0)
+    
+  }else{
+    ctrs = node$contracts
+    
+    resPV = sapply(X=ctrs,
+                   FUN = function(x, pars) {
+                     pars = list(...)
+                     fnam = "presentValue"
+                     Id = idx + 1
+                     object = node$events[[Id]]
+                     pars = pars[c(-1)]
+                     do.call(fnam, c(object=object, pars))
+                   })
+    
+    resD = sapply(X=ctrs,
+                  FUN = function(x, pars) {
+                    pars = list(...)
+                    fnam = "duration"
+                    Id = idx + 1
+                    object = node$events[[Id]]
+                    pars = pars[c(-1)]
+                    do.call(fnam, c(object=object, pars))
+                  })
+    
+    resCtrs = sapply(X=ctrs,
+                     FUN = function(x){
+                       ctrs$contractTerms$contractID
+                     })
+    
+    res <- data.frame(ID = resCtrs,
+                     PresentValue = resPV,
+                     Duration = resD)
+  }
+  
+  node[[pars[[1]]]] <- res
+}
+
+
+
 ##################################################################################
 #' general function for computing analytics on a data.tree structure of class Node
 #'

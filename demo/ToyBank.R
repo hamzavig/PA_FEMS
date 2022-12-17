@@ -49,9 +49,6 @@ tb <- timeBuckets(by, bucketLabs=2022:2026,
                   breakLabs=substr(as.character(by),3,10))
 scale = 1000000
 
-DcEngine(rfShifted)
-rfShifted$riskfactors$YC_CTRS$TenorDates
-
 val <- value(bank, tb, scale=scale, digits=2)
 inc <- income(bank, tb, type="marginal", scale=scale, digits=2)
 liq <- liquidity(bank, tb, scale=scale, digits=2)
@@ -66,6 +63,8 @@ liquidityCoverageRatio <- valueLiquidityCoverageRatio(val)
 
 equityRatioShifted <- valueEquityRatio(valShifted)
 liquidityCoverageRatioShifted <- valueLiquidityCoverageRatio(valShifted)
+
+
 
 
 

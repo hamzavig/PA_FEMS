@@ -444,7 +444,7 @@ setMethod(f = "sensitivity", signature = c("Node", "YieldCurve"),
             # Compute sensitivity for whole tree
             clearAnalytics(object, "sensitivity")
             object$Do(fun=fSensitivity, "sensitivity", yield = yield, filterFun=isLeaf)
-            
+            object$Do(fun=fSensitivity, "sensitivity", yield = yield, filterFun=!isLeaf)
             res = object$Get("sensitivity")
             rownames(res) = capture.output(print(object))[-1]
             return(res)
@@ -467,44 +467,74 @@ fSensitivity = function(node, ...) {
   # clear analytics
   node[[pars[[1]]]] <- NULL
   
-  
-  if(is.null(node$events) || length(node$events)==0){
+  if(node$isLeaf){
+    
+    if(is.null(node$events) || length(node$events)==0){
+      res <- data.frame(ID = node$name,
+                        PresentValue = 0,
+                        Duration = 0)
+    }else{
+      ctrs = node$contracts
+      resPV = sapply(X=1:length(ctrs),
+                     FUN = function(x, pars) {
+                       pars = list(...)
+                       fnam = "presentValue"
+                       Id = x
+                       object = node$events[[Id]]
+                       pars = pars[c(-1)]
+                       do.call(fnam, c(object=object, pars))
+                     })
+      resD = sapply(X=1:length(ctrs),
+                    FUN = function(x, pars) {
+                      pars = list(...)
+                      fnam = "duration"
+                      Id = x
+                      object = node$events[[Id]]
+                      pars = pars[c(-1)]
+                      do.call(fnam, c(object=object, pars))
+                    })
+      resCtrs = sapply(X=ctrs,
+                       FUN = function(x){
+                         as.character(x$contractTerms$contractID)
+                       })
+      res <- data.frame(ID = resCtrs,
+                        PresentValue = resPV,
+                        Duration = resD)
+    }
+  }else{
+    
+    children <- node$children
+    
+    resPV <- sapply(X=1:length(children),
+                    FUN = function(i){
+                      leaves <- children[[i]]$leaves
+                      leafPVs <- sapply(X=1:length(leaves),
+                                        FUN = function(j){
+                                          leaves[[j]]$sensitivity$PresentValue
+                                        })
+                      leafPVs
+                    })
+    resPV.vector <- unlist(resPV)
+    resPV.vector
+    
+    resD <- sapply(X=1:length(children),
+                   FUN = function(i){
+                     leaves <- children[[i]]$leaves
+                     leafDs <- sapply(X=1:length(leaves),
+                                      FUN = function(j){
+                                        leaves[[j]]$sensitivity$Duration
+                                      })
+                     leafDs
+                   })
+    resD.vector <- unlist(resD)
+    resD.vector
+    
+    pv = sum(resPV.vector)
+    d = round(as.numeric(t(resPV.vector/sum(resPV.vector))%*%resD.vector),2)
     
     res <- data.frame(ID = node$name,
-                     PresentValue = 0,
-                     Duration = 0)
-    
-  }else{
-    ctrs = node$contracts
-    
-    resPV = sapply(X=1:length(ctrs),
-                   FUN = function(x, pars) {
-                     pars = list(...)
-                     fnam = "presentValue"
-                     Id = x
-                     object = node$events[[Id]]
-                     pars = pars[c(-1)]
-                     do.call(fnam, c(object=object, pars))
-                   })
-    
-    resD = sapply(X=1:length(ctrs),
-                  FUN = function(x, pars) {
-                    pars = list(...)
-                    fnam = "duration"
-                    Id = x
-                    object = node$events[[Id]]
-                    pars = pars[c(-1)]
-                    do.call(fnam, c(object=object, pars))
-                  })
-    
-    resCtrs = sapply(X=ctrs,
-                     FUN = function(x){
-                       as.character(x$contractTerms$contractID)
-                     })
-    
-    res <- data.frame(ID = resCtrs,
-                     PresentValue = resPV,
-                     Duration = resD)
+                      PresentValue = pv,
+                      Duration = d)
   }
   
   node[[pars[[1]]]] <- res
@@ -568,7 +598,6 @@ aggregateAnalytics = function(node, analytics) {
     node[[analytics]] = res
   }
 }
-
 
 # Clears previously computed the analytics "analytics" from the tree "node"
 clearAnalytics = function(node, analytics) {

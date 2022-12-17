@@ -44,7 +44,7 @@ setGeneric(name = "duration", def = function(object, yield, by, type, price,
 #' @include DynamicYieldCurve.R YieldCurve.R
 #' @export
 #' 
-setMethod(f = "duration", signature = c("EventSeries", "YieldCurve", "ANY"),
+setMethod(f = "duration", signature = c("EventSeries", "YieldCurve"),
           definition = function(object, yield, by=NULL, type="fisher-weil", price=NULL, 
                                 isPercentage=TRUE, digits=2, ...){
  

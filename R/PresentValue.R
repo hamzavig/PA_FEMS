@@ -52,7 +52,7 @@ setGeneric(name = "presentValue", def = function(object, yield, by, isPercentage
 #' @include YieldCurve.R
 #' @export
 #' 
-setMethod(f = "presentValue", signature = c("EventSeries", "YieldCurve", "ANY"),
+setMethod(f = "presentValue", signature = c("EventSeries", "YieldCurve"),
           definition = function(object, yield, by=NULL, isPercentage=TRUE, isPrice=FALSE, digits=2, 
                                 method="compound", period="Y", convention="30E360", ...){
  

@@ -77,6 +77,7 @@ setMethod(f = "duration", signature = c("EventSeries", "YieldCurve"),
               cf <- timeSeries(cbind(0,0), 
                                charvec = by, 
                                units = c("payoff","fraction"))
+              d <- 0
             }else{
               if (evs$type[dim(evs)[1]]!="MD" & evs$payoff[dim(evs)[1]]==0){
                 evs <- evs[1:dim(evs)[1]-1,]
@@ -91,17 +92,11 @@ setMethod(f = "duration", signature = c("EventSeries", "YieldCurve"),
               if ( as.character(time(cf)[1,]) == by ){
                 cf <- cf[-1,]
               }
-            }
-            
-            # extract times (in years) from cash flows
-            t <- cf$fraction
-            
-            # always fisher-weil duration
-            df <- discountFactors(yield, to=as.character(time(cf)))
-            
-            if(t == 0){
-              d <- 0
-            }else{
+              
+              # extract times (in years) from cash flows
+              t <- cf$fraction
+              # always fisher-weil duration
+              df <- discountFactors(yield, to=as.character(time(cf)))
               d <- sum(t*df*cf$payoff)/t(cf$payoff)%*%df
             }
             

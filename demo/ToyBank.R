@@ -65,4 +65,3 @@ liquidityCoverageRatioShifted <- valueLiquidityCoverageRatio(valShifted)
 
 
 sen <- sensitivity(bankShifted, ycShifted)
-

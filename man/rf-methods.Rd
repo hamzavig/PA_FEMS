@@ -38,5 +38,5 @@ yc = RF("YieldCurve")
 
 }
 \seealso{
-\code{\link{YieldCurve, ReferenceIndex}}
+\code{\link{YieldCurve, DefaultCurve, ReferenceIndex}}
 }

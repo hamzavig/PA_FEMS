@@ -236,6 +236,7 @@ get.data.rate.reset <-  function(yc, anchor_dt, cycle, end_dt, ISO = TRUE){
     from = anchor_dt,  
     to = timeSequence(end_dt, by = convert.Duration(cycle, ISO), length.out = 2)[2],
     by = convert.Duration(cycle, ISO)))
+  
   if (class(yc) == "YieldCurve" || class(yc) == "DynamicYieldCurve") {
     data <- getRateAt(yc, times[2:length(times)], times[1:length(times)-1])
   } else {

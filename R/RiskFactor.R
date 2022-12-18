@@ -12,11 +12,9 @@
 #' types as a means for designing method-inheritage. 
 #' 
 #' @field MarketObjectCode character name of the risk factor 
-#' @field Data data.frame representating time series data
+#' @field Data data.frame representing time series data
 #' 
-#' @seealso \code{\link{YieldCurve, ReferenceIndex, ForeignExchangeRate}}
-#'
-## @examples
+#' @seealso \code{\link{YieldCurve, ReferenceIndex, DefaultCurve}}
 #' 
 ## @include
 #' @export 
@@ -44,7 +42,7 @@ setRefClass("RiskFactor",
 #'
 #' @return An object of a class extending \code{RiskFactor} 
 #' 
-#' @seealso \code{\link{YieldCurve, ReferenceIndex}}
+#' @seealso \code{\link{YieldCurve, DefaultCurve, ReferenceIndex}}
 #'
 #' @examples 
 #' # create a new 'YieldCurve' object

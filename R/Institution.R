@@ -439,6 +439,7 @@ setMethod(f = "liquidity", signature = c("Node", "timeBuckets", "ANY"),
 #' @include Sensitivity.R
 #' @rdname sen-methods
 #' @export
+#' 
 setMethod(f = "sensitivity", signature = c("Node", "YieldCurve"),
           definition = function(object, yield){
             # Compute sensitivity for whole tree
@@ -446,6 +447,53 @@ setMethod(f = "sensitivity", signature = c("Node", "YieldCurve"),
             object$Do(fun=fSensitivityLeaf, "sensitivity", yield = yield, filterFun=isLeaf)
             object$Do(fun=fSensitivityAggregation, "sensitivity", yield = yield)
           })
+
+
+####----------------------------------------------------------------------------
+## sensitivity
+
+#' @include Sensitivity.R
+#' @rdname sen-methods
+#' @export
+#' 
+setGeneric(name = "showSensitivity", def = function(node, ...){
+  standardGeneric("showSensitivity")
+})
+
+
+#' @include Sensitivity.R
+#' @rdname sen-methods
+#' @export
+#' 
+setMethod(f = "showSensitivity", signature = c("Node"),
+          definition = function(node){
+            
+            nodes <- Traverse(
+              node,
+              traversal = c("pre-order")
+            )
+            
+            df <- data.frame()
+            
+            for(i in 1:length(nodes)){
+              df <- rbind(df, nodes[[i]]$sensitivity)
+            }
+            
+            nodes.path <- Get(Traverse(node),"pathString")
+            rn <- capture.output(node)[-1]
+            rn <- substring(rn,4,max(nchar(rn)))
+            res <- df
+            rnams <- character(nrow(res))
+            
+            for (i in 1:nrow(res)) {
+              rnams[i] <- paste(format(i,width=2),rn[nodes.path==res[i,1]])
+            }
+            
+            rownames(res) <- rnams
+            return(res[,-1])
+          })
+
+
 
 ##################################################################################
 #' specific function for computing sensitivity analytics on a data.tree structure 

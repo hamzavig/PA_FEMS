@@ -63,35 +63,7 @@ liquidityCoverageRatio <- valueLiquidityCoverageRatio(val)
 equityRatioShifted <- valueEquityRatio(valShifted)
 liquidityCoverageRatioShifted <- valueLiquidityCoverageRatio(valShifted)
 
-sen <- sensitivity(bankShifted, ycShifted)
+sensitivity(bankShifted, ycShifted)
 
-nodes <- Traverse(
-  bankShifted,
-  traversal = c("pre-order")
-)
 
-df <- data.frame()
-
-for(i in 1:length(nodes)){
-  df <- rbind(df, nodes[[i]]$sensitivity)
-}
-
-nodes.path <- Get(Traverse(bankShifted),"pathString")
-nodes.path
-rn <- capture.output(bankShifted)[-1]
-rn
-rn <- substring(rn,4,max(nchar(rn)))
-rn
-
-res <- df
-res
-
-rnams <- character(nrow(res))
-rnams
-for (i in 1:nrow(res)) {
-  rnams[i] <- paste(format(i,width=2),rn[nodes.path==res[i,1]])
-}
-# t(t(rnams))
-rownames(res) <- rnams
-res[,-1]
 

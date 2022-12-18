@@ -11,6 +11,9 @@ presentValue(x, yield, by, isPercentage, isPrice, digits)
 \code{\link{DynamicYieldcurve}} to calculate discount 
 factors from, indicating the percentage yield used to discount.}
 
+\item{x}{a contract type, for which to calculate the NPV. This can also be 
+a timeSeries, EventSeries or Portfolio object.}
+
 \item{by}{a character indicating the date as for which the NPV is calculated.}
 
 \item{isPercentage}{a logical, indicating if the 'yield' is passed as percentage 
@@ -21,9 +24,6 @@ in the case of a cash flow pattern where the initial cash flow
 is negative and the others are positive (default is FALSE).}
 
 \item{digits}{an integer indicating the number of digits to round to. (default is 2)}
-
-\item{x}{a contract type, for which to calculate the NPV. This can also be 
-a timeSeries, EventSeries or Portfolio object.}
 }
 \value{
 a numeric, representing the Net Present Value (NPV) of the contract.

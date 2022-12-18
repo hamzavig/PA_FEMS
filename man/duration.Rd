@@ -11,8 +11,8 @@ duration(x, type="macaulay", yield, price, isPercentage=TRUE, by)
 \code{DynamicYieldCurve} that describes the spot rate term structure
 or indicates the yield used to calculate the duration.}
 
-\item{by}{a \code{character} indicating the date as for which the net present value
-is calculated.}
+\item{x}{the contract or portfolio of contracts for which to calculate 
+the duration.}
 
 \item{type}{a \code{character} defining the type of duration; possible types are 
 'fisher-weil', 'macaulay' (default) and 'dollar'.}
@@ -23,8 +23,8 @@ of each contract.}
 \item{isPercentage}{a \code{numeric}, indicating if the 'yield' is passed as percentage 
 (TRUE) or as fraction (FALSE).}
 
-\item{x}{the contract or portfolio of contracts for which to calculate 
-the duration.}
+\item{by}{a \code{character} indicating the date as for which the net present value
+is calculated.}
 }
 \value{
 a \code{numeic} containing the calculated duration.

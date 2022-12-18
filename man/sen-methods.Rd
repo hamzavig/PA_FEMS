@@ -4,12 +4,18 @@
 \name{sensitivity}
 \alias{sensitivity}
 \alias{sensitivity,Node,YieldCurve-method}
+\alias{showSensitivity}
+\alias{showSensitivity,Node-method}
 \title{Derive the sensitivity of a contract's value with respect
 to a change in risk factors}
 \usage{
 sensitivity(object, yield, ...)
 
 \S4method{sensitivity}{Node,YieldCurve}(object, yield)
+
+showSensitivity(node, ...)
+
+\S4method{showSensitivity}{Node}(node)
 }
 \arguments{
 \item{object}{object \code{Node}}

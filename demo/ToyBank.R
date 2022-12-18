@@ -72,6 +72,13 @@ sen <- showSensitivity(bankShifted)
 riskFactors <- "src/data/bankA/rf_defaultCurves.csv"
 rfList <- getRFList(riskFactors)
 
+rfList
+
+
+
+
+
+
 
 
 

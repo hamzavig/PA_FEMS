@@ -147,6 +147,17 @@ riskFactors_df2list <- function(riskFactors_df){
                        Tenors = tenors,
                        Rates = rates)
       rfList <- append(rfList, yc)  
+    }else if(riskFactors_df[irow,"rfType"] == "DefaultCurve"){
+      label <- riskFactors_df[irow, "label"]
+      referenceDate <- riskFactors_df[irow, "referenceDate"]
+      tenors <- as.character(riskFactors_df[irow, grepl("tenor", names(riskFactors_df))])
+      rates <- as.numeric(riskFactors_df[irow, grepl("rate", names(riskFactors_df))])
+      dc <- DefaultCurve(label = label, 
+                       ReferenceDate = referenceDate, 
+                       Tenors = tenors,
+                       Rates = rates)
+      rfList <- append(rfList, yc)  
+      
     }else{
       stop("Other risk factors than Yield Curves are not supported yet!")
     }

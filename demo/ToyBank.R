@@ -19,7 +19,7 @@ bank <- assignContracts2Tree(bank, ptf)
 bank <- assignContracts2Tree(bank, ops_ptf)
 bank <- events(object=bank, riskFactors = rfDefault)
 
-# Yield Curve Shift
+# Interest Rate Risk: Parallel Yield Curve Shift
 
 riskFactors <- "src/data/bankA/rf_contracts.csv"
 rfList <- getRFList(riskFactors)
@@ -65,6 +65,12 @@ liquidityCoverageRatioShifted <- valueLiquidityCoverageRatio(valShifted)
 
 sensitivity(bankShifted, ycShifted)
 sen <- showSensitivity(bankShifted)
+
+
+# Default Rate Risk
+
+riskFactors <- "src/data/bankA/rf_defaultCurves.csv"
+rfList <- getRFList(riskFactors)
 
 
 

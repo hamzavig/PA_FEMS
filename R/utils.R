@@ -148,6 +148,7 @@ riskFactors_df2list <- function(riskFactors_df){
                        Rates = rates)
       rfList <- append(rfList, yc)  
     }else if(riskFactors_df[irow,"rfType"] == "DefaultCurve"){
+      
       label <- riskFactors_df[irow, "label"]
       referenceDate <- riskFactors_df[irow, "referenceDate"]
       tenors <- as.character(riskFactors_df[irow, grepl("tenor", names(riskFactors_df))])

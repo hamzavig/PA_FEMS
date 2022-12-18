@@ -102,7 +102,7 @@ setMethod(f = "DefaultCurve",signature = c(),
             
             dc <- new("DefaultCurve")
             for (nms in names(fill_fields)) {
-              yc[[nms]] <- fill_fields[[nms]]
+              dc[[nms]] <- fill_fields[[nms]]
             }
             
             test.dates(dc$ReferenceDate)

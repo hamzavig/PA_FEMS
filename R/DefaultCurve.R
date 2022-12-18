@@ -249,9 +249,9 @@ setMethod(f = "getRatesAsSeries", signature = c("DefaultCurve", "character"),
     # get rates from interpolation
     s <- interpolator$getValueAt(t)
     
-    rates.ts <- timeSequence(data = s,
-                             charvec = dates,
-                             units = "defaultRates")
+    rates.ts <- timeSeries(data = s,
+                           charvec = dates,
+                           units = "defaultRates")
     
     return(rates.ts)
   })

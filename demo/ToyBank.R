@@ -70,9 +70,19 @@ sen <- showSensitivity(bankShifted)
 # Default Rate Risk
 
 riskFactors <- "src/data/bankA/rf_defaultCurves.csv"
-rfList <- getRFList(riskFactors)
+rfDCList <- getRFList(riskFactors)
 
-rfList
+rfDCList
+dcH <- rfDCList[[1]]
+
+dcH
+dates <- timeSequence(from = "2022-01-01", to = "2025-01-01", by = "1 years")
+dates <- as.character(dates)
+dates
+
+rates <- getRatesAsSeries(dcH, dates)
+
+
 
 
 

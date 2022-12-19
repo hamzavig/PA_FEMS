@@ -39,7 +39,7 @@ setMethod(f = "generateDefaultContracts", signature = c("ContractType", "list", 
             dcIdx <- which(dcLabels==ctrCounterParty)
             
             defaultCurve <- defaults[[dcIdx]]
-            defaultDates <- timeSequence(from = from, to = ctrMaturityDate, by = "1 years")
+            defaultDates <- as.character(timeSequence(from = from, to = ctrMaturityDate, by = "1 years"))
             defaultRates <- getRatesAsSeries(defaultCurve, defaultDates)
             
             paymentsPassed <- yearFraction(ctrInitialExchangeDate, from, "30E360")

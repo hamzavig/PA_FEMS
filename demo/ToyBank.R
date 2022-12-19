@@ -103,3 +103,138 @@ default(bankDefault, rfDCList, "2024-01-01", rawCtrs)
 bank <- events(object=bank, riskFactors = rfDefault)
 
 
+
+
+
+
+leafs <- bankDefault$Assets$leaves
+leafs
+
+defCtrs <- list()
+
+for(leaf in leafs){
+  ctrs <- determineDefault(leaf, rfDCList, "2024-01-01", rawCtrs)
+  
+  for(j in 1:length(ctrs)){
+    defCtrs <- append(defCtrs, ctrs[[j]])
+  }
+}
+
+object$Assets$AddChild("Default")
+object$Assets$Default$contracts <- defCtrs
+
+
+
+
+
+determineDefault <- function(node, defaults, from, rawCtrs){
+  
+  ctrList <- list()
+  
+  if(!is.null(node$contracts) || lenght(node$contracts) > 0){
+    
+    ctrs <- leafs[[1]]$contracts
+    defaultLabels <- c()
+    for(i in 1:length(rfDCList)) defaultLabels <- c(defaultLabels, rfDCList[[i]]$label)
+    defaultLabels
+    
+    ctrs
+    
+    for(ctr in ctrs){
+      if(ctrs[[1]]$contractTerms$legalEntityIDCounterparty %in% defaultLabels &&
+         ctrs[[1]]$contractTerms$maturityDate > from){
+        
+        cid <- ctr$contractTerms$contractID
+        
+        for(i in 1:length(rawCtrs)){
+          ctrdf <- rawCtrs[[i]]
+          
+          if(cid %in% ctrdf[,"contractID"]){
+            rawCtr <- ctrdf[ctrdf$contractID == cid,]
+          }
+        }
+        
+        defCtrs <- generateDefaultContracts(ctr, defaults, from, rawCtr)
+        
+        for(j in 1:length(defCtrs)){
+          
+          ctrList <- append(ctrList, defCtrs[[j]])
+        }
+      }
+    }
+  }
+  return(ctrList)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+generateDefaultContracts <- function(object, defaults, from, ctr){
+            
+            ctrInitialExchangeDate <- object$contractTerms$initialExchangeDate
+            ctrMaturityDate <- object$contractTerms$maturityDate
+            ctrCounterParty <- object$contractTerms$legalEntityIDCounterparty
+            
+            dcLabels <- c()
+            for(i in 1:length(defaults)) dcLabels <- c(dcLabels, defaults[[i]]$label)
+            dcIdx <- which(dcLabels==ctrCounterParty)
+            
+            defaultCurve <- defaults[[dcIdx]]
+            defaultDates <- timeSequence(from = from, to = ctrMaturityDate, by = "1 years")
+            defaultRates <- getRatesAsSeries(defaultCurve, defaultDates)
+            
+            paymentsPassed <- yearFraction(ctrInitialExchangeDate, from, "30E360")
+            paymentsPending <- yearFraction(from, ctrMaturityDate, "30E360")
+            paymentsTotal <- paymentsPassed + paymentsPending
+            
+            recoveryRate <- paymentsPassed/paymentsTotal
+            defaultGivenRisk <- (1-recoveryRate)
+            
+            premiumDiscount <- defaultGivenRisk*defaultRates
+            
+            defCtrs <- list()
+            
+            for(i in 1:(length(defaultDates)-1)){
+              
+              def <- ctr
+              
+              def[1,"initialExchangeDate"] <- defaultDates[i]
+              def[1,"contractRole"] <- "RPL"
+              def[1,"statusDate"] <- defaultDates[i]
+              def[1,"contractDealDate"] <- defaultDates[i]
+              def[1,"premiumDiscountAtIED"] <- -(ctr[1,"notionalPrincipal"] * premiumDiscount[i])
+              def[1,"notionalPrincipal"] <- ctr[1,"notionalPrincipal"] * defaultRates[i]
+              
+              defCtr <- contracts_df2list(def)
+              defCtrs <- append(defCtrs, defCtr[[1]])
+              
+            }
+            
+            return(defCtrs)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

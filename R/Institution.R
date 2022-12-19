@@ -480,7 +480,6 @@ determineDefault <- function(node, defaults, from, rawCtrs){
         cid <- ctr$contractTerms$contractID
         
         for(i in 1:length(rawCtrs)){
-          
           ctrdf <- rawCtrs[[i]]
           
           if(cid %in% ctrdf[,"contractID"]){
@@ -489,7 +488,6 @@ determineDefault <- function(node, defaults, from, rawCtrs){
           }else{
             next
           }
-          
         }
         
         defCtrs <- generateDefaultContracts(ctr, defaults, from, rawCtr)

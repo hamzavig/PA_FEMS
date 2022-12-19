@@ -75,35 +75,12 @@ rfDCList <- getRFList(riskFactors)
 rfDCList
 dcH <- rfDCList[[1]]
 
-dcH
 dates <- timeSequence(from = "2022-01-01", to = "2025-01-01", by = "1 years")
 dates <- as.character(dates)
-dates
 
 rates <- getRatesAsSeries(dcH, dates)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+bankDefault <- Clone(bank, pruneFun = NULL, attributes = FALSE)
 
 
 

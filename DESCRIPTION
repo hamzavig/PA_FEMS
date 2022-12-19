@@ -38,6 +38,7 @@ Collate:
     'Portfolio.R'
     'EventSeries.R'
     'ContractPlot.R'
+    'Default.R'
     'DefaultCurve.R'
     'YieldCurve.R'
     'ValuationEngine.R'

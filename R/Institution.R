@@ -432,6 +432,79 @@ setMethod(f = "liquidity", signature = c("Node", "timeBuckets", "ANY"),
           })
 
 
+####----------------------------------------------------------------------------
+## default
+
+#' @include Default.R
+#' @rdname def-methods
+#' @export
+#' 
+setMethod(f = "default", signature = c("Node", "list", "character", "list"),
+          definition = function(object, defaults, from, rawCtrs){
+            
+            leafs <- object$Assets$leaves
+            defCtrs <- list()
+            
+            for(leaf in leafs){
+              ctrs <- determineDefault(leaf, defaults, from, rawCtrs)
+              
+              for(j in 1:length(ctrs)){
+                defCtrs <- append(defCtrs, ctrs[[j]])
+              }
+            }
+            
+            object$Assets$AddChild("Default")
+            object$Assets$Default$contracts <- defCtrs
+            
+          })
+
+
+#' @include Default.R
+#' @rdname def-methods
+#' @export
+#' 
+determineDefault <- function(node, defaults, from, rawCtrs){
+  
+  ctrList <- list()
+  
+  if(!is.null(node$contracts) || lenght(node$contracts) > 0){
+    
+    ctrs <- node$contracts
+    defaultLabels <- c()
+    for(i in 1:length(defaults)) defaultLabels <- c(defaultLabels, defaults[[i]]$label)
+    
+    for(ctr in ctrs){
+      if(ctr$contractTerms$legalEntityIDCounterparty %in% defaultLabels &&
+         ctr$contractTerms$maturityDate > from){
+        
+        cid <- ctr$contractTerms$contractID
+        
+        for(i in 1:length(rawCtrs)){
+          
+          ctrdf <- rawCtrs[[i]]
+          
+          if(cid %in% ctrdf[,"contractID"]){
+            rawCtr <- ctrdf[ctrdf$contractID == cid,]
+            break
+          }else{
+            next
+          }
+          
+        }
+        
+        defCtrs <- generateDefaultContracts(ctr, defaults, from, rawCtr)
+        
+        for(j in 1:length(defCtrs)){
+          
+          ctrList <- append(ctrsList, defCtrs[[j]])
+        }
+      }
+    }
+  }
+  return(ctrList)
+}
+
+
 
 ####----------------------------------------------------------------------------
 ## sensitivity

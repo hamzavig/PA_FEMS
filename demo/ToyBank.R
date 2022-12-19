@@ -108,7 +108,7 @@ bank <- events(object=bank, riskFactors = rfDefault)
 
 
 leafs <- bankDefault$Assets$leaves
-leafs
+length(leafs)
 
 defCtrs <- list()
 
@@ -124,16 +124,8 @@ object$Assets$AddChild("Default")
 object$Assets$Default$contracts <- defCtrs
 
 
-
-
-
-determineDefault <- function(node, defaults, from, rawCtrs){
-  
-  ctrList <- list()
-  
-  if(!is.null(node$contracts) || lenght(node$contracts) > 0){
     
-    ctrs <- leafs[[1]]$contracts
+    ctrs <- leafs[[4]]$contracts
     defaultLabels <- c()
     for(i in 1:length(rfDCList)) defaultLabels <- c(defaultLabels, rfDCList[[i]]$label)
     defaultLabels
@@ -141,30 +133,14 @@ determineDefault <- function(node, defaults, from, rawCtrs){
     ctrs
     
     for(ctr in ctrs){
-      if(ctrs[[1]]$contractTerms$legalEntityIDCounterparty %in% defaultLabels &&
-         ctrs[[1]]$contractTerms$maturityDate > from){
+      if(ctr$contractTerms$legalEntityIDCounterparty %in% defaultLabels &&
+         ctr$contractTerms$maturityDate > "2024-01-01"){
         
-        cid <- ctr$contractTerms$contractID
-        
-        for(i in 1:length(rawCtrs)){
-          ctrdf <- rawCtrs[[i]]
-          
-          if(cid %in% ctrdf[,"contractID"]){
-            rawCtr <- ctrdf[ctrdf$contractID == cid,]
-          }
-        }
-        
-        defCtrs <- generateDefaultContracts(ctr, defaults, from, rawCtr)
-        
-        for(j in 1:length(defCtrs)){
-          
-          ctrList <- append(ctrList, defCtrs[[j]])
-        }
+        print(ctr)
       }
+        
     }
-  }
-  return(ctrList)
-}
+
 
 
 

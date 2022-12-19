@@ -443,6 +443,7 @@ setMethod(f = "default", signature = c("Node", "list", "character", "list"),
           definition = function(object, defaults, from, rawCtrs){
             
             leafs <- object$Assets$leaves
+            leafs[length(leafs)] <- NULL
             defCtrs <- list()
             
             for(leaf in leafs){

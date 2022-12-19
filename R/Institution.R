@@ -496,7 +496,7 @@ determineDefault <- function(node, defaults, from, rawCtrs){
         
         for(j in 1:length(defCtrs)){
           
-          ctrList <- append(ctrsList, defCtrs[[j]])
+          ctrList <- append(ctrList, defCtrs[[j]])
         }
       }
     }

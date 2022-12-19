@@ -73,14 +73,33 @@ riskFactors <- "src/data/bankA/rf_defaultCurves.csv"
 rfDCList <- getRFList(riskFactors)
 
 rfDCList
-dcH <- rfDCList[[1]]
 
-dates <- timeSequence(from = "2022-01-01", to = "2025-01-01", by = "1 years")
-dates <- as.character(dates)
 
-rates <- getRatesAsSeries(dcH, dates)
+bankDefault <- createInstitution("BankDefault")
 
-bankDefault <- Clone(bank, pruneFun = NULL, attributes = FALSE)
+annPortfolio <- "src/data/bankA/ann_ptf.csv"
+pamPortfolio <- "src/data/bankA/pam_ptf.csv"
+opsPortfolio <- "src/data/bankA/operations.csv"
 
+rfDefault <- RFConn()
+
+ann_ptf <- samplePortfolio(annPortfolio, "contracts")
+pam_ptf <- samplePortfolio(pamPortfolio, "contracts")
+ptf <- mergePortfolios(ann_ptf, pam_ptf)
+
+ops_ptf <- samplePortfolio(opsPortfolio, "operations")
+
+bankDefault <- assignContracts2Tree(bankDefault, ptf)
+bankDefault <- assignContracts2Tree(bankDefault, ops_ptf)
+
+ann_df <- contractFile2dataframe(annPortfolio)
+pam_df <- contractFile2dataframe(pamPortfolio)
+
+rawCtrs <- list(ann_df, pam_df)
+bankDefault
+default(bankDefault, rfDCList, "2024-01-01", rawCtrs)
+
+
+bank <- events(object=bank, riskFactors = rfDefault)
 
 

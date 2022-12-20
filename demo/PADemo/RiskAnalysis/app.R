@@ -355,7 +355,35 @@ ui <- fluidPage(
                                                           placeholder = "2024-01-01")
                                          ),
                                      )
-                            )
+                            ),
+                            tabPanel("Financial Statements", fluid = TRUE,
+                                     fluidRow(
+                                         h5("Financial Statements", style = "margin-left: 15px; margin-top: 15px;"),
+                                         column(6,
+                                                h5("Financial Ratios A"),
+                                                verbatimTextOutput("eqrA"),
+                                                verbatimTextOutput("lcrA"),
+                                                h5("Value Bank A"),
+                                                verbatimTextOutput("valA")
+                                                # h5("Income Bank A"),
+                                                # verbatimTextOutput("incA"),
+                                                # h5("Liquidity Bank A"),
+                                                # verbatimTextOutput("liqA")
+                                         ),
+                                         column(6,
+                                                h5("Financial Ratios B"),
+                                                verbatimTextOutput("eqrB"),
+                                                verbatimTextOutput("lcrB"),
+                                                h5("Value Bank B"),
+                                                verbatimTextOutput("valB")
+                                                # h5("Income Bank B"),
+                                                # verbatimTextOutput("incB"),
+                                                # h5("Liquidity Bank B"),
+                                                # verbatimTextOutput("liqB")
+                                         ),
+                                     )
+                            ),
+                            
                         )
                         
                )
@@ -692,7 +720,7 @@ server <- function(input, output, session) {
     })
     
     
-    observeEvent(input$sim, {
+    observeEvent(input$simDR, {
         
         t0 <- input$simFromDR
         tn <- input$simToDR
@@ -710,66 +738,70 @@ server <- function(input, output, session) {
         
         defDate <- input$defDate
         
+        ann_dfA <- contractFile2dataframe(input$annsA$datapath)
+        pam_dfA <- contractFile2dataframe(input$pamsA$datapath)
+        
+        rawCtrsA <- list(ann_dfA, pam_dfA)
+        default(instA, dfList, defDate, rawCtrsA)
         
         
-        rawCtrs <- list(ann_df, pam_df)
-        default(bankDefault, rfDCList, "2024-01-01", rawCtrs)
+        ann_dfB <- contractFile2dataframe(input$annsB$datapath)
+        pam_dfB <- contractFile2dataframe(input$pamsB$datapath)
+        
+        rawCtrsB <- list(ann_dfB, pam_dfB)
+        default(instB, dfList, defDate, rawCtrsB)
         
         instA <<- events(object = instA, riskFactors = rfDefault)
         instB <<- events(object = instB, riskFactors = rfDefault)
         
         val <- value(instA, tb, type = "market", method = DcEngine(rfDefault), scale=scale, digits=2)
-        valB <- value(instB, tb, type = "market", method = DcEngine(rfShifted), scale=scale, digits=2)
-        inc <- income(instA, tb, type="marginal", scale=scale, digits=2)
-        incB <- income(instB, tb, type="marginal", scale=scale, digits=2)
-        liq <- liquidity(instA, tb, scale=scale, digits=2)
-        liqB <- liquidity(instB, tb, scale=scale, digits=2)
+        valB <- value(instB, tb, type = "market", method = DcEngine(rfDefault), scale=scale, digits=2)
         
         
-        output$valDefault <- renderPrint({
+        output$valA <- renderPrint({
             return(val)
         })
         
-        output$valShifted <- renderPrint({
-            return(valShifted)
+        output$valB <- renderPrint({
+            return(valB)
         })
         
-        output$incDefault <- renderPrint({
-            return(inc)
-        })
-        
-        output$incShifted <- renderPrint({
-            return(incShifted)
-        })
-        
-        output$liqDefault <- renderPrint({
-            return(liq)
-        })
-        
-        output$liqShifted <- renderPrint({
-            return(liqShifted)
-        })
+        # output$incA <- renderPrint({
+        #     return(inc)
+        # })
+        # 
+        # output$incB <- renderPrint({
+        #     return(incB)
+        # })
+        # 
+        # output$liqA <- renderPrint({
+        #     return(liq)
+        # })
+        # 
+        # output$liqB <- renderPrint({
+        #     return(liqB)
+        # })
         
         equityRatio <- valueEquityRatio(val)
         liquidityCoverageRatio <- valueLiquidityCoverageRatio(val)
         
-        equityRatioShifted <- valueEquityRatio(valShifted)
-        liquidityCoverageRatioShifted <- valueLiquidityCoverageRatio(valShifted)
+        equityRatioB <- valueEquityRatio(valB)
+        liquidityCoverageRatioB <- valueLiquidityCoverageRatio(valB)
         
-        output$eqrDefault <- renderPrint({
+        output$eqrA <- renderPrint({
             print(equityRatio)
         })
         
-        output$lcrDefault <- renderPrint({
+        output$lcrA <- renderPrint({
             print(liquidityCoverageRatio)
         })
         
-        output$eqrShifted <- renderPrint({
-            print(equityRatioShifted)
+        output$eqrB <- renderPrint({
+            print(equityRatioB)
         })
         
-        output$lcrShifted <- renderPrint({
-            print(liquidityCoverageRatioShifted)
+        output$lcrB <- renderPrint({
+            print(liquidityCoverageRatioB)
         })
 
         

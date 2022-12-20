@@ -106,7 +106,7 @@ default(bankDefault, rfDCList, "2024-01-01", rawCtrs)
 ctrsDef <- bankDefault$Assets$Default$contracts
 
 bankDefault <- events(object=bankDefault, riskFactors = rfDefault)
-
+plot(rfDCList[[3]])
 
 
 

@@ -11,6 +11,9 @@ library(timeSeries)
 #    as character ( "30E360" would be read numeric )  BUT
 #    field does not occur in riskData csv files
 # ***************************************
+
+#' @export
+#' 
 contractFile2dataframe <- function(cdfn, sep = ",") {
   # read csv ignores and strips '"' and dayCountConvention has 30E360 value
   # which gets read as numeric = Inf.

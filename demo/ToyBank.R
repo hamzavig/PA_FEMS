@@ -44,11 +44,15 @@ bankShifted <- events(object = bankShifted, riskFactors = rfShifted)
 
 
 by <- timeSequence("2022-01-01", by="1 years", length.out=6)
+by
 tb <- timeBuckets(by, bucketLabs=2022:2026, 
                   breakLabs=substr(as.character(by),3,10))
+tb
 scale = 1000000
 
 val <- value(bank, tb, scale=scale, digits=2)
+valM <- value(bank, tb, type = "market", method = DcEngine(rfShifted), scale = scale, digits = 2)
+valM
 inc <- income(bank, tb, type="marginal", scale=scale, digits=2)
 liq <- liquidity(bank, tb, scale=scale, digits=2)
 
@@ -58,6 +62,7 @@ liqShifted <- liquidity(bankShifted, tb, scale=scale, digits=2)
 
 
 equityRatio <- valueEquityRatio(val)
+equityRatio
 liquidityCoverageRatio <- valueLiquidityCoverageRatio(val)
 
 equityRatioShifted <- valueEquityRatio(valShifted)
@@ -98,118 +103,9 @@ pam_df <- contractFile2dataframe(pamPortfolio)
 rawCtrs <- list(ann_df, pam_df)
 bankDefault
 default(bankDefault, rfDCList, "2024-01-01", rawCtrs)
+ctrsDef <- bankDefault$Assets$Default$contracts
 
-
-bank <- events(object=bank, riskFactors = rfDefault)
-
-
-
-
-
-
-leafs <- bankDefault$Assets$leaves
-length(leafs)
-
-defCtrs <- list()
-
-for(leaf in leafs){
-  ctrs <- determineDefault(leaf, rfDCList, "2024-01-01", rawCtrs)
-  
-  for(j in 1:length(ctrs)){
-    defCtrs <- append(defCtrs, ctrs[[j]])
-  }
-}
-
-object$Assets$AddChild("Default")
-object$Assets$Default$contracts <- defCtrs
-
-
-    
-    ctrs <- leafs[[4]]$contracts
-    defaultLabels <- c()
-    for(i in 1:length(rfDCList)) defaultLabels <- c(defaultLabels, rfDCList[[i]]$label)
-    defaultLabels
-    
-    ctrs
-    
-    for(ctr in ctrs){
-      if(ctr$contractTerms$legalEntityIDCounterparty %in% defaultLabels &&
-         ctr$contractTerms$maturityDate > "2024-01-01"){
-        
-        print(ctr)
-      }
-        
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-generateDefaultContracts <- function(object, defaults, from, ctr){
-            
-            ctrInitialExchangeDate <- object$contractTerms$initialExchangeDate
-            ctrMaturityDate <- object$contractTerms$maturityDate
-            ctrCounterParty <- object$contractTerms$legalEntityIDCounterparty
-            
-            dcLabels <- c()
-            for(i in 1:length(defaults)) dcLabels <- c(dcLabels, defaults[[i]]$label)
-            dcIdx <- which(dcLabels==ctrCounterParty)
-            
-            defaultCurve <- defaults[[dcIdx]]
-            defaultDates <- timeSequence(from = from, to = ctrMaturityDate, by = "1 years")
-            defaultRates <- getRatesAsSeries(defaultCurve, defaultDates)
-            
-            paymentsPassed <- yearFraction(ctrInitialExchangeDate, from, "30E360")
-            paymentsPending <- yearFraction(from, ctrMaturityDate, "30E360")
-            paymentsTotal <- paymentsPassed + paymentsPending
-            
-            recoveryRate <- paymentsPassed/paymentsTotal
-            defaultGivenRisk <- (1-recoveryRate)
-            
-            premiumDiscount <- defaultGivenRisk*defaultRates
-            
-            defCtrs <- list()
-            
-            for(i in 1:(length(defaultDates)-1)){
-              
-              def <- ctr
-              
-              def[1,"initialExchangeDate"] <- defaultDates[i]
-              def[1,"contractRole"] <- "RPL"
-              def[1,"statusDate"] <- defaultDates[i]
-              def[1,"contractDealDate"] <- defaultDates[i]
-              def[1,"premiumDiscountAtIED"] <- -(ctr[1,"notionalPrincipal"] * premiumDiscount[i])
-              def[1,"notionalPrincipal"] <- ctr[1,"notionalPrincipal"] * defaultRates[i]
-              
-              defCtr <- contracts_df2list(def)
-              defCtrs <- append(defCtrs, defCtr[[1]])
-              
-            }
-            
-            return(defCtrs)
-}
-
-
-
-
-
-
-
-
-
-
-
-
+bankDefault <- events(object=bankDefault, riskFactors = rfDefault)
 
 
 

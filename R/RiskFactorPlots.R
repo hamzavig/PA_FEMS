@@ -4,14 +4,14 @@
 #*************************************************************
 
 ##############################################################
-#' Plot a \link{YieldCurve}
+#' Plot a \link{YieldCurve, DefaultCurve}
 #'
 #' Create a graphical representation of a \link{YieldCurve}-
-#' object.
+#' object or a \link{DefaultCurve}-object
 #' 
-#' @param object The \link{YieldCurve} object to plot
+#' @param object The \link{YieldCurve, DefaultCurve} object to plot
 #' 
-#' @seealso \link{YieldCurve},\link{plot}
+#' @seealso \link{YieldCurve, DefaultCurve},\link{plot}
 #' 
 #' @examples
 #' yc <- YieldCurve()
@@ -70,7 +70,53 @@ setMethod("plot", signature("YieldCurve", "missing"),
             
           })
 
-
+#' @include DefaultCurve.R
+#' @export
+#' @docType methods
+#' @rdname plt-methods
+setMethod("plot", signature("DefaultCurve", "missing"),
+          definition = function(x, y, ...){
+            # extract information from yield curve
+            name = get(x, "label")
+            t0 = get(x, "ReferenceDate")
+            tenors = get(x, "Tenors")
+            rates = get(x, "Rates")
+            # construct time-axis
+            x.axis = timeDate(substring(t0,1,10))
+            for(t in tenors) {
+              x.axis = c(x.axis,
+                         timeSequence(substring(t0, 1, 10),
+                                      length.out=2, by=cycle.to.by(t))[2]
+              )
+            }
+            
+            # get y-lim
+            ylim = range(c(0, rates))
+            if(!missing(y)) {
+              ylim = range(c(ylim, range(y[,tenors])))
+            }
+            # plot structure
+            plot(x=as.Date(x.axis), y=c(0, rates), xaxt="n", type="n",
+                 xlab="Tenors", ylim=ylim, ylab="Rates", main=name)
+            
+            # plot shifts if exist
+            if(!missing(y)) {
+              for(i in 1:nrow(y)) {
+                lines(x=as.Date(x.axis), 
+                      y=c(0, as.numeric(rates + shock[i, tenors])),
+                      col="gray")
+              }
+            }
+            
+            # plot curve
+            pos = as.Date(x.axis)
+            lbl = c("t0", tenors)
+            for (i in 1:length(pos)) {
+              axis(1, at=pos[i], labels=lbl[i], tick=TRUE)
+            }
+            lines(x=as.Date(x.axis[-1]), y=rates, lwd=2)
+            
+          })
 
 cycle.to.by <- function(x) {
   x = gsub("+", "", x)

@@ -65,9 +65,9 @@ contracts_df2list<- function(contracts_df){
 }
 
 
-# ***************************************3********************
+# ************************************************************
 # operations_df2list(operations_df)
-#   build list of operations from df
+# build list of operations from df
 #  Split df: terms, pattern, args (once)
 #  for each row: createOperations(terms, pattern, args, irow)
 # ************************************************************

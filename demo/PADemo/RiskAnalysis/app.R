@@ -122,7 +122,7 @@ ui <- fluidPage(
                                          ),
                                          column(4,
                                                 numericInput(inputId = "spreadRate", 
-                                                             label = "Sprade Rate", 
+                                                             label = "Shift amount", 
                                                              value = 0.001,
                                                              min = 0.001,
                                                              max = 0.1,
@@ -137,17 +137,13 @@ ui <- fluidPage(
                                                 h5("Value"),
                                                 verbatimTextOutput("valDefault"),
                                                 h5("Income"),
-                                                verbatimTextOutput("incDefault"),
-                                                h5("Liquidity"),
-                                                verbatimTextOutput("liqDefault")
+                                                verbatimTextOutput("incDefault")
                                          ),
                                          column(6,
                                                 h5("Value Shifted"),
                                                 verbatimTextOutput("valShifted"),
                                                 h5("Income Shifted"),
-                                                verbatimTextOutput("incShifted"),
-                                                h5("Liquidity Shifted"),
-                                                verbatimTextOutput("liqShifted")
+                                                verbatimTextOutput("incShifted")
                                          ),
                                      )
                             ),
@@ -349,11 +345,19 @@ ui <- fluidPage(
                                                           label = "To", 
                                                           placeholder = "2027-01-01")
                                          ),
-                                         column(4,
+                                         column(3,
                                                 textInput(inputId = "defDate", 
                                                           label = "Default Date", 
                                                           placeholder = "2024-01-01")
                                          ),
+                                         column(3,
+                                                numericInput(inputId = "defRecovery", 
+                                                             label = "Recovery rate", 
+                                                             value = 0.01,
+                                                             min = 0.01,
+                                                             max = 1,
+                                                             step = 0.01)
+                                         )
                                      )
                             ),
                             tabPanel("Financial Statements", fluid = TRUE,
@@ -365,10 +369,6 @@ ui <- fluidPage(
                                                 verbatimTextOutput("lcrA"),
                                                 h5("Value Bank A"),
                                                 verbatimTextOutput("valA")
-                                                # h5("Income Bank A"),
-                                                # verbatimTextOutput("incA"),
-                                                # h5("Liquidity Bank A"),
-                                                # verbatimTextOutput("liqA")
                                          ),
                                          column(6,
                                                 h5("Financial Ratios B"),
@@ -376,10 +376,6 @@ ui <- fluidPage(
                                                 verbatimTextOutput("lcrB"),
                                                 h5("Value Bank B"),
                                                 verbatimTextOutput("valB")
-                                                # h5("Income Bank B"),
-                                                # verbatimTextOutput("incB"),
-                                                # h5("Liquidity Bank B"),
-                                                # verbatimTextOutput("liqB")
                                          ),
                                      )
                             ),
@@ -508,8 +504,6 @@ server <- function(input, output, session) {
         valShifted <- value(instShifted, tb, type = "market", method = DcEngine(rfShifted), scale=scale, digits=2)
         inc <- income(inst, tb, type="marginal", scale=scale, digits=2)
         incShifted <- income(instShifted, tb, type="marginal", scale=scale, digits=2)
-        liq <- liquidity(inst, tb, scale=scale, digits=2)
-        liqShifted <- liquidity(instShifted, tb, scale=scale, digits=2)
         
         
         output$valDefault <- renderPrint({
@@ -765,22 +759,6 @@ server <- function(input, output, session) {
         output$valB <- renderPrint({
             return(valB)
         })
-        
-        # output$incA <- renderPrint({
-        #     return(inc)
-        # })
-        # 
-        # output$incB <- renderPrint({
-        #     return(incB)
-        # })
-        # 
-        # output$liqA <- renderPrint({
-        #     return(liq)
-        # })
-        # 
-        # output$liqB <- renderPrint({
-        #     return(liqB)
-        # })
         
         equityRatio <- valueEquityRatio(val)
         liquidityCoverageRatio <- valueLiquidityCoverageRatio(val)

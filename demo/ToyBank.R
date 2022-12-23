@@ -2,6 +2,10 @@ devtools::install_github("hamzavig/PA_FEMS")
 library(PAFEMS)
 
 bank <- createInstitution("Bank")
+print(bank, "attributes")
+
+bank$attributesAll
+
 
 annPortfolio <- "src/data/bankA/ann_ptf.csv"
 pamPortfolio <- "src/data/bankA/pam_ptf.csv"
@@ -42,7 +46,6 @@ add(rfShifted, list(ycShifted))
 
 bankShifted <- events(object = bankShifted, riskFactors = rfShifted)
 
-
 by <- timeSequence("2022-01-01", by="1 years", length.out=6)
 by
 tb <- timeBuckets(by, bucketLabs=2022:2026, 
@@ -51,8 +54,6 @@ tb
 scale = 1000000
 
 val <- value(bank, tb, scale=scale, digits=2)
-valM <- value(bank, tb, type = "market", method = DcEngine(rfShifted), scale = scale, digits = 2)
-valM
 inc <- income(bank, tb, type="marginal", scale=scale, digits=2)
 liq <- liquidity(bank, tb, scale=scale, digits=2)
 
@@ -68,10 +69,10 @@ liquidityCoverageRatio <- valueLiquidityCoverageRatio(val)
 equityRatioShifted <- valueEquityRatio(valShifted)
 liquidityCoverageRatioShifted <- valueLiquidityCoverageRatio(valShifted)
 
-sensitivity(bankShifted, ycShifted)
-sen <- showSensitivity(bankShifted)
+sensitivity(bank, yc)
+sen <- showSensitivity(bank)
 
-
+sen
 # Default Rate Risk
 
 riskFactors <- "src/data/bankA/rf_defaultCurves.csv"
@@ -107,6 +108,3 @@ ctrsDef <- bankDefault$Assets$Default$contracts
 
 bankDefault <- events(object=bankDefault, riskFactors = rfDefault)
 plot(rfDCList[[3]])
-
-
-

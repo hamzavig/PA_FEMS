@@ -1,0 +1,11 @@
+name: riskanalysis
+title:
+username:
+account: hamzavig
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8318254
+bundleId: 6848847
+url: https://hamzavig.shinyapps.io/riskanalysis/
+when: 1676454452.71117
+lastSyncTime: 1676454452.71119

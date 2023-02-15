@@ -4,6 +4,7 @@ library(devtools)
 library(DT)
 library(data.table)
 library(rlist)
+library(devtools)
 devtools::install_github("hamzavig/PA_FEMS") 
 library("PAFEMS")
 

@@ -4,8 +4,6 @@ library(devtools)
 library(DT)
 library(data.table)
 library(rlist)
-library(devtools)
-devtools::install_github("hamzavig/PA_FEMS") 
 library("PAFEMS")
 
 # Define UI for application that draws a histogram
@@ -23,6 +21,61 @@ ui <- fluidPage(
                tabPanel("Interest Rate Risk", fluid = TRUE,
                         
                         tabsetPanel(
+                            tabPanel("Introduction / Guide", fluid = TRUE,
+                                     fluidRow(
+                                         h4("Introduction", style = "margin-left: 15px; margin-top: 15px;"),
+                                         column(6, 
+                                         p("The interest rate risk in this project thesis refers to a parallel shift in the yield curve of the market environment 
+                                           with a given default yield curve. Given the modelled yield curve of the initial market environment, 
+                                           a shift of ten base points or 0.1% is added or subtracted from the initial yield curve."
+                                           )
+                                         )
+                                     ),
+                                     fluidRow(
+                                         h4("Guide", style = "margin-left: 15px; margin-top: 15px;"),
+                                         column(12,
+                                                p("The following instructions provide a superficial guide through the individual steps for the execution of the interest rate risk scenario."),
+                                                h5("Tab: Institution"),
+                                                tags$ol(
+                                                    tags$li("Download the required data provided in GitHub: ", tags$a(href="https://github.com/hamzavig/PA_FEMS/tree/main/src/data/bankA/csv", "Data")),
+                                                    tags$li("Add a name for your institution in the field 'Name your institution'"),
+                                                    tags$li("Upload the operations predefined in the downloaded dataset 'operations.csv' into the field 'Import your Operations'."),
+                                                    tags$li("Upload the annuity contracts predefined in the downloaded dataset 'ann_ptf.csv' into the field 'Import your ANN Portfolio'."),
+                                                    tags$li("Upload the principal at maturity contracts predefined in the downloaded dataset 'pam_ptf.csv' into the field 'Import your PAM Portfolio'."),
+                                                    tags$li("Click on 'Create' to create and initialize your institution with the given financial contracts."),
+                                                    tags$li("After the creation of the institution you can scroll down to see the institution's contract structure and the individual financial contracts added to the institution and their details.")
+                                                ),
+                                                h5("Tab: Market"),
+                                                tags$ol(
+                                                    tags$li("Upload the risk factors in this case the default yield curves predefined in the downloaded dataset 'rf_markets.csv' into the field 'Import your Risk Factors' to create the market environment."),
+                                                    tags$li("There are two yield curves imported: the default yield curve and the shifted yield curve. Which are the same after the initial import."),
+                                                    tags$li("Continuing in the 'Simulation input' part add a start date for the simulation of the yield curve shift like '2022-01-01' in the field 'From'."),
+                                                    tags$li("Add a end date for the simulation of the yield curve shift like '2026-01-01' in the field 'To'."),
+                                                    tags$li("Define the shift amount by adding the base points manually in the field 'Shift amount' or pressing the up/down arrow to adjust the amount."),
+                                                    tags$li("Click on 'Run' to sttart the simulation."),
+                                                    tags$li("After the simualtion is started the 'Shifted Yield Curve' turns grey which indicates that the simulation is still running."),
+                                                    tags$li("When the 'Shifted Yield Curve' appears black again the simulation is through. The values as well as the curve of the 'Shifted Yield Curve' represent now the parallel shift according the defined shift amount.")
+                                                ),
+                                                h5("Tab: Financial Statements"),
+                                                tags$ol(
+                                                    tags$li("In this tab you can analyse the financial statements such as value and income of your institution."),
+                                                    tags$li("On the left side you have the finacial statements based on the 'Default Yield Curve' imported in the previous tab while on the right side you'll see the ones calculated based on the 'Shifted Yield Curve'.")
+                                                ),
+                                                h5("Tab: Sensitivity"),
+                                                tags$ol(
+                                                    tags$li("In this tab you can analyse the financial ratios as well as the duration and fisher-weil duration of your institution's contracts on portfolio and contract level."),
+                                                    tags$li("On the left side you have the sensitivity metrics based on the 'Default Yield Curve' while on the right side you'll see the ones calculated based on the 'Shifted Yield Curve'.")
+                                                ),
+                                                h5("Tab: Event Details"),
+                                                tags$ol(
+                                                    tags$li("In this tab you can analyse an individual financial contracts on cash flow event level."),
+                                                    tags$li("Add a contract id like 'ASL0001' in the field 'Contract ID'."),
+                                                    tags$li("Click on 'Show Events' to get the cash flow events of the respective financial contract."),
+                                                    tags$li("Compare the cash flow events of the financial contracts between the 'Default Yield Curve' on the left and the 'Shifted Yield Curve' on the right.")
+                                                )
+                                         )
+                                     )
+                            ),
                             tabPanel("Institution", fluid = TRUE,
                                      
                                      fluidRow(
@@ -193,6 +246,50 @@ ui <- fluidPage(
                tabPanel("Default Risk", fluid = TRUE,
                         
                         tabsetPanel(
+                            tabPanel("Introduction / Guide", fluid = TRUE,
+                                     fluidRow(
+                                         h4("Introduction", style = "margin-left: 15px; margin-top: 15px;"),
+                                         column(6, 
+                                                p("For determining the default risk of a bank, default curves are used to show the probability of default over time for a given economic sector and a given time rage. 
+                                                  In this project thesis, three default curves are used to represent the risk of default for counterparties operating in three different economic sectors."
+                                                )
+                                         )
+                                     ),
+                                     fluidRow(
+                                         h4("Guide", style = "margin-left: 15px; margin-top: 15px;"),
+                                         column(12,
+                                                p("The following instructions provide a superficial guide through the individual steps for the execution of the interest rate risk scenario."),
+                                                h5("Tab: Institution"),
+                                                tags$ol(
+                                                    tags$li("Download the required data provided in GitHub which contain datasets for two banks (bankA and bankB): ", tags$a(href="https://github.com/hamzavig/PA_FEMS/tree/main/src/data/", "Data")),
+                                                    tags$li("Add a name for your first institution in the field 'Name your institution' in the left column 'Create Institution A'."),
+                                                    tags$li("Upload the operations for the first institution predefined in the downloaded dataset 'bankA/csv/operations.csv' into the field 'Import your Operations' in the left colum 'Create Institution A'."),
+                                                    tags$li("Upload the annuity contracts for the first institution predefined in the downloaded dataset 'bankA/csv/ann_ptf.csv' into the field 'Import your ANN Portfolio' in the left column 'Create Institution A'."),
+                                                    tags$li("Upload the principal at maturity contracts for the first institution predefined in the downloaded dataset 'bankA/csv/pam_ptf.csv' into the field 'Import your PAM Portfolio' in the left column 'Create Institution A'."),
+                                                    tags$li("Click on 'Create' in the left column to create and initialize the institution A with the given financial contracts."),
+                                                    tags$li("After the creation of the institution you can scroll down to see the institution's contract structure and the individual financial contracts added to the institution and their details."),
+                                                    tags$li("Repeat the same instruction for the second institution in the right column 'Create Institution B' while using the already downloaded datasets of the following path: bankB/csv/")
+                                                ),
+                                                h5("Tab: Market"),
+                                                tags$ol(
+                                                    tags$li("Upload the risk factor in this case the default yield curve predefined in the downloaded dataset 'bankA/csv/rf_markets.csv' into the field 'Import your Risk Factors' to create the market environment."),
+                                                    tags$li("Click on 'Import' to upload and initialize the risk factors."),
+                                                    tags$li("Upload the default factors in this case the default curve predefined in the downloaded dataset 'bankA/csv/rf_defaultCurves.csv' into the field 'Import your Default Factors'. The three curves represent the probability of default of three different economic sector to which the financial contracts are mapped."),
+                                                    tags$li("Continuing in the 'Defauult Simulation input' part add a start date for the simulation of the yield curve shift like '2022-01-01' in the field 'From'."),
+                                                    tags$li("Add a end date for the simulation of the yield curve shift like '2026-01-01' in the field 'To'."),
+                                                    tags$li("Add a default date which applies to the probability date of the default curves such as '2024-01-01' in the field 'Default Date'."),
+                                                    tags$li("Define the recovery rate by adding the manually a rate between 0 and 1 in the field 'Recovery rate'."),
+                                                    tags$li("Click on 'Run' to sttart the simulation."),
+                                                    tags$li("After the simualtion is started the output is visible in the following tabs. This simulation takes a couple minutes.")
+                                                ),
+                                                h5("Tab: Financial Statements"),
+                                                tags$ol(
+                                                    tags$li("In this tab you can analyse the financial statements such as financial ratios and value of both institution in comparison."),
+                                                    tags$li("On the left side you have the finacial statements of the first institution while on the right side you'll find the financial statements of the second institution.")
+                                                )
+                                         )
+                                     )
+                            ),
                             tabPanel("Institution", fluid = TRUE,
                                      fluidRow(
                                          h4("Create Institutions", style = "margin-left: 15px; margin-top: 15px;"),
@@ -483,26 +580,30 @@ server <- function(input, output, session) {
         
         # Case1: Default
         rfDefault <- RFConn()
-        add(rfDefault, list(ycDefault))
+        #add(rfDefault, list(ycDefault))
         
-        spreadRateDefault <- 0.0
-        cycleDefault <- "P1YL1"
-        inst <<- addMarketObject2Contracts(inst, ycDefault, spreadRateDefault, cycleDefault)
+        #spreadRateDefault <- 0.0
+        #cycleDefault <- "P1YL1"
+        #inst <<- addMarketObject2Contracts(inst, ycDefault, spreadRateDefault, cycleDefault)
         
         inst <<- events(object = inst, riskFactors = rfDefault)
         
         # Case 2: Yield Curve Shift
         rfShifted <- RFConn()
-        add(rfShifted, list(ycShifted))
+        #add(rfShifted, list(ycShifted))
         
-        spreadRateShifted <- input$spreadRate
-        cycleShifted <- "P1YL1"
-        instShifted <<- addMarketObject2Contracts(instShifted, ycShifted, spreadRateShifted, cycleShifted)
+        #spreadRateShifted <- input$spreadRate
+        #cycleShifted <- "P1YL1"
+        #instShifted <<- addMarketObject2Contracts(instShifted, ycShifted, spreadRateShifted, cycleShifted)
         
         instShifted <<- events(object = instShifted, riskFactors = rfShifted)
         
-        val <- value(inst, tb, type = "market", method = DcEngine(rfDefault), scale=scale, digits=2)
-        valShifted <- value(instShifted, tb, type = "market", method = DcEngine(rfShifted), scale=scale, digits=2)
+        #val <- value(inst, tb, type = "market", method = DcEngine(rfDefault), scale=scale, digits=2)
+        #valShifted <- value(instShifted, tb, type = "market", method = DcEngine(rfShifted), scale=scale, digits=2)
+        
+        val <- value(inst, tb, type = "nominal", scale=scale, digits=2)
+        valShifted <- value(instShifted, tb, type = "nominal", scale=scale, digits=2)
+        
         inc <- income(inst, tb, type="marginal", scale=scale, digits=2)
         incShifted <- income(instShifted, tb, type="marginal", scale=scale, digits=2)
         

@@ -1,3 +1,4 @@
+library(devtools)
 devtools::install_github("hamzavig/PA_FEMS")
 library(PAFEMS)
 

@@ -5,7 +5,9 @@ account: hamzavig
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8318254
-bundleId: 6854122
+bundleId: 7121719
 url: https://hamzavig.shinyapps.io/riskanalysis/
-when: 1676559052.4316
-lastSyncTime: 1676559052.43164
+when: 1682175333.25907
+lastSyncTime: 1682175333.25909
+asMultiple: FALSE
+asStatic: FALSE

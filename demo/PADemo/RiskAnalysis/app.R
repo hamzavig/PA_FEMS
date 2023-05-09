@@ -580,29 +580,29 @@ server <- function(input, output, session) {
         
         # Case1: Default
         rfDefault <- RFConn()
-        #add(rfDefault, list(ycDefault))
+        add(rfDefault, list(ycDefault))
         
-        #spreadRateDefault <- 0.0
-        #cycleDefault <- "P1YL1"
-        #inst <<- addMarketObject2Contracts(inst, ycDefault, spreadRateDefault, cycleDefault)
+        spreadRateDefault <- 0.0
+        cycleDefault <- "P1YL1"
+        inst <<- addMarketObject2Contracts(inst, ycDefault, spreadRateDefault, cycleDefault)
         
         inst <<- events(object = inst, riskFactors = rfDefault)
         
         # Case 2: Yield Curve Shift
         rfShifted <- RFConn()
-        #add(rfShifted, list(ycShifted))
+        add(rfShifted, list(ycShifted))
         
-        #spreadRateShifted <- input$spreadRate
-        #cycleShifted <- "P1YL1"
-        #instShifted <<- addMarketObject2Contracts(instShifted, ycShifted, spreadRateShifted, cycleShifted)
+        spreadRateShifted <- input$spreadRate
+        cycleShifted <- "P1YL1"
+        instShifted <<- addMarketObject2Contracts(instShifted, ycShifted, spreadRateShifted, cycleShifted)
         
         instShifted <<- events(object = instShifted, riskFactors = rfShifted)
         
-        #val <- value(inst, tb, type = "market", method = DcEngine(rfDefault), scale=scale, digits=2)
-        #valShifted <- value(instShifted, tb, type = "market", method = DcEngine(rfShifted), scale=scale, digits=2)
+        val <- value(inst, tb, type = "market", method = DcEngine(rfDefault), scale=scale, digits=2)
+        valShifted <- value(instShifted, tb, type = "market", method = DcEngine(rfShifted), scale=scale, digits=2)
         
-        val <- value(inst, tb, type = "nominal", scale=scale, digits=2)
-        valShifted <- value(instShifted, tb, type = "nominal", scale=scale, digits=2)
+        #val <- value(inst, tb, type = "nominal", scale=scale, digits=2)
+        #valShifted <- value(instShifted, tb, type = "nominal", scale=scale, digits=2)
         
         inc <- income(inst, tb, type="marginal", scale=scale, digits=2)
         incShifted <- income(instShifted, tb, type="marginal", scale=scale, digits=2)
